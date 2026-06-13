@@ -1,0 +1,416 @@
+'use client';
+
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, CheckSquare, XSquare } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { useSaveJournal } from '@/hooks/use-analysis';
+import type { Trade, Journal } from '@/types';
+
+// ── Journal modal ──────────────────────────────────────────
+
+const PRE_EMOTIONS = [
+  { en: 'confident', fa: 'اطمینان' },
+  { en: 'fearful', fa: 'ترس' },
+  { en: 'greedy', fa: 'طمع' },
+  { en: 'calm', fa: 'آرامش' },
+  { en: 'revenge', fa: 'انتقام' },
+  { en: 'FOMO', fa: 'FOMO' },
+];
+const POST_EMOTIONS = [
+  { en: 'satisfied', fa: 'رضایت' },
+  { en: 'regret', fa: 'پشیمانی' },
+  { en: 'neutral', fa: 'خنثی' },
+  { en: 'frustrated', fa: 'ناامیدی' },
+  { en: 'happy', fa: 'خوشحالی' },
+];
+const TAGS = ['FOMO', 'Revenge', 'GoodSetup', 'Overtrading', 'EarlyExit', 'LateEntry'];
+
+function JournalModal({
+  trade,
+  accountId,
+  onClose,
+}: {
+  trade: Trade;
+  accountId: string;
+  onClose: () => void;
+}) {
+  const [j, setJ] = useState<Journal>({});
+  const { mutate: save, isPending, isSuccess } = useSaveJournal();
+
+  const handleSave = () => {
+    save({
+      account_id: Number(accountId),
+      ticket: trade.ticket,
+      symbol: trade.symbol,
+      trade_type: trade.type === 0 ? 'buy' : 'sell',
+      profit: trade.profit,
+      ...j,
+    }, { onSuccess: () => setTimeout(onClose, 1200) });
+  };
+
+  const toggleTag = (tag: string) => {
+    const current = j.tags ? j.tags.split(',').filter(Boolean) : [];
+    const next = current.includes(tag) ? current.filter(t => t !== tag) : [...current, tag];
+    setJ(prev => ({ ...prev, tags: next.join(',') }));
+  };
+
+  const activeTags = j.tags ? j.tags.split(',').filter(Boolean) : [];
+  const isProfit = trade.profit >= 0;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <motion.div
+        className="relative bg-[var(--color-elevated)] border border-[var(--color-border)] rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl"
+        initial={{ opacity: 0, scale: 0.94, y: 16 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.94 }}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-bold text-[var(--color-text-primary)]">ژورنال معامله</h3>
+          <button onClick={onClose} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        {/* Trade summary */}
+        <div className="flex items-center gap-3 rounded-xl px-3 py-2.5 bg-[rgba(255,255,255,0.03)] border border-[var(--color-border)] mb-5 flex-wrap text-sm">
+          <span className="font-mono font-bold text-[var(--color-text-primary)]">{trade.symbol}</span>
+          <Badge variant={trade.type === 0 ? 'green' : 'red'}>{trade.type === 0 ? 'BUY' : 'SELL'}</Badge>
+          <span className={`font-bold ${isProfit ? 'text-emerald-400' : 'text-red-400'}`}>
+            {isProfit ? '+' : ''}{trade.profit.toFixed(2)}$
+          </span>
+          <span className="text-[var(--color-text-muted)] text-xs">{trade.time.slice(0, 16).replace('T', ' ')}</span>
+        </div>
+
+        <div className="space-y-5">
+          {/* Pre emotion */}
+          <div>
+            <p className="text-sm text-[var(--color-text-muted)] mb-2">احساس قبل از معامله</p>
+            <div className="flex flex-wrap gap-2">
+              {PRE_EMOTIONS.map(e => (
+                <button
+                  key={e.en}
+                  type="button"
+                  onClick={() => setJ(prev => ({ ...prev, pre_emotion: e.en }))}
+                  className={`px-3 py-1.5 rounded-lg text-xs text-center transition-all ${
+                    j.pre_emotion === e.en
+                      ? 'bg-[var(--color-cyan-dim)] border border-[rgba(0,212,255,0.3)] text-[var(--color-cyan)] font-bold'
+                      : 'bg-[rgba(255,255,255,0.04)] border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]'
+                  }`}
+                >
+                  <div>{e.fa}</div>
+                  <div className="text-[9px] opacity-60">{e.en}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Pre reason */}
+          <div>
+            <p className="text-sm text-[var(--color-text-muted)] mb-2">دلیل ورود</p>
+            <textarea
+              value={j.pre_reason ?? ''}
+              onChange={e => setJ(prev => ({ ...prev, pre_reason: e.target.value }))}
+              rows={3}
+              placeholder="چرا وارد این معامله شدی؟"
+              className="input-dark w-full rounded-xl px-3 py-2.5 text-sm resize-none"
+            />
+          </div>
+
+          {/* Post emotion */}
+          <div>
+            <p className="text-sm text-[var(--color-text-muted)] mb-2">احساس بعد از معامله</p>
+            <div className="flex flex-wrap gap-2">
+              {POST_EMOTIONS.map(e => (
+                <button
+                  key={e.en}
+                  type="button"
+                  onClick={() => setJ(prev => ({ ...prev, post_emotion: e.en }))}
+                  className={`px-3 py-1.5 rounded-lg text-xs text-center transition-all ${
+                    j.post_emotion === e.en
+                      ? 'bg-[var(--color-cyan-dim)] border border-[rgba(0,212,255,0.3)] text-[var(--color-cyan)] font-bold'
+                      : 'bg-[rgba(255,255,255,0.04)] border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]'
+                  }`}
+                >
+                  <div>{e.fa}</div>
+                  <div className="text-[9px] opacity-60">{e.en}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Post lesson */}
+          <div>
+            <p className="text-sm text-[var(--color-text-muted)] mb-2">درس گرفته</p>
+            <textarea
+              value={j.post_lesson ?? ''}
+              onChange={e => setJ(prev => ({ ...prev, post_lesson: e.target.value }))}
+              rows={2}
+              placeholder="چه چیزی یاد گرفتی؟"
+              className="input-dark w-full rounded-xl px-3 py-2.5 text-sm resize-none"
+            />
+          </div>
+
+          {/* Rating */}
+          <div>
+            <p className="text-sm text-[var(--color-text-muted)] mb-2">امتیاز</p>
+            <div className="flex gap-2">
+              {[1, 2, 3, 4, 5].map(r => (
+                <button
+                  key={r}
+                  type="button"
+                  onClick={() => setJ(prev => ({ ...prev, post_rating: r }))}
+                  className={`w-10 h-10 rounded-xl font-bold text-sm transition-all ${
+                    j.post_rating === r
+                      ? 'bg-[var(--color-cyan)] text-[var(--color-void)]'
+                      : 'bg-[rgba(255,255,255,0.04)] border border-[var(--color-border)] text-[var(--color-text-muted)]'
+                  }`}
+                >
+                  {r}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Followed plan */}
+          <div>
+            <p className="text-sm text-[var(--color-text-muted)] mb-2">به پلن عمل کردی؟</p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setJ(prev => ({ ...prev, post_followed_plan: true }))}
+                className={`flex-1 py-2 rounded-xl text-sm font-bold flex items-center justify-center gap-1.5 transition-all border ${
+                  j.post_followed_plan === true
+                    ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400'
+                    : 'border-[var(--color-border)] text-[var(--color-text-muted)]'
+                }`}
+              >
+                <CheckSquare className="h-3.5 w-3.5" /> بله
+              </button>
+              <button
+                type="button"
+                onClick={() => setJ(prev => ({ ...prev, post_followed_plan: false }))}
+                className={`flex-1 py-2 rounded-xl text-sm font-bold flex items-center justify-center gap-1.5 transition-all border ${
+                  j.post_followed_plan === false
+                    ? 'bg-red-500/20 border-red-500/40 text-red-400'
+                    : 'border-[var(--color-border)] text-[var(--color-text-muted)]'
+                }`}
+              >
+                <XSquare className="h-3.5 w-3.5" /> خیر
+              </button>
+            </div>
+          </div>
+
+          {/* Tags */}
+          <div>
+            <p className="text-sm text-[var(--color-text-muted)] mb-2">تگ‌ها</p>
+            <div className="flex flex-wrap gap-2">
+              {TAGS.map(tag => (
+                <button
+                  key={tag}
+                  type="button"
+                  onClick={() => toggleTag(tag)}
+                  className={`px-3 py-1 rounded-lg text-xs transition-all border ${
+                    activeTags.includes(tag)
+                      ? 'bg-[rgba(234,179,8,0.15)] border-[rgba(234,179,8,0.3)] text-yellow-400 font-bold'
+                      : 'border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]'
+                  }`}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Success */}
+          {isSuccess && (
+            <div className="rounded-xl px-4 py-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm text-center">
+              ژورنال ذخیره شد!
+            </div>
+          )}
+
+          <Button variant="primary" size="md" className="w-full" onClick={handleSave} loading={isPending} disabled={isPending}>
+            ذخیره ژورنال
+          </Button>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+// ── Trades table ───────────────────────────────────────────
+
+type Filter = 'all' | 'win' | 'loss';
+
+interface TradesTableProps {
+  trades: Trade[];
+  accountId: string;
+  showJournal?: boolean;
+}
+
+const PAGE_SIZE = 50;
+
+export function TradesTable({ trades, accountId, showJournal = true }: TradesTableProps) {
+  const [filter, setFilter] = useState<Filter>('all');
+  const [page, setPage] = useState(0);
+  const [journalTrade, setJournalTrade] = useState<Trade | null>(null);
+
+  const realTrades = trades.filter(t => [0, 1].includes(t.type) && t.volume > 0 && t.profit !== 0);
+
+  const filtered = filter === 'all'
+    ? realTrades
+    : filter === 'win'
+    ? realTrades.filter(t => t.profit > 0)
+    : realTrades.filter(t => t.profit < 0);
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paginated = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
+  const wins = realTrades.filter(t => t.profit > 0).length;
+  const losses = realTrades.filter(t => t.profit < 0).length;
+
+  return (
+    <>
+      {/* Filter bar */}
+      <div className="flex items-center gap-2 mb-4 flex-wrap">
+        {([
+          { key: 'all', label: `همه (${realTrades.length})` },
+          { key: 'win', label: `برنده (${wins})` },
+          { key: 'loss', label: `بازنده (${losses})` },
+        ] as { key: Filter; label: string }[]).map(f => (
+          <button
+            key={f.key}
+            type="button"
+            onClick={() => { setFilter(f.key); setPage(0); }}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all border ${
+              filter === f.key
+                ? 'bg-[var(--color-cyan-dim)] border-[rgba(0,212,255,0.25)] text-[var(--color-cyan)]'
+                : 'border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]'
+            }`}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Table */}
+      <div className="card-surface rounded-2xl overflow-hidden">
+        {filtered.length === 0 ? (
+          <p className="text-center text-[var(--color-text-muted)] text-sm p-10">معامله‌ای یافت نشد</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm irfx-table">
+              <thead>
+                <tr>
+                  <th className="px-4 py-3 text-right">نماد</th>
+                  <th className="px-4 py-3 text-center">نوع</th>
+                  <th className="px-4 py-3 text-center">حجم</th>
+                  <th className="px-4 py-3 text-center">قیمت</th>
+                  <th className="px-4 py-3 text-center">سود/ضرر</th>
+                  <th className="px-4 py-3 text-center text-orange-400 hidden md:table-cell">MAE$</th>
+                  <th className="px-4 py-3 text-center text-blue-400 hidden md:table-cell">MFE$</th>
+                  <th className="px-4 py-3 text-left hidden sm:table-cell">زمان</th>
+                  {showJournal && <th className="px-4 py-3 text-center w-12" />}
+                </tr>
+              </thead>
+              <tbody>
+                {paginated.map((trade, i) => {
+                  const isProfit = trade.profit >= 0;
+                  return (
+                    <motion.tr
+                      key={trade.ticket}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: i * 0.015 }}
+                      className="border-t border-[var(--color-border)] hover:bg-[rgba(255,255,255,0.02)] transition-colors"
+                    >
+                      <td className="px-4 py-2.5 font-mono font-bold text-[var(--color-text-primary)]">
+                        {trade.symbol}
+                      </td>
+                      <td className="px-4 py-2.5 text-center">
+                        <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold ${
+                          trade.type === 0 ? 'bg-emerald-500/15 text-emerald-400' : 'bg-red-500/15 text-red-400'
+                        }`}>
+                          {trade.type === 0 ? 'BUY' : 'SELL'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-2.5 text-center text-[var(--color-text-muted)] tabular-nums">
+                        {trade.volume}
+                      </td>
+                      <td className="px-4 py-2.5 text-center text-[var(--color-text-muted)] tabular-nums">
+                        {trade.price}
+                      </td>
+                      <td className={`px-4 py-2.5 text-center font-bold tabular-nums ${isProfit ? 'text-emerald-400' : 'text-red-400'}`}>
+                        {isProfit ? '+' : ''}{trade.profit.toFixed(2)}$
+                      </td>
+                      <td className="px-4 py-2.5 text-center text-orange-400 text-xs tabular-nums hidden md:table-cell">
+                        {trade.mae != null ? `$${trade.mae.toFixed(2)}` : '—'}
+                      </td>
+                      <td className="px-4 py-2.5 text-center text-blue-400 text-xs tabular-nums hidden md:table-cell">
+                        {trade.mfe != null ? `$${trade.mfe.toFixed(2)}` : '—'}
+                      </td>
+                      <td className="px-4 py-2.5 text-left text-[var(--color-text-muted)] text-xs tabular-nums hidden sm:table-cell">
+                        {trade.time.replace('T', ' ').slice(0, 16)}
+                      </td>
+                      {showJournal && (
+                        <td className="px-3 py-2.5 text-center">
+                          <button
+                            type="button"
+                            onClick={() => setJournalTrade(trade)}
+                            className="text-[10px] text-[var(--color-text-muted)] hover:text-[var(--color-cyan)] transition-colors px-2 py-1 rounded-md hover:bg-[var(--color-cyan-dim)] border border-transparent hover:border-[rgba(0,212,255,0.2)]"
+                          >
+                            ژورنال
+                          </button>
+                        </td>
+                      )}
+                    </motion.tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 mt-3">
+          <button
+            type="button"
+            onClick={() => setPage(p => Math.max(0, p - 1))}
+            disabled={page === 0}
+            className="px-3 py-1.5 rounded-lg text-xs border border-[var(--color-border)] text-[var(--color-text-muted)] disabled:opacity-30 hover:text-[var(--color-text-secondary)] transition-colors"
+          >
+            قبلی
+          </button>
+          <span className="text-xs text-[var(--color-text-muted)]">
+            {page + 1} / {totalPages}
+          </span>
+          <button
+            type="button"
+            onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+            disabled={page >= totalPages - 1}
+            className="px-3 py-1.5 rounded-lg text-xs border border-[var(--color-border)] text-[var(--color-text-muted)] disabled:opacity-30 hover:text-[var(--color-text-secondary)] transition-colors"
+          >
+            بعدی
+          </button>
+        </div>
+      )}
+
+      {/* Journal modal */}
+      <AnimatePresence>
+        {journalTrade && (
+          <JournalModal
+            trade={journalTrade}
+            accountId={accountId}
+            onClose={() => setJournalTrade(null)}
+          />
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
