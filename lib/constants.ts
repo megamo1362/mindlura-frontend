@@ -1,5 +1,5 @@
 export const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://46.34.185.62:8000';
+  process.env.NEXT_PUBLIC_API_URL || '/api';
 
 export const AUTH_TOKEN_KEY = 'token';
 

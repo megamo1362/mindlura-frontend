@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['framer-motion', 'lucide-react', 'gsap', 'three'],
   },
 
+  async rewrites() {
+    return [{ source: '/api/:path*', destination: 'http://127.0.0.1:8000/:path*' }];
+  },
+
   async headers() {
     return [
       {
