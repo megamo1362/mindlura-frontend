@@ -68,6 +68,16 @@ export const translations = {
     auth_login_tab: 'ورود',
     auth_register_tab: 'ثبت‌نام',
 
+    // ── Error pages ────────────────────────────────────────
+    error_page_title: 'خطا در بارگذاری',
+    error_page_desc: 'اطلاعات بارگذاری نشد. لطفاً دوباره تلاش کن.',
+    error_app_title: 'مشکلی پیش آمد',
+    error_app_desc: 'یه خطای غیرمنتظره رخ داده. لطفاً دوباره تلاش کن.',
+    error_retry: 'تلاش مجدد',
+    error_state_title: 'خطایی رخ داد',
+    error_retry_btn: 'تلاش دوباره',
+    server_error: 'خطای سرور',
+
     // ── Navigation ─────────────────────────────────────────
     nav_accounts: 'حساب‌ها',
     nav_journal: 'ژورنال',
@@ -84,6 +94,46 @@ export const translations = {
 
     // ── User menu ──────────────────────────────────────────
     user_logout: 'خروج از حساب',
+
+    // ── Toast messages ─────────────────────────────────────
+    account_added_msg: 'حساب با موفقیت اضافه شد',
+    account_add_error_msg: 'خطا در افزودن حساب',
+    account_deleted_msg: 'حساب حذف شد',
+    account_delete_error_msg: 'خطا در حذف حساب',
+    account_synced_msg: 'سینک با موفقیت انجام شد',
+    account_sync_error_msg: 'خطا در سینک حساب',
+    coach_connected_msg: 'اتصال به کوچ برقرار شد',
+    coach_connect_error_msg: 'خطا در اتصال',
+    coach_disconnected_msg: 'ارتباط با کوچ قطع شد',
+    coach_code_created_msg: 'کد دعوت ساخته شد',
+    coach_code_error_msg: 'خطا در ساخت کد',
+    coach_code_deleted_msg: 'کد دعوت حذف شد',
+
+    // ── Command palette ────────────────────────────────────
+    cmd_placeholder: 'جستجو در دستورات...',
+    cmd_no_results: 'نتیجه‌ای یافت نشد',
+    cmd_hint_nav: 'انتخاب',
+    cmd_hint_enter: 'اجرا',
+    cmd_dashboard_desc: 'مدیریت حساب‌های MT5',
+    cmd_accounts_desc: 'لیست حساب‌های متصل',
+    cmd_my_clients_desc: 'پنل کوچ — مدیریت کلاینت‌ها',
+    cmd_connect_coach_label: 'اتصال به کوچ',
+    cmd_connect_coach_desc: 'متصل شدن به کوچ جدید',
+    cmd_logout_desc: 'پایان جلسه',
+
+    // ── Display settings ───────────────────────────────────
+    display_mode_name: 'اسم نمایشی',
+    display_mode_email: 'فقط ایمیل',
+    display_mode_both: 'اسم و ایمیل',
+    display_hint: 'نحوه نمایش اطلاعات شما به کوچ',
+    display_name_label: 'اسم نمایشی',
+    display_name_placeholder: 'مثال: علی',
+
+    // ── Equity chart ───────────────────────────────────────
+    equity_no_data: 'داده‌ای برای Equity Curve وجود ندارد',
+    equity_no_data_hint: 'آنالیز لحظه‌ای را اجرا کنید',
+    equity_max: 'بیشترین Equity',
+    equity_min: 'کمترین Equity',
 
     // ── Accounts grid ──────────────────────────────────────
     accounts_title: 'حساب‌های MT5',
@@ -118,6 +168,15 @@ export const translations = {
     add_account_label_optional: '(اختیاری)',
     add_account_error: 'خطا در افزودن حساب.',
     add_account_btn: 'افزودن حساب',
+
+    // ── Emotions ───────────────────────────────────────────
+    emotion_fear: 'ترس',
+    emotion_greed: 'طمع',
+    emotion_excitement: 'هیجان',
+    emotion_discipline: 'انضباط',
+    emotion_neutral: 'خنثی',
+    emotion_overconfidence: 'اعتماد به نفس کاذب',
+    emotion_revenge: 'انتقام',
 
     // ── Journal ────────────────────────────────────────────
     journal_title: 'ژورنال معاملاتی',
@@ -481,6 +540,16 @@ export const translations = {
     auth_login_tab: 'Login',
     auth_register_tab: 'Register',
 
+    // ── Error pages ────────────────────────────────────────
+    error_page_title: 'Loading Error',
+    error_page_desc: 'Failed to load. Please try again.',
+    error_app_title: 'Something went wrong',
+    error_app_desc: 'An unexpected error occurred. Please try again.',
+    error_retry: 'Try Again',
+    error_state_title: 'An error occurred',
+    error_retry_btn: 'Try Again',
+    server_error: 'Server error',
+
     // ── Navigation ─────────────────────────────────────────
     nav_accounts: 'Accounts',
     nav_journal: 'Journal',
@@ -497,6 +566,46 @@ export const translations = {
 
     // ── User menu ──────────────────────────────────────────
     user_logout: 'Logout',
+
+    // ── Toast messages ─────────────────────────────────────
+    account_added_msg: 'Account added successfully',
+    account_add_error_msg: 'Error adding account',
+    account_deleted_msg: 'Account deleted',
+    account_delete_error_msg: 'Error deleting account',
+    account_synced_msg: 'Sync completed',
+    account_sync_error_msg: 'Error syncing account',
+    coach_connected_msg: 'Connected to coach',
+    coach_connect_error_msg: 'Connection error',
+    coach_disconnected_msg: 'Disconnected from coach',
+    coach_code_created_msg: 'Invite code created',
+    coach_code_error_msg: 'Error creating code',
+    coach_code_deleted_msg: 'Invite code deleted',
+
+    // ── Command palette ────────────────────────────────────
+    cmd_placeholder: 'Search commands...',
+    cmd_no_results: 'No results found',
+    cmd_hint_nav: 'navigate',
+    cmd_hint_enter: 'select',
+    cmd_dashboard_desc: 'Manage MT5 Accounts',
+    cmd_accounts_desc: 'Connected accounts list',
+    cmd_my_clients_desc: 'Coach Panel — Manage Clients',
+    cmd_connect_coach_label: 'Connect Coach',
+    cmd_connect_coach_desc: 'Connect to a new coach',
+    cmd_logout_desc: 'End session',
+
+    // ── Display settings ───────────────────────────────────
+    display_mode_name: 'Display Name',
+    display_mode_email: 'Email Only',
+    display_mode_both: 'Name & Email',
+    display_hint: 'How your info appears to your coach',
+    display_name_label: 'Display Name',
+    display_name_placeholder: 'e.g. Alex',
+
+    // ── Equity chart ───────────────────────────────────────
+    equity_no_data: 'No Equity Curve data available',
+    equity_no_data_hint: 'Run a live analysis to see data',
+    equity_max: 'Max Equity',
+    equity_min: 'Min Equity',
 
     // ── Accounts grid ──────────────────────────────────────
     accounts_title: 'MT5 Accounts',
@@ -531,6 +640,15 @@ export const translations = {
     add_account_label_optional: '(optional)',
     add_account_error: 'Error adding account.',
     add_account_btn: 'Add Account',
+
+    // ── Emotions ───────────────────────────────────────────
+    emotion_fear: 'Fear',
+    emotion_greed: 'Greed',
+    emotion_excitement: 'Excitement',
+    emotion_discipline: 'Discipline',
+    emotion_neutral: 'Neutral',
+    emotion_overconfidence: 'Overconfidence',
+    emotion_revenge: 'Revenge',
 
     // ── Journal ────────────────────────────────────────────
     journal_title: 'Trading Journal',

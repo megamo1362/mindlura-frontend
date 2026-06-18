@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import type { EquityCurvePoint } from '@/types';
+import { useLang } from '@/app/i18n/LangContext';
 
 // Chart constants
 const W = 900, H = 280, PL = 68, PR = 20, PT = 24, PB = 38;
@@ -19,12 +20,13 @@ function sample(data: EquityCurvePoint[], max = 400): EquityCurvePoint[] {
 export function EquityChart({ data }: { data: EquityCurvePoint[] }) {
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  const { t } = useLang();
 
   if (!data || data.length < 2) {
     return (
       <div className="card-surface rounded-2xl p-12 text-center">
-        <p className="text-[var(--color-text-muted)]">داده‌ای برای Equity Curve وجود ندارد</p>
-        <p className="text-sm text-[var(--color-text-muted)]/60 mt-1">آنالیز لحظه‌ای را اجرا کنید</p>
+        <p className="text-[var(--color-text-muted)]">{t.equity_no_data}</p>
+        <p className="text-sm text-[var(--color-text-muted)]/60 mt-1">{t.equity_no_data_hint}</p>
       </div>
     );
   }
@@ -74,8 +76,8 @@ export function EquityChart({ data }: { data: EquityCurvePoint[] }) {
       {/* Mini stats */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: 'بیشترین Equity', value: `$${maxEq.toFixed(2)}`, cls: 'text-emerald-400' },
-          { label: 'کمترین Equity', value: `$${minEq.toFixed(2)}`, cls: 'text-red-400' },
+          { label: t.equity_max, value: `$${maxEq.toFixed(2)}`, cls: 'text-emerald-400' },
+          { label: t.equity_min, value: `$${minEq.toFixed(2)}`, cls: 'text-red-400' },
           { label: 'Max Drawdown', value: `$${maxDD.toFixed(2)}`, cls: 'text-orange-400' },
         ].map(s => (
           <div key={s.label} className="card-surface rounded-xl p-3 text-center">

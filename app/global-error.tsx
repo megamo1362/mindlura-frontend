@@ -7,7 +7,7 @@ export default function GlobalError({
   reset: () => void;
 }) {
   return (
-    <html lang="fa" dir="rtl">
+    <html lang="en" dir="ltr">
       <body
         style={{
           margin: 0,
@@ -23,10 +23,10 @@ export default function GlobalError({
       >
         <div>
           <h2 style={{ fontSize: '1.25rem', marginBottom: '0.75rem', fontWeight: 600 }}>
-            خطای سیستمی
+            System Error
           </h2>
           <p style={{ color: '#4a6a80', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
-            مشکلی در برنامه رخ داده. لطفاً صفحه را رفرش کن.
+            Something went wrong. Please refresh the page.
           </p>
           <button
             onClick={reset}
@@ -41,7 +41,7 @@ export default function GlobalError({
               padding: '0.625rem 1.5rem',
             }}
           >
-            تلاش مجدد
+            Try Again
           </button>
         </div>
       </body>

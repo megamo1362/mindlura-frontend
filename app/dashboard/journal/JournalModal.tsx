@@ -10,8 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useLang } from '@/app/i18n/LangContext';
 import type { JournalEntry } from '@/types';
 
-const EMOTIONS_FA = ['ترس', 'طمع', 'هیجان', 'انضباط', 'خنثی', 'اعتماد به نفس کاذب', 'انتقام'];
-const EMOTIONS_EN = ['Fear', 'Greed', 'Excitement', 'Discipline', 'Neutral', 'Overconfidence', 'Revenge'];
+const EMOTION_VALUES = ['Fear', 'Greed', 'Excitement', 'Discipline', 'Neutral', 'Overconfidence', 'Revenge'] as const;
 
 interface TradeRef {
   ticket: number;
@@ -39,9 +38,13 @@ export function JournalModal({ open, onClose, onSaved, accountId, entry, trade }
   const [form, setForm] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-  const { t, isRTL } = useLang();
+  const { t } = useLang();
 
-  const emotions = isRTL ? EMOTIONS_FA : EMOTIONS_EN;
+  const emotionKeys = {
+    Fear: t.emotion_fear, Greed: t.emotion_greed, Excitement: t.emotion_excitement,
+    Discipline: t.emotion_discipline, Neutral: t.emotion_neutral,
+    Overconfidence: t.emotion_overconfidence, Revenge: t.emotion_revenge,
+  } as Record<string, string>;
 
   useEffect(() => {
     if (entry) {
@@ -114,7 +117,7 @@ export function JournalModal({ open, onClose, onSaved, accountId, entry, trade }
                 <label className="text-xs text-[var(--color-text-muted)]">{t.journal_emotion_label}</label>
                 <Select value={form.pre_emotion} onValueChange={v => setForm(f => ({ ...f, pre_emotion: v }))}>
                   <SelectTrigger><SelectValue placeholder={t.journal_select_emotion} /></SelectTrigger>
-                  <SelectContent>{emotions.map(e => <SelectItem key={e} value={e}>{e}</SelectItem>)}</SelectContent>
+                  <SelectContent>{EMOTION_VALUES.map(e => <SelectItem key={e} value={e}>{emotionKeys[e] ?? e}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div className="space-y-1.5">
@@ -153,7 +156,7 @@ export function JournalModal({ open, onClose, onSaved, accountId, entry, trade }
                 <label className="text-xs text-[var(--color-text-muted)]">{t.journal_emotion_label}</label>
                 <Select value={form.post_emotion} onValueChange={v => setForm(f => ({ ...f, post_emotion: v }))}>
                   <SelectTrigger><SelectValue placeholder={t.journal_select_emotion} /></SelectTrigger>
-                  <SelectContent>{emotions.map(e => <SelectItem key={e} value={e}>{e}</SelectItem>)}</SelectContent>
+                  <SelectContent>{EMOTION_VALUES.map(e => <SelectItem key={e} value={e}>{emotionKeys[e] ?? e}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div className="space-y-1.5">

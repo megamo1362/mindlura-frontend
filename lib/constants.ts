@@ -33,15 +33,15 @@ export const PLAN_BADGE_CLASS: Record<string, string> = {
 };
 
 export const USER_ROLE_LABELS: Record<string, string> = {
-  admin: 'ادمین',
-  coach: 'کوچ',
-  client: 'کلاینت',
+  admin: 'Admin',
+  coach: 'Coach',
+  client: 'Client',
 };
 
 export const DISPLAY_MODE_LABELS: Record<string, string> = {
-  name: 'اسم',
-  email: 'ایمیل',
-  both: 'هر دو',
+  name: 'Name',
+  email: 'Email',
+  both: 'Both',
 };
 
 export const QUERY_KEYS = {
@@ -57,6 +57,6 @@ export const QUERY_KEYS = {
 } as const;
 
 export const ANALYSIS_MODE_LABELS: Record<string, string> = {
-  time_based: 'زمان‌بندی',
-  trigger_based: 'تریگر معامله',
+  time_based: 'Time-based',
+  trigger_based: 'Trade Trigger',
 };

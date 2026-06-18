@@ -5,6 +5,7 @@ import { apiFetch } from '@/lib/api';
 import { QUERY_KEYS } from '@/lib/constants';
 import { toast } from '@/store/toast';
 import { ApiError } from '@/lib/api';
+import { useLang } from '@/app/i18n/LangContext';
 import type { CoachClient, InviteCode, DisplayMode } from '@/types';
 
 // ── Client-side types ──────────────────────────────────────
@@ -70,16 +71,17 @@ export function useLookupCoach() {
 // ── Client: connect to coach ───────────────────────────────
 
 export function useConnectCoach() {
+  const { t } = useLang();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: ConnectCoachInput) =>
       apiFetch('/client/connect-coach', { method: 'POST', body: data }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: QUERY_KEYS.coaches });
-      toast.success('اتصال به کوچ برقرار شد');
+      toast.success(t.coach_connected_msg);
     },
     onError: (err) => {
-      toast.error(err instanceof ApiError ? err.message : 'خطا در اتصال');
+      toast.error(err instanceof ApiError ? err.message : t.coach_connect_error_msg);
     },
   });
 }
@@ -87,13 +89,14 @@ export function useConnectCoach() {
 // ── Client: disconnect from coach ─────────────────────────
 
 export function useDisconnectCoach() {
+  const { t } = useLang();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (coachId: number) =>
       apiFetch(`/client/disconnect-coach/${coachId}`, { method: 'DELETE' }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: QUERY_KEYS.coaches });
-      toast.success('ارتباط با کوچ قطع شد');
+      toast.success(t.coach_disconnected_msg);
     },
   });
 }
@@ -116,28 +119,30 @@ interface CreateInviteCodeInput {
 }
 
 export function useCreateInviteCode() {
+  const { t } = useLang();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: CreateInviteCodeInput) =>
       apiFetch('/coach/invite-codes', { method: 'POST', body: data }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: QUERY_KEYS.inviteCodes });
-      toast.success('کد دعوت ساخته شد');
+      toast.success(t.coach_code_created_msg);
     },
     onError: (err) => {
-      toast.error(err instanceof ApiError ? err.message : 'خطا در ساخت کد');
+      toast.error(err instanceof ApiError ? err.message : t.coach_code_error_msg);
     },
   });
 }
 
 export function useDeleteInviteCode() {
+  const { t } = useLang();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: number) =>
       apiFetch(`/coach/invite-codes/${id}`, { method: 'DELETE' }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: QUERY_KEYS.inviteCodes });
-      toast.success('کد دعوت حذف شد');
+      toast.success(t.coach_code_deleted_msg);
     },
   });
 }

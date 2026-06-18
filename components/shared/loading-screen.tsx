@@ -9,7 +9,7 @@ interface LoadingScreenProps {
 }
 
 export function LoadingScreen({
-  label = 'در حال بارگذاری...',
+  label = 'Loading...',
   fullPage = true,
   className,
 }: LoadingScreenProps) {

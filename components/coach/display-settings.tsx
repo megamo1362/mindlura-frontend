@@ -2,13 +2,8 @@
 
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { useLang } from '@/app/i18n/LangContext';
 import type { DisplayMode } from '@/types';
-
-const OPTIONS: { value: DisplayMode; label: string }[] = [
-  { value: 'name', label: 'اسم نمایشی' },
-  { value: 'email', label: 'فقط ایمیل' },
-  { value: 'both', label: 'اسم و ایمیل' },
-];
 
 interface DisplaySettingsProps {
   mode: DisplayMode;
@@ -18,11 +13,18 @@ interface DisplaySettingsProps {
 }
 
 export function DisplaySettings({ mode, label, onModeChange, onLabelChange }: DisplaySettingsProps) {
+  const { t } = useLang();
   const needsLabel = mode === 'name' || mode === 'both';
+
+  const OPTIONS: { value: DisplayMode; label: string }[] = [
+    { value: 'name', label: t.display_mode_name },
+    { value: 'email', label: t.display_mode_email },
+    { value: 'both', label: t.display_mode_both },
+  ];
 
   return (
     <div className="space-y-3">
-      <p className="text-xs text-[var(--color-text-muted)]">نحوه نمایش اطلاعات شما به کوچ</p>
+      <p className="text-xs text-[var(--color-text-muted)]">{t.display_hint}</p>
 
       <div className="grid grid-cols-3 gap-2">
         {OPTIONS.map((opt) => (
@@ -45,12 +47,12 @@ export function DisplaySettings({ mode, label, onModeChange, onLabelChange }: Di
       {needsLabel && (
         <div className="space-y-1.5">
           <label className="text-xs text-[var(--color-text-muted)]">
-            اسم نمایشی <span className="text-[var(--color-status-error)]">*</span>
+            {t.display_name_label} <span className="text-[var(--color-status-error)]">*</span>
           </label>
           <Input
             value={label}
             onChange={(e) => onLabelChange(e.target.value)}
-            placeholder="مثال: علی"
+            placeholder={t.display_name_placeholder}
           />
         </div>
       )}

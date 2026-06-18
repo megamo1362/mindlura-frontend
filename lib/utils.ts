@@ -26,14 +26,14 @@ export function formatPercent(value: number | null | undefined): string {
 
 export function formatHours(hours: number | null | undefined): string {
   if (hours === null || hours === undefined) return '—';
-  if (hours < 0.1) return 'همین الان';
-  if (hours < 1) return `${Math.round(hours * 60)} دقیقه`;
-  return `${Math.floor(hours)} ساعت`;
+  if (hours < 0.1) return 'Just now';
+  if (hours < 1) return `${Math.round(hours * 60)} min`;
+  return `${Math.floor(hours)} h`;
 }
 
 export function formatDate(
   date: string | Date | null | undefined,
-  locale = 'fa-IR',
+  locale = 'en-US',
 ): string {
   if (!date) return '—';
   try {
@@ -45,7 +45,7 @@ export function formatDate(
 
 export function formatDateTime(
   date: string | Date | null | undefined,
-  locale = 'fa-IR',
+  locale = 'en-US',
 ): string {
   if (!date) return '—';
   try {

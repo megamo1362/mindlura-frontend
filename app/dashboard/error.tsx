@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { AlertTriangle } from 'lucide-react';
+import { useLang } from '@/app/i18n/LangContext';
 
 export default function DashboardError({
   error,
@@ -10,6 +11,8 @@ export default function DashboardError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const { t } = useLang();
+
   useEffect(() => {
     console.error('[Dashboard Error]', error);
   }, [error]);
@@ -20,13 +23,13 @@ export default function DashboardError({
         <AlertTriangle className="w-6 h-6 text-red-400" />
       </div>
       <h2 className="text-sm font-semibold text-[var(--color-text-primary)] mb-2">
-        خطا در بارگذاری
+        {t.error_page_title}
       </h2>
       <p className="text-xs text-[var(--color-text-muted)] mb-5 max-w-xs">
-        اطلاعات بارگذاری نشد. لطفاً دوباره تلاش کن.
+        {t.error_page_desc}
       </p>
       <button onClick={reset} className="btn-secondary px-4 py-1.5 rounded-lg text-xs">
-        تلاش مجدد
+        {t.error_retry}
       </button>
     </div>
   );

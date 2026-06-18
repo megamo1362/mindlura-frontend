@@ -2,6 +2,7 @@ import * as React from 'react';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useLang } from '@/app/i18n/LangContext';
 
 interface ErrorStateProps {
   title?: string;
@@ -11,11 +12,13 @@ interface ErrorStateProps {
 }
 
 export function ErrorState({
-  title = 'خطایی رخ داد',
+  title,
   message,
   onRetry,
   className,
 }: ErrorStateProps) {
+  const { t } = useLang();
+
   return (
     <div
       className={cn(
@@ -33,7 +36,7 @@ export function ErrorState({
         <AlertCircle className="w-6 h-6" />
       </div>
       <div>
-        <h3 className="text-base font-semibold text-[var(--color-danger)] mb-1">{title}</h3>
+        <h3 className="text-base font-semibold text-[var(--color-danger)] mb-1">{title ?? t.error_state_title}</h3>
         {message && (
           <p className="text-sm text-[var(--color-text-muted)]">{message}</p>
         )}
@@ -41,7 +44,7 @@ export function ErrorState({
       {onRetry && (
         <Button variant="secondary" size="sm" onClick={onRetry}>
           <RefreshCw className="w-3.5 h-3.5" />
-          تلاش دوباره
+          {t.error_retry_btn}
         </Button>
       )}
     </div>

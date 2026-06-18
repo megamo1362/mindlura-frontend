@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { AlertTriangle } from 'lucide-react';
+import { useLang } from '@/app/i18n/LangContext';
 
 export default function Error({
   error,
@@ -10,6 +11,8 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const { t } = useLang();
+
   useEffect(() => {
     console.error('[App Error]', error);
   }, [error]);
@@ -20,13 +23,13 @@ export default function Error({
         <AlertTriangle className="w-7 h-7 text-red-400" />
       </div>
       <h2 className="text-base font-semibold text-[var(--color-text-primary)] mb-2">
-        مشکلی پیش آمد
+        {t.error_app_title}
       </h2>
       <p className="text-sm text-[var(--color-text-muted)] mb-6 max-w-xs">
-        یه خطای غیرمنتظره رخ داده. لطفاً دوباره تلاش کن.
+        {t.error_app_desc}
       </p>
       <button onClick={reset} className="btn-secondary px-5 py-2 rounded-xl text-sm">
-        تلاش مجدد
+        {t.error_retry}
       </button>
     </div>
   );

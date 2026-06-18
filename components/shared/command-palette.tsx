@@ -8,6 +8,7 @@ import { useUiStore } from '@/store/ui';
 import { useCurrentUser } from '@/components/layouts/auth-guard';
 import { AUTH_TOKEN_KEY, ROUTES } from '@/lib/constants';
 import { useAuthStore } from '@/store/auth';
+import { useLang } from '@/app/i18n/LangContext';
 import type { LucideIcon } from 'lucide-react';
 
 interface Command {
@@ -24,6 +25,7 @@ export function CommandPalette() {
   const router = useRouter();
   const { user } = useCurrentUser();
   const logout = useAuthStore((s) => s.logout);
+  const { t, isRTL } = useLang();
 
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState(0);
@@ -39,38 +41,38 @@ export function CommandPalette() {
   const ALL_COMMANDS: Command[] = [
     {
       id: 'dashboard',
-      label: 'داشبورد',
-      description: 'مدیریت حساب‌های MT5',
+      label: t.nav_accounts,
+      description: t.cmd_dashboard_desc,
       icon: Home,
       action: () => { router.push(ROUTES.dashboard); closeCommandPalette(); },
     },
     {
       id: 'accounts',
-      label: 'حساب‌ها',
-      description: 'لیست حساب‌های متصل',
+      label: t.nav_accounts,
+      description: t.cmd_accounts_desc,
       icon: BarChart2,
       action: () => { router.push(ROUTES.dashboard); closeCommandPalette(); },
     },
     {
       id: 'coach-clients',
-      label: 'کلاینت‌های من',
-      description: 'پنل کوچ — مدیریت کلاینت‌ها',
+      label: t.nav_my_clients,
+      description: t.cmd_my_clients_desc,
       icon: Users,
       action: () => { router.push(ROUTES.coachClients); closeCommandPalette(); },
       roles: ['coach'],
     },
     {
       id: 'connect-coach',
-      label: 'اتصال به کوچ',
-      description: 'متصل شدن به کوچ جدید',
+      label: t.cmd_connect_coach_label,
+      description: t.cmd_connect_coach_desc,
       icon: UserPlus,
       action: () => { router.push(ROUTES.connectCoach); closeCommandPalette(); },
       roles: ['client'],
     },
     {
       id: 'logout',
-      label: 'خروج از حساب',
-      description: 'پایان جلسه',
+      label: t.user_logout,
+      description: t.cmd_logout_desc,
       icon: LogOut,
       action: handleLogout,
     },
@@ -78,7 +80,7 @@ export function CommandPalette() {
 
   const commands = ALL_COMMANDS.filter(
     (c) => (!c.roles || c.roles.includes(user.role)) &&
-      (!query.trim() || c.label.includes(query) || (c.description ?? '').includes(query)),
+      (!query.trim() || c.label.toLowerCase().includes(query.toLowerCase()) || (c.description ?? '').toLowerCase().includes(query.toLowerCase())),
   );
 
   useEffect(() => {
@@ -140,9 +142,9 @@ export function CommandPalette() {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="جستجو در دستورات..."
+                    placeholder={t.cmd_placeholder}
                     className="flex-1 bg-transparent text-[var(--color-text-primary)] text-sm placeholder:text-[var(--color-text-muted)] outline-none"
-                    dir="rtl"
+                    dir={isRTL ? 'rtl' : 'ltr'}
                   />
                   <kbd className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono bg-[rgba(255,255,255,0.05)] text-[var(--color-text-muted)] border border-[var(--color-border)]">
                     ESC
@@ -153,7 +155,7 @@ export function CommandPalette() {
                 <div className="py-1.5 max-h-[320px] overflow-y-auto">
                   {commands.length === 0 ? (
                     <p className="px-4 py-6 text-sm text-center text-[var(--color-text-muted)]">
-                      نتیجه‌ای یافت نشد
+                      {t.cmd_no_results}
                     </p>
                   ) : (
                     commands.map((cmd, i) => {
@@ -199,13 +201,13 @@ export function CommandPalette() {
                 {/* Footer hint */}
                 <div className="px-4 py-2 border-t border-[var(--color-border)] flex items-center gap-3">
                   <span className="text-[10px] text-[var(--color-text-muted)]">
-                    <kbd className="font-mono">↑↓</kbd> انتخاب
+                    <kbd className="font-mono">↑↓</kbd> {t.cmd_hint_nav}
                   </span>
                   <span className="text-[10px] text-[var(--color-text-muted)]">
-                    <kbd className="font-mono">↵</kbd> اجرا
+                    <kbd className="font-mono">↵</kbd> {t.cmd_hint_enter}
                   </span>
                   <span className="text-[10px] text-[var(--color-text-muted)]">
-                    <kbd className="font-mono">ESC</kbd> بستن
+                    <kbd className="font-mono">ESC</kbd> {t.close}
                   </span>
                 </div>
               </div>

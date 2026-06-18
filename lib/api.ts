@@ -36,7 +36,7 @@ export async function apiFetch<T = unknown>(
   });
 
   if (!res.ok) {
-    let detail = `خطای سرور (${res.status})`;
+    let detail = `Server error (${res.status})`;
     try {
       const data = await res.json();
       if (typeof data?.detail === 'string') detail = data.detail;

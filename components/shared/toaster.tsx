@@ -48,7 +48,7 @@ function Toast({ item }: { item: ToastItem }) {
         type="button"
         onClick={() => remove(item.id)}
         className="flex-shrink-0 opacity-50 hover:opacity-100 transition-opacity"
-        aria-label="بستن"
+        aria-label="Close"
       >
         <X className="h-3.5 w-3.5" />
       </button>
