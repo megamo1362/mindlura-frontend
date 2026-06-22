@@ -42,7 +42,7 @@ export function Topbar({ user, className }: TopbarProps) {
         >
           <Menu className="h-5 w-5" />
         </button>
-        <img src="/logo.png" alt="Zenvora" className="lg:hidden h-8 w-auto object-contain" />
+        <img src="/logo.png" alt="MINDLURA" className="lg:hidden h-8 w-auto object-contain" />
       </div>
 
       {/* Right side: notifications + user avatar */}
@@ -57,7 +57,7 @@ export function Topbar({ user, className }: TopbarProps) {
             <p className="text-sm font-medium text-[var(--color-text-primary)] leading-none">{displayName}</p>
             <p className="text-[10px] text-[var(--color-text-muted)] mt-0.5">{roleLabels[user.role]}</p>
           </div>
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--color-cyan)] to-[var(--color-blue)] flex items-center justify-center text-xs font-bold text-[var(--color-void)] flex-shrink-0">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--color-purple)] via-[var(--color-blue)] to-[var(--color-cyan)] flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
             {initials}
           </div>
         </div>

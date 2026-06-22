@@ -21,13 +21,17 @@ export default function LoginPage() {
       <div className="text-center mb-8">
         <motion.div
           className="flex justify-center mb-2"
-          animate={{ filter: ['drop-shadow(0 0 12px rgba(0,212,255,0.4))', 'drop-shadow(0 0 24px rgba(0,212,255,0.7))', 'drop-shadow(0 0 12px rgba(0,212,255,0.4))'] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          animate={{ filter: [
+            'drop-shadow(0 0 12px rgba(0,212,255,0.4)) drop-shadow(0 0 24px rgba(124,58,237,0.2))',
+            'drop-shadow(0 0 24px rgba(0,212,255,0.7)) drop-shadow(0 0 48px rgba(124,58,237,0.4))',
+            'drop-shadow(0 0 12px rgba(0,212,255,0.4)) drop-shadow(0 0 24px rgba(124,58,237,0.2))',
+          ]}}
+          transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <Image src="/logo.png" alt="Zenvora" width={260} height={260} className="object-contain w-36 sm:w-48 lg:w-64" priority />
+          <Image src="/logo.png" alt="MINDLURA" width={260} height={260} className="object-contain w-36 sm:w-48 lg:w-64" priority />
         </motion.div>
         <p className="text-sm text-[var(--color-text-muted)] mt-1">
-          AI-Powered Trading Journal
+          AI Fintech Trading & Psychology
         </p>
       </div>
 
@@ -51,7 +55,7 @@ export default function LoginPage() {
 
       {/* Footer */}
       <p className="text-center text-xs text-[var(--color-text-muted)] mt-6">
-        Zenvora · AI-Powered Trading Intelligence
+        MINDLURA · AI Fintech Trading & Psychology
       </p>
     </motion.div>
   );

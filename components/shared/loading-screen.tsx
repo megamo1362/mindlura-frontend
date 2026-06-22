@@ -22,7 +22,7 @@ export function LoadingScreen({
         className,
       )}
     >
-      <img src="/logo.png" alt="Zenvora" className="h-16 w-auto object-contain" />
+      <img src="/logo.png" alt="MINDLURA" className="h-16 w-auto object-contain" />
       <Spinner size="lg" />
       {label && (
         <p className="text-sm text-[var(--color-text-muted)] animate-pulse">{label}</p>

@@ -3,28 +3,34 @@
 @tailwind utilities;
 
 /* ─── Design Tokens (CSS Custom Properties) ──────────────── */
+/* MINDLURA Brand: Deep Navy + Cyan + Purple + Metallic Silver */
 :root {
   /* Backgrounds */
-  --color-void: #020510;
-  --color-deep: #060d1c;
-  --color-surface: #0a1428;
-  --color-elevated: #0f1d35;
-  --color-glass: rgba(10, 20, 40, 0.6);
-  --color-overlay: rgba(2, 5, 16, 0.85);
+  --color-void: #03060f;
+  --color-deep: #060c1a;
+  --color-surface: #0a1326;
+  --color-elevated: #0e1b32;
+  --color-glass: rgba(8, 16, 36, 0.65);
+  --color-overlay: rgba(3, 6, 15, 0.88);
 
-  /* Primary accent — neon cyan */
+  /* Primary accent — MINDLURA cyan (circuit glow) */
   --color-cyan: #00d4ff;
   --color-cyan-dim: rgba(0, 212, 255, 0.12);
-  --color-cyan-glow: rgba(0, 212, 255, 0.25);
+  --color-cyan-glow: rgba(0, 212, 255, 0.28);
 
   /* Secondary accents */
-  --color-blue: #0066ff;
+  --color-blue: #1a5cff;
   --color-blue-light: #60a5fa;
-  --color-blue-dim: rgba(0, 102, 255, 0.12);
+  --color-blue-dim: rgba(26, 92, 255, 0.12);
 
+  /* Purple — MINDLURA signature glow */
   --color-purple: #7c3aed;
   --color-purple-light: #a78bfa;
-  --color-purple-dim: rgba(124, 58, 237, 0.15);
+  --color-purple-dim: rgba(124, 58, 237, 0.18);
+
+  /* Metallic silver accent (M-letter frame) */
+  --color-silver: #a8b8cc;
+  --color-silver-dim: rgba(168, 184, 204, 0.08);
 
   --color-teal: #14b8a6;
   --color-teal-light: #2dd4bf;
@@ -56,13 +62,14 @@
   --color-info-dim: rgba(59, 130, 246, 0.12);
 
   /* Shadows */
-  --shadow-glow-cyan: 0 0 20px rgba(0,212,255,0.2), 0 0 40px rgba(0,212,255,0.08);
-  --shadow-glow-cyan-sm: 0 0 10px rgba(0,212,255,0.3);
-  --shadow-glow-blue: 0 0 20px rgba(0,102,255,0.2), 0 0 40px rgba(0,102,255,0.08);
-  --shadow-glow-purple: 0 0 20px rgba(124,58,237,0.2), 0 0 40px rgba(124,58,237,0.08);
-  --shadow-card: 0 4px 24px rgba(0,0,0,0.4), 0 1px 4px rgba(0,0,0,0.2);
-  --shadow-elevated: 0 8px 40px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.3);
-  --shadow-focus: 0 0 0 3px rgba(0,212,255,0.15);
+  --shadow-glow-cyan: 0 0 20px rgba(0,212,255,0.25), 0 0 40px rgba(0,212,255,0.1);
+  --shadow-glow-cyan-sm: 0 0 10px rgba(0,212,255,0.35);
+  --shadow-glow-blue: 0 0 20px rgba(26,92,255,0.25), 0 0 40px rgba(26,92,255,0.1);
+  --shadow-glow-purple: 0 0 20px rgba(124,58,237,0.25), 0 0 40px rgba(124,58,237,0.1);
+  --shadow-glow-brand: 0 0 30px rgba(124,58,237,0.2), 0 0 60px rgba(0,212,255,0.1);
+  --shadow-card: 0 4px 24px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.3);
+  --shadow-elevated: 0 8px 40px rgba(0,0,0,0.7), 0 2px 8px rgba(0,0,0,0.4);
+  --shadow-focus: 0 0 0 3px rgba(0,212,255,0.18);
 
   /* Animation */
   --duration-fast: 120ms;
@@ -252,8 +259,9 @@
   }
 
   /* ── Gradient Text ──────────────────────── */
+  /* MINDLURA brand gradient: purple → blue → cyan (logo direction) */
   .gradient-text-cyber {
-    background: linear-gradient(135deg, #00d4ff 0%, #0066ff 50%, #7c3aed 100%);
+    background: linear-gradient(135deg, #7c3aed 0%, #1a5cff 50%, #00d4ff 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -279,7 +287,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    background: linear-gradient(135deg, #00d4ff 0%, #0066ff 100%);
+    background: linear-gradient(135deg, #7c3aed 0%, #1a5cff 60%, #00d4ff 100%);
     color: #020510;
     font-weight: 700;
     font-size: 0.875rem;
@@ -304,7 +312,7 @@
 
   .btn-primary:hover::after { opacity: 1; }
   .btn-primary:hover {
-    box-shadow: 0 0 24px rgba(0,212,255,0.4), 0 4px 12px rgba(0,102,255,0.3);
+    box-shadow: 0 0 24px rgba(0,212,255,0.35), 0 0 40px rgba(124,58,237,0.25), 0 4px 12px rgba(26,92,255,0.3);
     transform: translateY(-1px);
   }
   .btn-primary:active { transform: translateY(0); }
@@ -382,7 +390,7 @@
 
   /* Legacy alias */
   .btn-glow {
-    background: linear-gradient(135deg, #00d4ff 0%, #0066ff 100%);
+    background: linear-gradient(135deg, #7c3aed 0%, #1a5cff 60%, #00d4ff 100%);
     color: #020510;
     font-weight: 700;
     font-size: 0.875rem;
@@ -497,14 +505,16 @@
     background-size: 24px 24px;
   }
 
+  /* MINDLURA circuit pattern — matches the M-letter circuit board design */
   .circuit-bg {
     background-color: var(--color-void);
     background-image:
-      linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px),
-      radial-gradient(circle at 20% 20%, rgba(0,102,255,0.06) 0%, transparent 50%),
-      radial-gradient(circle at 80% 80%, rgba(124,58,237,0.06) 0%, transparent 50%);
-    background-size: 64px 64px, 64px 64px, 100% 100%, 100% 100%;
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px),
+      radial-gradient(circle at 15% 25%, rgba(26,92,255,0.08) 0%, transparent 45%),
+      radial-gradient(circle at 85% 75%, rgba(124,58,237,0.1) 0%, transparent 45%),
+      radial-gradient(circle at 50% 50%, rgba(0,212,255,0.04) 0%, transparent 60%);
+    background-size: 64px 64px, 64px 64px, 100% 100%, 100% 100%, 100% 100%;
   }
 
   /* ── Tables ─────────────────────────────── */
@@ -658,8 +668,13 @@
 }
 
 @keyframes glowPulse {
-  0%, 100% { box-shadow: 0 0 20px rgba(0,212,255,0.2); }
-  50%       { box-shadow: 0 0 40px rgba(0,212,255,0.4), 0 0 80px rgba(0,212,255,0.1); }
+  0%, 100% { box-shadow: 0 0 20px rgba(124,58,237,0.2), 0 0 40px rgba(0,212,255,0.1); }
+  50%       { box-shadow: 0 0 40px rgba(124,58,237,0.4), 0 0 80px rgba(0,212,255,0.2); }
+}
+
+@keyframes brandPulse {
+  0%, 100% { filter: drop-shadow(0 0 12px rgba(0,212,255,0.4)) drop-shadow(0 0 24px rgba(124,58,237,0.2)); }
+  50%       { filter: drop-shadow(0 0 24px rgba(0,212,255,0.7)) drop-shadow(0 0 48px rgba(124,58,237,0.4)); }
 }
 
 @keyframes float {

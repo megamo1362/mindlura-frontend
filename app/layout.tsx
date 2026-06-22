@@ -19,13 +19,13 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Zenvora | AI-Powered Trading Journal',
-    template: '%s | Zenvora',
+    default: 'MINDLURA | AI Fintech Trading & Psychology',
+    template: '%s | MINDLURA',
   },
-  description: 'AI-Powered Trading Intelligence Platform',
-  keywords: ['trading', 'journal', 'AI', 'MT5', 'forex', 'coaching'],
-  authors: [{ name: 'Zenvora' }],
-  creator: 'Zenvora',
+  description: 'AI Fintech Trading & Psychology Platform',
+  keywords: ['trading', 'journal', 'AI', 'MT5', 'forex', 'coaching', 'fintech', 'psychology'],
+  authors: [{ name: 'MINDLURA' }],
+  creator: 'MINDLURA',
   icons: {
     icon: '/favicon.ico',
     apple: '/icons/icon-192.png',

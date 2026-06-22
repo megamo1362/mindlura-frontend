@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { LoginBackgroundClient } from '@/components/effects/login-bg-client';
 
 export const metadata: Metadata = {
-  title: 'Login | Zenvora',
-  description: 'Sign in to Zenvora platform',
+  title: 'Login | MINDLURA',
+  description: 'Sign in to MINDLURA platform',
 };
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
