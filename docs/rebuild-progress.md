@@ -148,7 +148,7 @@ irfx-frontend2/
 ### Backend Compatibility
 Types in `types/index.ts` match exact API response shapes. No field names, labels, business logic, or API endpoints were renamed or changed.
 
-**API_URL** in `lib/constants.ts`: `http://46.34.185.62:8000` (matches existing frontend).
+**API_URL** in `lib/constants.ts`: `http://37.235.18.227:8000` (matches existing frontend).
 
 ---
 
