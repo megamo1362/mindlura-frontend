@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useTheme } from 'next-themes';
 import type { LucideIcon } from 'lucide-react';
 import { BarChart2, Users, LayoutDashboard, UserCheck, KeyRound, CreditCard, BookOpen, TrendingUp, Shield, Settings } from 'lucide-react';
 import { NavItem } from './nav-item';
@@ -45,10 +44,6 @@ interface SidebarProps {
 
 export function Sidebar({ user, variant = 'dashboard', onNavClick, className }: SidebarProps) {
   const { t, isRTL } = useLang();
-  const { resolvedTheme } = useTheme();
-  const dashboardLogoSrc = resolvedTheme === 'light'
-    ? '/logo-dashboard-light.png'
-    : '/logo-dashboard-dark.png';
   const navItems = variant === 'admin' ? ADMIN_NAV : DASHBOARD_NAV;
   const visibleItems = navItems.filter((item) =>
     !item.roles || item.roles.includes(user.role),
@@ -65,9 +60,8 @@ export function Sidebar({ user, variant = 'dashboard', onNavClick, className }: 
       {/* Logo */}
       <div className="flex-shrink-0 px-5 py-4 border-b border-[var(--color-border)]">
         <Link href={variant === 'admin' ? '/admin' : '/dashboard'} className="flex items-center gap-2 group">
-          <div suppressHydrationWarning>
-            <Image src={dashboardLogoSrc} alt="MINDLURA" width={140} height={42} className="h-14 w-auto object-contain" priority />
-          </div>
+          <Image src="/logo-dashboard-dark.png" alt="MINDLURA" width={140} height={42} className="h-14 w-auto object-contain dark:block hidden" priority />
+          <Image src="/logo-dashboard-light.png" alt="MINDLURA" width={140} height={42} className="h-14 w-auto object-contain dark:hidden block" priority />
         </Link>
       </div>
 
