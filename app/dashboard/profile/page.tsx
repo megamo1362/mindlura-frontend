@@ -230,8 +230,8 @@ export default function ProfilePage() {
     try {
       await apiFetch('/profile/update', { method: 'PUT', body: { telegram_username: '' } });
       setProfile(prev => prev ? { ...prev, is_telegram_verified: false, telegram_id: null, telegram_username: null } : prev);
-      setTelegramId('');
-      setTelegramOtpVisible(false);
+      setTelegramStep('idle');
+      setTelegramCheckError('');
     } catch {
       // ignore
     }
