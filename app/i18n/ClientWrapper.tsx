@@ -17,8 +17,10 @@ export function ClientWrapper({ children }: { children: React.ReactNode }) {
     const html = document.documentElement;
     if (theme === 'light') {
       html.classList.add('light');
+      html.classList.remove('dark');
     } else {
       html.classList.remove('light');
+      html.classList.add('dark');
     }
   }, [theme]);
 
