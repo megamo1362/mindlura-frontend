@@ -1,5 +1,7 @@
 'use client';
 
+'use client';
+
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Link2 } from 'lucide-react';
@@ -17,7 +19,25 @@ import { useAccounts } from '@/hooks/use-accounts';
 import { getInitials } from '@/lib/utils';
 import { ApiError } from '@/lib/api';
 import { useLang } from '@/app/i18n/LangContext';
-import type { DisplayMode } from '@/types';
+import type { DisplayMode, AccountPermissions } from '@/types';
+
+const PERMISSION_KEYS: Array<keyof Omit<AccountPermissions, 'account_id'>> = [
+  'allow_balance',
+  'allow_trades',
+  'allow_analysis',
+  'allow_journal',
+];
+
+const PERMISSION_LABELS: Record<string, string> = {
+  allow_balance: 'موجودی',
+  allow_trades: 'معاملات',
+  allow_analysis: 'آنالیز',
+  allow_journal: 'ژورنال',
+};
+
+function defaultPerms(accountId: number): AccountPermissions {
+  return { account_id: accountId, allow_balance: true, allow_trades: true, allow_analysis: true, allow_journal: false };
+}
 
 function EditPanel({
   coach,
@@ -30,6 +50,11 @@ function EditPanel({
   const [mode, setMode] = useState<DisplayMode>(coach.display_mode);
   const [label, setLabel] = useState(coach.display_label ?? '');
   const [selectedIds, setSelectedIds] = useState<number[]>(coach.shared_account_ids);
+  const [perms, setPerms] = useState<Record<number, AccountPermissions>>(() => {
+    const map: Record<number, AccountPermissions> = {};
+    for (const p of coach.account_permissions ?? []) map[p.account_id] = p;
+    return map;
+  });
   const { mutate: connect, isPending: saving, error } = useConnectCoach();
   const { t } = useLang();
 
@@ -37,14 +62,27 @@ function EditPanel({
   const needsLabel = mode === 'name' || mode === 'both';
   const canSave = selectedIds.length > 0 && (!needsLabel || label.trim().length > 0);
 
-  const toggleId = (id: number) =>
-    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  const toggleId = (id: number) => {
+    setSelectedIds((prev) => {
+      if (prev.includes(id)) return prev.filter((x) => x !== id);
+      if (!perms[id]) setPerms((p) => ({ ...p, [id]: defaultPerms(id) }));
+      return [...prev, id];
+    });
+  };
+
+  const togglePerm = (accountId: number, key: keyof Omit<AccountPermissions, 'account_id'>) => {
+    setPerms((prev) => ({
+      ...prev,
+      [accountId]: { ...(prev[accountId] ?? defaultPerms(accountId)), [key]: !prev[accountId]?.[key] },
+    }));
+  };
 
   const handleSave = () => {
     const payload: ConnectCoachInput = {
       coach_email: coach.coach_email,
       display_mode: mode,
       account_ids: selectedIds,
+      account_permissions: selectedIds.map((id) => perms[id] ?? defaultPerms(id)),
     };
     if (needsLabel && label.trim()) payload.display_label = label.trim();
     connect(payload, { onSuccess: onClose });
@@ -67,25 +105,52 @@ function EditPanel({
 
         <div>
           <p className="text-xs text-[var(--color-text-muted)] mb-2">{t.connect_shared_accounts}</p>
-          <div className="space-y-2">
-            {accounts.map((acc) => (
-              <label
-                key={acc.id}
-                className="flex items-center gap-3 rounded-xl px-3 py-2.5 cursor-pointer border transition-all"
-                style={{
-                  background: selectedIds.includes(acc.id) ? 'var(--color-cyan-dim)' : 'var(--color-elevated)',
-                  borderColor: selectedIds.includes(acc.id) ? 'rgba(0,212,255,0.25)' : 'var(--color-border)',
-                }}
-              >
-                <input
-                  type="checkbox"
-                  checked={selectedIds.includes(acc.id)}
-                  onChange={() => toggleId(acc.id)}
-                  className="accent-cyan-400"
-                />
-                <span className="font-mono text-sm font-bold text-[var(--color-text-primary)]">{acc.login}</span>
-              </label>
-            ))}
+          <div className="space-y-3">
+            {accounts.map((acc) => {
+              const selected = selectedIds.includes(acc.id);
+              const p = perms[acc.id] ?? defaultPerms(acc.id);
+              return (
+                <div
+                  key={acc.id}
+                  className="rounded-xl border transition-all overflow-hidden"
+                  style={{
+                    background: selected ? 'var(--color-cyan-dim)' : 'var(--color-elevated)',
+                    borderColor: selected ? 'rgba(0,212,255,0.25)' : 'var(--color-border)',
+                  }}
+                >
+                  <label className="flex items-center gap-3 px-3 py-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selected}
+                      onChange={() => toggleId(acc.id)}
+                      className="accent-cyan-400"
+                    />
+                    <span className="font-mono text-sm font-bold text-[var(--color-text-primary)]">{acc.login}</span>
+                  </label>
+
+                  {selected && (
+                    <div className="px-3 pb-3 flex flex-wrap gap-2 border-t border-[rgba(0,212,255,0.15)]" style={{ paddingTop: 8 }}>
+                      {PERMISSION_KEYS.map((key) => (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => togglePerm(acc.id, key)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all border"
+                          style={{
+                            background: p[key] ? 'rgba(0,212,255,0.15)' : 'rgba(255,255,255,0.04)',
+                            borderColor: p[key] ? 'rgba(0,212,255,0.35)' : 'var(--color-border)',
+                            color: p[key] ? 'var(--color-cyan)' : 'var(--color-text-muted)',
+                          }}
+                        >
+                          <span>{p[key] ? '✓' : '✗'}</span>
+                          {PERMISSION_LABELS[key]}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
 

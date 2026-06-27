@@ -39,7 +39,11 @@ export async function apiFetch<T = unknown>(
     let detail = `Server error (${res.status})`;
     try {
       const data = await res.json();
-      if (typeof data?.detail === 'string') detail = data.detail;
+      if (typeof data?.detail === 'string') {
+        detail = data.detail;
+      } else if (data?.detail && typeof data.detail === 'object') {
+        detail = data.detail.fa ?? data.detail.en ?? detail;
+      }
     } catch {
       // ignore parse error
     }

@@ -107,37 +107,40 @@ export function ClientCard({ client, index = 0 }: ClientCardProps) {
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-4">
-                      {acc.has_snapshot ? (
-                        <>
-                          <div className="text-center hidden sm:block">
-                            <p className="text-[10px] text-[var(--color-text-muted)]">{t.client_balance}</p>
-                            <p className="text-sm font-bold text-[var(--color-cyan)]">
-                              {acc.balance !== null ? `$${acc.balance.toFixed(2)}` : '—'}
-                            </p>
-                          </div>
-                          <div className="text-center hidden sm:block">
-                            <p className="text-[10px] text-[var(--color-text-muted)]">{t.client_equity}</p>
-                            <p className="text-sm font-bold text-[var(--color-text-primary)]">
-                              {acc.equity !== null ? `$${acc.equity.toFixed(2)}` : '—'}
-                            </p>
-                          </div>
-                          <div className="text-center hidden md:block">
-                            <p className="text-[10px] text-[var(--color-text-muted)]">{t.client_drawdown}</p>
-                            <p className="text-sm font-bold text-[#f97316]">
-                              {acc.max_drawdown !== null ? `${acc.max_drawdown.toFixed(1)}%` : '—'}
-                            </p>
-                          </div>
-                          <div className="text-center hidden lg:block">
-                            <p className="text-[10px] text-[var(--color-text-muted)]">{t.client_update}</p>
-                            <p className="text-xs text-[var(--color-text-muted)]">
-                              {t.client_ago(formatHours(acc.hours_since_update, t))}
-                            </p>
-                          </div>
-                        </>
-                      ) : (
-                        <span className="text-xs text-[var(--color-text-muted)]">{t.client_no_analysis}</span>
-                      )}
+                    <div className="flex items-center gap-3 flex-wrap">
+                      {/* Permission badges */}
+                      <div className="hidden sm:flex items-center gap-1">
+                        {[
+                          { key: 'allow_balance', label: 'موجودی' },
+                          { key: 'allow_trades', label: 'معاملات' },
+                          { key: 'allow_analysis', label: 'آنالیز' },
+                          { key: 'allow_journal', label: 'ژورنال' },
+                        ].map(({ key, label }) => {
+                          const allowed = acc[key as keyof typeof acc] as boolean;
+                          return (
+                            <span
+                              key={key}
+                              className="text-[10px] px-1.5 py-0.5 rounded font-medium"
+                              style={{
+                                background: allowed ? 'rgba(0,212,255,0.12)' : 'rgba(255,255,255,0.04)',
+                                color: allowed ? 'var(--color-cyan)' : 'var(--color-text-muted)',
+                                opacity: allowed ? 1 : 0.5,
+                              }}
+                            >
+                              {label}
+                            </span>
+                          );
+                        })}
+                      </div>
+
+                      {acc.has_snapshot && acc.allow_balance ? (
+                        <div className="text-center hidden md:block">
+                          <p className="text-[10px] text-[var(--color-text-muted)]">{t.client_balance}</p>
+                          <p className="text-sm font-bold text-[var(--color-cyan)]">
+                            {acc.balance !== null ? `$${acc.balance.toFixed(2)}` : '—'}
+                          </p>
+                        </div>
+                      ) : null}
 
                       <Button variant="secondary" size="sm" asChild>
                         <Link href={ROUTES.analyze(acc.id)}>

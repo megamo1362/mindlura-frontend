@@ -6,7 +6,7 @@ import { QUERY_KEYS } from '@/lib/constants';
 import { toast } from '@/store/toast';
 import { ApiError } from '@/lib/api';
 import { useLang } from '@/app/i18n/LangContext';
-import type { CoachClient, InviteCode, DisplayMode } from '@/types';
+import type { CoachClient, InviteCode, DisplayMode, AccountPermissions } from '@/types';
 
 // ── Client-side types ──────────────────────────────────────
 
@@ -18,6 +18,7 @@ export interface MyCoach {
   display_mode: DisplayMode;
   display_label: string | null;
   shared_account_ids: number[];
+  account_permissions: AccountPermissions[];
 }
 
 export interface CoachLookupResult {
@@ -31,6 +32,7 @@ export interface ConnectCoachInput {
   display_mode: DisplayMode;
   display_label?: string;
   account_ids: number[];
+  account_permissions: AccountPermissions[];
 }
 
 // ── Coach: client list ─────────────────────────────────────

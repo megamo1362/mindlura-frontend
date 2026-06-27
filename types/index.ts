@@ -249,6 +249,14 @@ export interface Plan {
 // ── Coaching ───────────────────────────────────────────────
 export type DisplayMode = 'name' | 'email' | 'both';
 
+export interface AccountPermissions {
+  account_id: number;
+  allow_balance: boolean;
+  allow_trades: boolean;
+  allow_analysis: boolean;
+  allow_journal: boolean;
+}
+
 export interface CoachClientAccount {
   id: number;
   login: string;
@@ -261,6 +269,10 @@ export interface CoachClientAccount {
   max_drawdown: number | null;
   hours_since_update: number | null;
   hours_until_next: number | null;
+  allow_balance: boolean;
+  allow_trades: boolean;
+  allow_analysis: boolean;
+  allow_journal: boolean;
 }
 
 export interface CoachClient {
