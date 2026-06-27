@@ -146,7 +146,21 @@ export default function ProfilePage() {
     setEmailSending(true);
     setEmailOtpError('');
     setEmailOtpSentMsg(false);
+    setSaveError('');
     try {
+      if (email && email !== profile?.email) {
+        try {
+          await apiFetch('/profile/update', { method: 'PUT', body: { email } });
+          setProfile(prev => prev ? { ...prev, email, is_email_verified: false } : prev);
+        } catch (err) {
+          if (err instanceof ApiError && err.status === 400) {
+            setEmailOtpError(t.profile_email_already_exists);
+          } else {
+            setEmailOtpError(t.profile_otp_error);
+          }
+          return;
+        }
+      }
       await apiFetch('/profile/email/send-otp', { method: 'POST' });
       setEmailOtpVisible(true);
       setEmailOtpSentMsg(true);
