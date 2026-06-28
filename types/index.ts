@@ -63,8 +63,19 @@ export interface Trade {
   volume: number;
   price: number;
   profit: number;
+  commission?: number;
+  swap?: number;
+  spread_cost?: number;
   time: string;
+  open_time?: string | null;
+  close_time?: string | null;
   comment: string;
+  sl?: number;
+  tp?: number;
+  sl_modified?: boolean;
+  tp_modified?: boolean;
+  sl_history?: number[];
+  tp_history?: number[];
   mae?: number | null;
   mfe?: number | null;
 }
@@ -202,6 +213,15 @@ export interface Analysis {
     cost_impact_pct: number;
     symbol_costs: Array<{ symbol: string; total_cost: number }>;
     most_expensive_symbol: { symbol: string; total_cost: number } | null;
+  };
+  sl_tp_analysis?: {
+    no_sl_count: number;
+    no_tp_count: number;
+    sl_modified_count: number;
+    tp_modified_count: number;
+    sl_widened_loss_count: number;
+    no_sl_pct: number;
+    no_tp_pct: number;
   };
   trading_style?: {
     style: string;

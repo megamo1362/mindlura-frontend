@@ -340,6 +340,9 @@ export function TradesTable({ trades, accountId, showJournal = true }: TradesTab
                   <th className="px-4 py-3 text-center">{t.trades_col_volume}</th>
                   <th className="px-4 py-3 text-center">{t.trades_col_price}</th>
                   <th className="px-4 py-3 text-center">{t.trades_col_pnl}</th>
+                  <th className="px-4 py-3 text-center text-rose-400 hidden lg:table-cell">{t.trades_col_sl}</th>
+                  <th className="px-4 py-3 text-center text-emerald-400 hidden lg:table-cell">{t.trades_col_tp}</th>
+                  <th className="px-4 py-3 text-center text-purple-400 hidden lg:table-cell">{t.trades_col_spread}</th>
                   <th className="px-4 py-3 text-center text-orange-400 hidden md:table-cell">MAE$</th>
                   <th className="px-4 py-3 text-center text-blue-400 hidden md:table-cell">MFE$</th>
                   <th className="px-4 py-3 text-left hidden sm:table-cell">{t.trades_col_time}</th>
@@ -349,6 +352,10 @@ export function TradesTable({ trades, accountId, showJournal = true }: TradesTab
               <tbody>
                 {paginated.map((trade, i) => {
                   const isProfit = trade.profit >= 0;
+                  const hasSl = trade.sl && trade.sl > 0;
+                  const hasTp = trade.tp && trade.tp > 0;
+                  const slModCount = trade.sl_history ? trade.sl_history.length - 1 : 0;
+                  const tpModCount = trade.tp_history ? trade.tp_history.length - 1 : 0;
                   return (
                     <motion.tr
                       key={trade.ticket}
@@ -375,6 +382,52 @@ export function TradesTable({ trades, accountId, showJournal = true }: TradesTab
                       </td>
                       <td className={`px-4 py-2.5 text-center font-bold tabular-nums ${isProfit ? 'text-emerald-400' : 'text-red-400'}`}>
                         {isProfit ? '+' : ''}{trade.profit.toFixed(2)}$
+                      </td>
+                      {/* SL */}
+                      <td className="px-3 py-2.5 text-center text-xs tabular-nums hidden lg:table-cell">
+                        {hasSl ? (
+                          <span
+                            className="inline-flex flex-col items-center gap-0.5"
+                            title={trade.sl_history && trade.sl_history.length > 1
+                              ? trade.sl_history.join(' → ')
+                              : undefined}
+                          >
+                            <span className="text-rose-400 font-mono">{trade.sl}</span>
+                            {slModCount > 0 && (
+                              <span className="text-[9px] text-yellow-400 opacity-80">
+                                {t.trades_sl_modified(slModCount)}
+                              </span>
+                            )}
+                          </span>
+                        ) : (
+                          <span className="text-[var(--color-text-muted)] opacity-40">{t.trades_sl_none}</span>
+                        )}
+                      </td>
+                      {/* TP */}
+                      <td className="px-3 py-2.5 text-center text-xs tabular-nums hidden lg:table-cell">
+                        {hasTp ? (
+                          <span
+                            className="inline-flex flex-col items-center gap-0.5"
+                            title={trade.tp_history && trade.tp_history.length > 1
+                              ? trade.tp_history.join(' → ')
+                              : undefined}
+                          >
+                            <span className="text-emerald-400 font-mono">{trade.tp}</span>
+                            {tpModCount > 0 && (
+                              <span className="text-[9px] text-yellow-400 opacity-80">
+                                {t.trades_sl_modified(tpModCount)}
+                              </span>
+                            )}
+                          </span>
+                        ) : (
+                          <span className="text-[var(--color-text-muted)] opacity-40">{t.trades_sl_none}</span>
+                        )}
+                      </td>
+                      {/* Spread */}
+                      <td className="px-3 py-2.5 text-center text-purple-400 text-xs tabular-nums hidden lg:table-cell">
+                        {trade.spread_cost != null && trade.spread_cost > 0
+                          ? `$${trade.spread_cost.toFixed(2)}`
+                          : <span className="opacity-30">—</span>}
                       </td>
                       <td className="px-4 py-2.5 text-center text-orange-400 text-xs tabular-nums hidden md:table-cell">
                         {trade.mae != null ? `$${trade.mae.toFixed(2)}` : '—'}
