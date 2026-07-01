@@ -18,15 +18,39 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 });
 
+const siteTitle = 'Mindlura — Trading Psychology, Quantified | MT5 Behavioral Analytics';
+const siteDescription =
+  'Connect your MT5 account and discover the behavioral patterns costing you money. MAE/MFE analysis, Psychology Score, emotion-aware journaling, and coach tools — built by someone from inside a forex brokerage.';
+const siteUrl = 'https://mindlura.com';
+const ogImage = 'https://mindlura.com/og-image.png';
+
 export const metadata: Metadata = {
   title: {
-    default: 'MINDLURA | AI Fintech Trading & Psychology',
-    template: '%s | MINDLURA',
+    default: siteTitle,
+    template: '%s | Mindlura',
   },
-  description: 'AI Fintech Trading & Psychology Platform',
-  keywords: ['trading', 'journal', 'AI', 'MT5', 'forex', 'coaching', 'fintech', 'psychology'],
-  authors: [{ name: 'MINDLURA' }],
-  creator: 'MINDLURA',
+  description: siteDescription,
+  keywords: ['trading psychology', 'MT5 analytics', 'behavioral trading', 'forex journal', 'MAE MFE analysis', 'psychology score', 'trading coach', 'emotion-aware journal'],
+  authors: [{ name: 'Mindlura' }],
+  creator: 'Mindlura',
+  metadataBase: new URL(siteUrl),
+  alternates: {
+    canonical: siteUrl,
+  },
+  openGraph: {
+    title: siteTitle,
+    description: siteDescription,
+    url: siteUrl,
+    siteName: 'Mindlura',
+    type: 'website',
+    images: [{ url: ogImage }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: siteTitle,
+    description: siteDescription,
+    images: [ogImage],
+  },
   icons: {
     icon: '/logo.png',
     apple: '/logo.png',
