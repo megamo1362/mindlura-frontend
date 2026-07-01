@@ -74,6 +74,8 @@ export const translations = {
     auth_register_error: 'Registration error. Please try again.',
     auth_login_tab: 'Login',
     auth_register_tab: 'Register',
+    auth_no_account: "Don't have an account?",
+    auth_have_account: 'Already have an account?',
 
     // ── Error pages ────────────────────────────────────────
     error_page_title: 'Loading Error',
@@ -659,6 +661,8 @@ export const translations = {
     auth_register_error: 'خطا در ثبت‌نام. لطفاً دوباره امتحان کنید.',
     auth_login_tab: 'ورود',
     auth_register_tab: 'ثبت‌نام',
+    auth_no_account: 'حساب ندارید؟',
+    auth_have_account: 'حساب دارید؟',
 
     // ── Error pages ────────────────────────────────────────
     error_page_title: 'خطا در بارگذاری',

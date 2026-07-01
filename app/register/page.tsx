@@ -3,11 +3,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { LoginForm } from '@/components/auth/login-form';
+import { RegisterForm } from '@/components/auth/register-form';
 import { useLang } from '@/app/i18n/LangContext';
 import { LangToggle } from '@/app/i18n/LangToggle';
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const { t } = useLang();
 
   return (
@@ -37,14 +37,14 @@ export default function LoginPage() {
 
       {/* Card */}
       <div className="glass-elevated rounded-2xl p-6 border border-[var(--color-border)]">
-        <LoginForm />
+        <RegisterForm />
       </div>
 
-      {/* Switch to register */}
+      {/* Switch to login */}
       <p className="text-center text-sm text-[var(--color-text-muted)] mt-5">
-        {t.auth_no_account}{' '}
-        <Link href="/register" className="text-[var(--color-primary)] hover:underline font-medium">
-          {t.auth_register_tab}
+        {t.auth_have_account}{' '}
+        <Link href="/login" className="text-[var(--color-primary)] hover:underline font-medium">
+          {t.auth_login_tab}
         </Link>
       </p>
 
