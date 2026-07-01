@@ -1,16 +1,11 @@
 import type { Metadata } from 'next';
-import { LoginBackgroundClient } from '@/components/effects/login-bg-client';
 
 export const metadata: Metadata = {
-  title: 'Register | MINDLURA',
-  description: 'Create your MINDLURA account',
+  title: 'Join the Waitlist — Mindlura Early Access',
+  description:
+    'Mindlura is a forex trading psychology platform connecting to MT5 for behavioral analytics. Join the waitlist for free early access.',
 };
 
 export default function RegisterLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="relative overflow-hidden min-h-screen grid-bg flex items-center justify-center p-4">
-      <LoginBackgroundClient />
-      {children}
-    </div>
-  );
+  return <>{children}</>;
 }
