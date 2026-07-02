@@ -33,6 +33,11 @@ interface AIStats {
     tokens_used: number;
     request_count: number;
   }>;
+  key_breakdown: Array<{
+    key_index: number | null;
+    request_count: number;
+    tokens_used: number;
+  }>;
 }
 
 // ── Helpers ────────────────────────────────────────────
@@ -260,6 +265,39 @@ export default function AdminAILogsPage() {
                     </td>
                     <td className="px-4 py-3 text-center text-xs text-[var(--color-text-muted)] tabular-nums">
                       {u.request_count}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Per-key breakdown */}
+      {stats && stats.key_breakdown && stats.key_breakdown.length > 0 && (
+        <div className="space-y-3">
+          <h2 className="text-sm font-bold text-[var(--color-text-primary)]">{t.admin_ai_logs_key_breakdown}</h2>
+          <div className="glass rounded-2xl overflow-hidden border border-[var(--color-border)]">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-[var(--color-deep)] text-[var(--color-text-muted)]">
+                  <th className="px-4 py-3 text-left">Key</th>
+                  <th className="px-4 py-3 text-center">{t.admin_ai_logs_col_requests}</th>
+                  <th className="px-4 py-3 text-center">{t.admin_ai_logs_col_tokens}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {stats.key_breakdown.map((row, i) => (
+                  <tr key={i} className="border-t border-[var(--color-border)] hover:bg-white/[0.02]">
+                    <td className="px-4 py-3 text-xs font-medium text-[var(--color-text-primary)]">
+                      {t.admin_ai_logs_key_label(row.key_index)}
+                    </td>
+                    <td className="px-4 py-3 text-center text-xs text-[var(--color-text-muted)] tabular-nums">
+                      {row.request_count}
+                    </td>
+                    <td className="px-4 py-3 text-center text-xs font-bold text-[var(--color-cyan)] tabular-nums">
+                      {row.tokens_used.toLocaleString()}
                     </td>
                   </tr>
                 ))}
