@@ -6,6 +6,17 @@ import path from 'path';
 const DATA_DIR = path.join(process.cwd(), 'data');
 const CSV_FILE = path.join(DATA_DIR, 'waitlist.csv');
 
+export async function getWaitlistCount(): Promise<number> {
+  try {
+    if (!fs.existsSync(CSV_FILE)) return 0;
+    const content = fs.readFileSync(CSV_FILE, 'utf-8');
+    const lines = content.trim().split('\n').filter(Boolean);
+    return Math.max(0, lines.length - 1); // subtract header row
+  } catch {
+    return 0;
+  }
+}
+
 export async function submitWaitlist(
   email: string,
   lang: string

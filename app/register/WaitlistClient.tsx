@@ -10,13 +10,20 @@ const accentBlue = '#38BDF8';
 
 type FormState = 'idle' | 'loading' | 'success' | 'error';
 
+function toPersianDigits(n: number): string {
+  return n.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[+d]);
+}
+
 const FA = {
   badge: 'به زودی',
   heading: 'مایندلورا در حال توسعه نهایی است',
   sub: 'اولین نفری باش که دسترسی می‌گیری — Early Access کاملاً رایگانه',
+  bullet: '✦ ۱۰۰ نفر اول ۳ ماه نسخه Pro کاملاً رایگان دریافت می‌کنند',
+  urgency: (spots: number) =>
+    `۱۰۰ نفر اول ۳ ماه نسخه Pro رایگان دریافت می‌کنند — ${toPersianDigits(spots)} جای خالی باقی مانده`,
   placeholder: 'آدرس ایمیل شما',
   button: 'ثبت در لیست انتظار',
-  success: 'ثبت شدی. به زودی خبرت میکنیم.',
+  success: 'ثبت شدی. به عنوان یکی از اعضای اول، ۳ ماه نسخه Pro رایگان دریافت می‌کنی.',
   back: '→ بازگشت به خانه',
 };
 
@@ -24,13 +31,22 @@ const EN = {
   badge: 'Coming Soon',
   heading: 'Mindlura is in final development.',
   sub: 'Be the first to get access — Early Access is completely free.',
+  bullet: '✦ First 100 members get 3 months of Pro — completely free',
+  urgency: (spots: number) =>
+    `First 100 members get 3 months of Pro free — ${spots} spot${spots === 1 ? '' : 's'} remaining`,
   placeholder: 'Your email address',
   button: 'Join the Waitlist',
-  success: "You're in. We'll reach out when we're ready.",
+  success: "You're in. As one of our first members, you'll get 3 months of Pro free.",
   back: '← Back to Home',
 };
 
-export default function WaitlistClient({ faFirst }: { faFirst: boolean }) {
+export default function WaitlistClient({
+  faFirst,
+  spotsRemaining,
+}: {
+  faFirst: boolean;
+  spotsRemaining: number;
+}) {
   const [lang, setLang] = useState<'fa' | 'en'>(faFirst ? 'fa' : 'en');
   const [email, setEmail] = useState('');
   const [state, setState] = useState<FormState>('idle');
@@ -125,9 +141,35 @@ export default function WaitlistClient({ faFirst }: { faFirst: boolean }) {
           {c.heading}
         </h1>
 
-        <p style={{ color: '#7C8296', fontSize: '15px', lineHeight: 1.7, marginBottom: '40px', maxWidth: '440px' }}>
+        <p style={{ color: '#7C8296', fontSize: '15px', lineHeight: 1.7, marginBottom: '16px', maxWidth: '440px' }}>
           {c.sub}
         </p>
+
+        {/* Bullet: 3 months Pro offer */}
+        <p style={{ color: accent, fontSize: '14px', fontWeight: 500, marginBottom: '28px' }}>
+          {c.bullet}
+        </p>
+
+        {/* Urgency banner — only shown while spots remain */}
+        {spotsRemaining > 0 && (
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: 'rgba(139,124,246,0.08)',
+              border: '1px solid rgba(139,124,246,0.25)',
+              borderRadius: '6px',
+              padding: '8px 14px',
+              marginBottom: '28px',
+              fontSize: '13px',
+              color: '#B8B0F0',
+            }}
+          >
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: accent, flexShrink: 0, display: 'inline-block' }} />
+            {c.urgency(spotsRemaining)}
+          </div>
+        )}
 
         {state === 'success' ? (
           <p style={{ color: accentBlue, fontSize: '16px', fontStyle: 'italic' }}>{c.success}</p>
