@@ -3,7 +3,8 @@
 import fs from 'fs';
 import path from 'path';
 
-const DATA_DIR = path.join(process.cwd(), 'data');
+// Absolute path outside the project so git pulls and builds never touch it
+const DATA_DIR = '/home/megamo/data';
 const CSV_FILE = path.join(DATA_DIR, 'waitlist.csv');
 
 export async function getWaitlistCount(): Promise<number> {
