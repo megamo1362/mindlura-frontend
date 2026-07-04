@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Copy, Check } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -59,6 +60,13 @@ export default function AdminUsersPage() {
   const [newPassword, setNewPassword] = useState('');
   const [resetting, setResetting] = useState(false);
   const [resetError, setResetError] = useState('');
+
+  // EA token issue shortcut
+  const [issueEAUser, setIssueEAUser] = useState<AdminUser | null>(null);
+  const [issuingEA, setIssuingEA] = useState(false);
+  const [issuedEAToken, setIssuedEAToken] = useState<string | null>(null);
+  const [issuedEACopied, setIssuedEACopied] = useState(false);
+  const [issueEAError, setIssueEAError] = useState('');
 
   // admin perms
   const [permUser, setPermUser] = useState<AdminUser | null>(null);
@@ -140,6 +148,25 @@ export default function AdminUsersPage() {
       setResetError(e instanceof Error ? e.message : t.error_generic);
     } finally {
       setResetting(false);
+    }
+  };
+
+  const issueEAToken = async () => {
+    if (!issueEAUser) return;
+    setIssueEAError('');
+    setIssuingEA(true);
+    try {
+      const data = await apiFetch<{ token: string }>(
+        `/admin/ea-tokens/${issueEAUser.id}/issue`,
+        { method: 'POST' },
+      );
+      setIssueEAUser(null);
+      setIssuedEAToken(data.token);
+      setIssuedEACopied(false);
+    } catch (e: unknown) {
+      setIssueEAError(e instanceof Error ? e.message : t.error_generic);
+    } finally {
+      setIssuingEA(false);
     }
   };
 
@@ -244,6 +271,7 @@ export default function AdminUsersPage() {
                     <div className="flex gap-1 justify-center">
                       <Button variant="ghost" size="icon-sm" onClick={() => { setEditUser({ ...user }); setEditPlanId(user.plan_id ?? ''); }}>✏️</Button>
                       <Button variant="ghost" size="icon-sm" onClick={() => { setResetUser(user); setNewPassword(''); setResetError(''); }}>🔑</Button>
+                      <Button variant="ghost" size="icon-sm" title={t.admin_ea_issue_btn} onClick={() => { setIssueEAUser(user); setIssueEAError(''); }}>🤖</Button>
                       {isSuperAdmin && user.role === 'admin' && (
                         <Button variant="ghost" size="icon-sm" onClick={() => openPerms(user)}>🛡️</Button>
                       )}
@@ -360,6 +388,80 @@ export default function AdminUsersPage() {
           <DialogFooter>
             <Button variant="secondary" onClick={() => setResetUser(null)}>{t.cancel}</Button>
             <Button variant="danger" onClick={resetPassword} loading={resetting}>{t.admin_users_reset_pw_btn}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* EA Token Issue Confirm Modal */}
+      <Dialog open={!!issueEAUser} onOpenChange={open => { if (!open) setIssueEAUser(null); }}>
+        <DialogContent size="sm">
+          <DialogHeader>
+            <DialogTitle>{t.admin_ea_issue_title}</DialogTitle>
+          </DialogHeader>
+          {issueEAUser && (
+            <div className="space-y-3">
+              <p className="text-sm text-[var(--color-text-muted)]">{issueEAUser.email}</p>
+              <p className="text-sm text-[var(--color-text-secondary)]">{t.admin_ea_issue_confirm}</p>
+              {issueEAError && <p className="text-xs text-[var(--color-danger)]">{issueEAError}</p>}
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="secondary" onClick={() => setIssueEAUser(null)}>{t.cancel}</Button>
+            <Button onClick={issueEAToken} loading={issuingEA}>{t.admin_ea_issue_btn}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* EA Token One-time Reveal Modal */}
+      <Dialog
+        open={issuedEAToken !== null}
+        onOpenChange={open => { if (!open) { setIssuedEAToken(null); setIssuedEACopied(false); } }}
+      >
+        <DialogContent size="md">
+          <DialogHeader>
+            <DialogTitle>{t.admin_ea_token_issued_title}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm font-semibold text-[var(--color-warning)]">
+              {t.admin_ea_token_once_warning}
+            </p>
+            <div className="relative">
+              <pre
+                dir="ltr"
+                className="font-mono text-sm bg-[var(--color-deep)] border border-[var(--color-border)] rounded-xl px-4 py-3 break-all whitespace-pre-wrap text-[var(--color-cyan)] select-all"
+              >
+                {issuedEAToken}
+              </pre>
+              <button
+                onClick={() => {
+                  if (!issuedEAToken) return;
+                  navigator.clipboard.writeText(issuedEAToken);
+                  setIssuedEACopied(true);
+                  setTimeout(() => setIssuedEACopied(false), 2500);
+                }}
+                className="absolute top-2 end-2 p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+              >
+                {issuedEACopied
+                  ? <Check className="w-4 h-4 text-[var(--color-success)]" />
+                  : <Copy className="w-4 h-4 text-[var(--color-text-muted)]" />
+                }
+              </button>
+            </div>
+            <Button
+              variant="secondary"
+              className="w-full"
+              onClick={() => {
+                if (!issuedEAToken) return;
+                navigator.clipboard.writeText(issuedEAToken);
+                setIssuedEACopied(true);
+                setTimeout(() => setIssuedEACopied(false), 2500);
+              }}
+            >
+              {issuedEACopied ? t.admin_ea_copied : t.admin_ea_copy_token}
+            </Button>
+          </div>
+          <DialogFooter>
+            <Button onClick={() => { setIssuedEAToken(null); setIssuedEACopied(false); }}>{t.close}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

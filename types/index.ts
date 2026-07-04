@@ -356,6 +356,25 @@ export interface AdminUser extends User {
   plan_id: number | null;
 }
 
+// ── EA Tokens admin ────────────────────────────────────────
+export type EAAccessStatus = 'active' | 'plan_expired' | 'feature_not_in_plan' | 'revoked';
+
+export interface EATokenRow {
+  id: number;
+  user_id: number;
+  email: string;
+  full_name: string | null;
+  prefix: string;
+  is_revoked: boolean;
+  created_at: string;
+  last_used_at: string | null;
+  ea_version: string | null;
+  bound_account_login: number | null;
+  bound_broker: string | null;
+  bound_at: string | null;
+  access_status: EAAccessStatus;
+}
+
 export interface AdminCoach extends User {
   client_count: number;
   active_invite_codes_count: number;
