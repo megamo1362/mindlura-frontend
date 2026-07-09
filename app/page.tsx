@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useGeoLang } from "@/lib/useGeoLang";
 import {
   TrendingUp,
   Brain,
@@ -331,11 +332,12 @@ const FOOTER_HREFS = [
 ];
 
 export default function MindluraLandingLuxury() {
-  const [lang, setLang] = useState<"en" | "fa">("en");
+  const { lang, setLang, country } = useGeoLang();
   const [audience, setAudience] = useState<"trader" | "coach">("trader");
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
+  const showLangToggle = country === "IR" || process.env.NODE_ENV === "development";
   const t = COPY[lang];
   const isFa = lang === "fa";
   const accent = audience === "trader" ? "#8B7CF6" : "#38BDF8";
@@ -375,9 +377,11 @@ export default function MindluraLandingLuxury() {
           </nav>
 
           <div className="hidden md:flex items-center gap-6">
-            <button onClick={() => setLang(isFa ? "en" : "fa")} className="text-xs italic ml-focus" style={{ fontFamily: displayFont, color: "#7C8296" }}>
-              {isFa ? "English" : "فارسی"}
-            </button>
+            {showLangToggle && (
+              <button onClick={() => setLang(isFa ? "en" : "fa")} className="text-xs italic ml-focus" style={{ fontFamily: displayFont, color: "#7C8296" }}>
+                {isFa ? "English" : "فارسی"}
+              </button>
+            )}
             <Link href="/login" className="text-sm ml-focus" style={{ color: "#C7CBE0" }}>{t.nav.login}</Link>
             <Link href="/register" className="text-sm px-5 py-2 ml-focus" style={{ border: `1px solid ${accent}`, color: "#E9ECF3" }}>
               {t.nav.start}
@@ -396,7 +400,9 @@ export default function MindluraLandingLuxury() {
             <a href="#coaches">{t.nav.coaches}</a>
             <Link href="/blog">{t.nav.blog}</Link>
             <a href="#faq">{t.nav.faq}</a>
-            <button onClick={() => setLang(isFa ? "en" : "fa")} className="text-left italic" style={{ fontFamily: displayFont }}>{isFa ? "English" : "فارسی"}</button>
+            {showLangToggle && (
+              <button onClick={() => setLang(isFa ? "en" : "fa")} className="text-left italic" style={{ fontFamily: displayFont }}>{isFa ? "English" : "فارسی"}</button>
+            )}
           </div>
         )}
       </header>

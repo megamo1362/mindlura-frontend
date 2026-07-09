@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { submitWaitlist } from './actions';
+import { useGeoLang } from '@/lib/useGeoLang';
 
 const displayFont = "'Fraunces', serif";
 const accent = '#8B7CF6';
@@ -57,20 +58,19 @@ const EN = {
 };
 
 export default function WaitlistClient({
-  faFirst,
   spotsRemaining,
   count,
 }: {
-  faFirst: boolean;
   spotsRemaining: number;
   count: number;
 }) {
-  const [lang, setLang] = useState<'fa' | 'en'>(faFirst ? 'fa' : 'en');
+  const { lang, setLang, country } = useGeoLang();
   const [email, setEmail] = useState('');
   const [state, setState] = useState<FormState>('idle');
 
   const isFa = lang === 'fa';
   const c = isFa ? FA : EN;
+  const showLangToggle = country === 'IR' || process.env.NODE_ENV === 'development';
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -125,21 +125,23 @@ export default function WaitlistClient({
           <Link href="/" style={{ fontSize: '13px', color: '#5A6178', textDecoration: 'none' }}>
             {c.back}
           </Link>
-          <button
-            onClick={switchLang}
-            style={{
-              background: 'none',
-              border: '1px solid #232332',
-              borderRadius: '100px',
-              padding: '4px 14px',
-              fontSize: '12px',
-              color: '#7C8296',
-              cursor: 'pointer',
-              fontFamily: isFa ? "'Inter', sans-serif" : "'Vazirmatn', sans-serif",
-            }}
-          >
-            {isFa ? 'English' : 'فارسی'}
-          </button>
+          {showLangToggle && (
+            <button
+              onClick={switchLang}
+              style={{
+                background: 'none',
+                border: '1px solid #232332',
+                borderRadius: '100px',
+                padding: '4px 14px',
+                fontSize: '12px',
+                color: '#7C8296',
+                cursor: 'pointer',
+                fontFamily: isFa ? "'Inter', sans-serif" : "'Vazirmatn', sans-serif",
+              }}
+            >
+              {isFa ? 'English' : 'فارسی'}
+            </button>
+          )}
         </div>
 
         {/* Badge */}
