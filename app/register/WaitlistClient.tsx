@@ -18,12 +18,20 @@ const FA = {
   badge: 'به زودی',
   heading: 'مایندلورا در حال توسعه نهایی است',
   sub: 'اولین نفری باش که دسترسی می‌گیری — Early Access کاملاً رایگانه',
-  bullet: '✦ ۱۰۰ نفر اول ۳ ماه نسخه Pro کاملاً رایگان دریافت می‌کنند',
-  urgency: (spots: number) =>
-    `۱۰۰ نفر اول ۳ ماه نسخه Pro رایگان دریافت می‌کنند — ${toPersianDigits(spots)} جای خالی باقی مانده`,
+  bullets: [
+    '✦ تحلیل کامل رفتاری تاریخچه معاملات MT5 شما',
+    '✦ امتیاز روان‌شناختی — نظم معاملاتی‌تان را در طول زمان رصد کنید',
+    '✦ ۱۰۰ نفر اول ۳ ماه نسخه Pro کاملاً رایگان دریافت می‌کنند',
+  ],
+  banner: (spots: number) =>
+    spots > 0
+      ? `۱۰۰ نفر اول ۳ ماه نسخه Pro رایگان دریافت می‌کنند · ${toPersianDigits(spots)} جای خالی باقی مانده`
+      : 'ظرفیت Early Access تکمیل شد — در لیست انتظار عادی ثبت‌نام کن',
+  socialProof: (n: number) => `به ${toPersianDigits(n)} تریدری که قبلاً ثبت‌نام کرده‌اند بپیوند`,
+  privacy: 'اسپم نمی‌فرستیم. ایمیل شما را به کسی نمی‌دهیم.',
   placeholder: 'آدرس ایمیل شما',
   button: 'ثبت در لیست انتظار',
-  success: 'ثبت شدی. به عنوان یکی از اعضای اول، ۳ ماه نسخه Pro رایگان دریافت می‌کنی.',
+  success: 'ثبت شدی. به عنوان یکی از ۱۰۰ عضو اول، ۳ ماه نسخه Pro رایگان دریافت می‌کنی.',
   back: '→ بازگشت به خانه',
 };
 
@@ -31,21 +39,31 @@ const EN = {
   badge: 'Coming Soon',
   heading: 'Mindlura is in final development.',
   sub: 'Be the first to get access — Early Access is completely free.',
-  bullet: '✦ First 100 members get 3 months of Pro — completely free',
-  urgency: (spots: number) =>
-    `First 100 members get 3 months of Pro free — ${spots} spot${spots === 1 ? '' : 's'} remaining`,
+  bullets: [
+    '✦ Full behavioral analysis of your MT5 trade history',
+    '✦ Psychology Score — track your mental discipline over time',
+    '✦ First 100 members get 3 months of Pro completely free',
+  ],
+  banner: (spots: number) =>
+    spots > 0
+      ? `First 100 members get 3 months of Pro — free · ${spots} spot${spots === 1 ? '' : 's'} remaining`
+      : 'Early Access spots are full — join the regular waitlist below',
+  socialProof: (n: number) => `Join ${n} trader${n === 1 ? '' : 's'} already on the waitlist`,
+  privacy: "No spam. No sharing. Just early access when we're ready.",
   placeholder: 'Your email address',
   button: 'Join the Waitlist',
-  success: "You're in. As one of our first members, you'll get 3 months of Pro free.",
+  success: "You're in. As one of our first 100 members, you'll get 3 months of Pro free.",
   back: '← Back to Home',
 };
 
 export default function WaitlistClient({
   faFirst,
   spotsRemaining,
+  count,
 }: {
   faFirst: boolean;
   spotsRemaining: number;
+  count: number;
 }) {
   const [lang, setLang] = useState<'fa' | 'en'>(faFirst ? 'fa' : 'en');
   const [email, setEmail] = useState('');
@@ -85,6 +103,20 @@ export default function WaitlistClient({
         input::placeholder { color: #5A6178; }
         input:focus { border-color: ${accent} !important; }
       `}</style>
+
+      {/* Urgency banner — full width, above everything */}
+      <div
+        style={{
+          width: '100%',
+          background: `linear-gradient(90deg, ${accent}, #6366f1)`,
+          color: '#ffffff',
+          textAlign: 'center',
+          fontSize: '14px',
+          padding: '12px 24px',
+        }}
+      >
+        {c.banner(spotsRemaining)}
+      </div>
 
       <div style={{ maxWidth: '560px', margin: '0 auto', padding: '40px 24px 80px' }}>
 
@@ -144,30 +176,21 @@ export default function WaitlistClient({
           {c.sub}
         </p>
 
-        {/* Bullet: 3 months Pro offer */}
-        <p style={{ color: accent, fontSize: '14px', fontWeight: 500, marginBottom: '28px' }}>
-          {c.bullet}
-        </p>
+        {/* What you get */}
+        <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 28px 0', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {c.bullets.map((b, i) => (
+            <li key={i} style={{ color: '#7C8296', fontSize: '14px', lineHeight: 1.6 }}>
+              <span style={{ color: accent }}>{b.slice(0, 1)}</span>
+              {b.slice(1)}
+            </li>
+          ))}
+        </ul>
 
-        {/* Urgency banner — only shown while spots remain */}
-        {spotsRemaining > 0 && (
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              background: 'rgba(139,124,246,0.08)',
-              border: '1px solid rgba(139,124,246,0.25)',
-              borderRadius: '6px',
-              padding: '8px 14px',
-              marginBottom: '28px',
-              fontSize: '13px',
-              color: '#B8B0F0',
-            }}
-          >
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: accent, flexShrink: 0, display: 'inline-block' }} />
-            {c.urgency(spotsRemaining)}
-          </div>
+        {/* Social proof */}
+        {count > 0 && (
+          <p style={{ color: '#7C8296', fontSize: '13px', textAlign: 'center', marginBottom: '16px' }}>
+            {c.socialProof(count)}
+          </p>
         )}
 
         {state === 'success' ? (
@@ -217,6 +240,9 @@ export default function WaitlistClient({
             >
               {state === 'loading' ? '...' : c.button}
             </button>
+            <p style={{ color: '#5A6178', fontSize: '11px', textAlign: 'center', margin: 0 }}>
+              {c.privacy}
+            </p>
           </form>
         )}
       </div>

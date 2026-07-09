@@ -11,5 +11,5 @@ export default async function RegisterPage() {
   const count = await getWaitlistCount();
   const spotsRemaining = Math.max(0, MAX_SPOTS - count);
 
-  return <WaitlistClient faFirst={faFirst} spotsRemaining={spotsRemaining} />;
+  return <WaitlistClient faFirst={faFirst} spotsRemaining={spotsRemaining} count={count} />;
 }
