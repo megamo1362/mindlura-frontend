@@ -1,15 +1,26 @@
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { LoginForm } from '@/components/auth/login-form';
 import { useLang } from '@/app/i18n/LangContext';
 import { LangToggle } from '@/app/i18n/LangToggle';
+import { useGeoLang } from '@/lib/useGeoLang';
 
 export default function LoginPage() {
-  const { t, lang } = useLang();
+  const { t, lang, setLang } = useLang();
+  const { lang: geoLang, country, resolved } = useGeoLang();
   const isFa = lang === 'fa';
+  const showLangToggle = country === 'IR' || process.env.NODE_ENV === 'development';
+
+  useEffect(() => {
+    if (!resolved) return;
+    if (!localStorage.getItem('lang')) {
+      setLang(geoLang);
+    }
+  }, [resolved, geoLang, setLang]);
 
   return (
     <>
@@ -63,7 +74,7 @@ export default function LoginPage() {
         <p className="text-xs text-[var(--color-text-muted)]">
           MINDLURA · AI Fintech Trading &amp; Psychology
         </p>
-        <LangToggle />
+        {showLangToggle && <LangToggle />}
       </div>
     </motion.div>
     </>

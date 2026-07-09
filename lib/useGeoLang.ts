@@ -10,6 +10,7 @@ const COUNTRY_KEY = 'mindlura_country';
 export function useGeoLang() {
   const [lang, setLangState] = useState<Lang>('en');
   const [country, setCountry] = useState<string | null>(null);
+  const [resolved, setResolved] = useState(false);
 
   useEffect(() => {
     const storedLang = localStorage.getItem(LANG_KEY) as Lang | null;
@@ -17,6 +18,7 @@ export function useGeoLang() {
 
     if (storedLang === 'en' || storedLang === 'fa') {
       setLangState(storedLang);
+      setResolved(true);
       return;
     }
 
@@ -36,6 +38,9 @@ export function useGeoLang() {
         if (cancelled) return;
         setLangState('en');
         localStorage.setItem(LANG_KEY, 'en');
+      })
+      .finally(() => {
+        if (!cancelled) setResolved(true);
       });
 
     return () => {
@@ -48,5 +53,5 @@ export function useGeoLang() {
     localStorage.setItem(LANG_KEY, l);
   }, []);
 
-  return { lang, setLang, country };
+  return { lang, setLang, country, resolved };
 }
