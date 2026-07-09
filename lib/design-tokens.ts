@@ -15,5 +15,4 @@ export const tokens = {
     fa:      "'Vazirmatn', sans-serif",
     mono:    "'JetBrains Mono', monospace",
   },
-  googleFontsUrl: "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=Vazirmatn:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap",
 } as const;

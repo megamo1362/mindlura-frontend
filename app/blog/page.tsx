@@ -21,8 +21,6 @@ export default async function BlogPage({
 
   return (
     <div style={{ backgroundColor: '#0A0E17', color: '#E9ECF3', minHeight: '100vh', fontFamily: "'Inter', sans-serif" }}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600&family=Inter:wght@400;500;600&family=Vazirmatn:wght@400;500;600&display=swap');`}</style>
-
       <div style={{ maxWidth: '860px', margin: '0 auto', padding: '80px 24px' }} dir={isFa ? 'rtl' : 'ltr'}>
 
         {/* Header */}

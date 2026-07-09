@@ -82,7 +82,6 @@ export default function WaitlistClient({
       }}
     >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600&family=Inter:wght@400;500;600&family=Vazirmatn:wght@400;500;600&display=swap');
         input::placeholder { color: #5A6178; }
         input:focus { border-color: ${accent} !important; }
       `}</style>
