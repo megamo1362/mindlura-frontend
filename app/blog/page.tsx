@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getAllPosts } from '@/lib/blog';
+import { getServerGeoLang } from '@/lib/geo';
 
 const displayFont = "'Fraunces', serif";
 
@@ -8,16 +9,19 @@ export const metadata = {
   description: 'Trading psychology articles, behavioral analysis, and coach resources from Mindlura.',
 };
 
-export default async function BlogPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ lang?: string }>;
-}) {
-  const { lang: langParam } = await searchParams;
-  const lang = langParam === 'fa' ? 'fa' : 'en';
-  const isFa = lang === 'fa';
+export default async function BlogPage() {
+  const detectedLang = await getServerGeoLang();
+  const allPosts = getAllPosts();
 
-  const posts = getAllPosts().filter((p) => p.lang === lang);
+  let lang = detectedLang;
+  let posts = allPosts.filter((p) => p.lang === lang);
+
+  if (posts.length === 0 && lang !== 'en') {
+    lang = 'en';
+    posts = allPosts.filter((p) => p.lang === lang);
+  }
+
+  const isFa = lang === 'fa';
 
   return (
     <div style={{ backgroundColor: '#0A0E17', color: '#E9ECF3', minHeight: '100vh', fontFamily: "'Inter', sans-serif" }}>
@@ -33,12 +37,6 @@ export default async function BlogPage({
         <p style={{ color: '#7C8296', fontSize: '15px', marginBottom: '48px' }}>
           {isFa ? 'مقالات روان‌شناسی معاملاتی، تحلیل رفتاری، و منابع کوچ' : 'Trading psychology, behavioral analysis, and coach resources.'}
         </p>
-
-        {/* Lang toggle */}
-        <div style={{ display: 'flex', gap: '16px', marginBottom: '40px', fontSize: '13px' }}>
-          <Link href="/blog" style={{ color: !isFa ? '#8B7CF6' : '#5A6178', borderBottom: !isFa ? '1px solid #8B7CF6' : 'none', paddingBottom: '2px', textDecoration: 'none' }}>English</Link>
-          <Link href="/blog?lang=fa" style={{ color: isFa ? '#8B7CF6' : '#5A6178', borderBottom: isFa ? '1px solid #8B7CF6' : 'none', paddingBottom: '2px', textDecoration: 'none', fontFamily: "'Vazirmatn', sans-serif" }}>فارسی</Link>
-        </div>
 
         {/* Divider */}
         <div style={{ height: '1px', backgroundColor: '#232332', marginBottom: '40px' }} />
