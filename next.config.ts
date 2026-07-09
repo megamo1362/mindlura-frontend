@@ -26,6 +26,17 @@ const nextConfig: NextConfig = {
     };
   },
 
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.mindlura.com' }],
+        destination: 'https://mindlura.com/:path*',
+        permanent: true,
+      },
+    ];
+  },
+
   async headers() {
     return [
       {
