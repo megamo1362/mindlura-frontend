@@ -1,5 +1,13 @@
 'use client';
 
+// AUTH SYSTEM NOTE:
+// This is the single source of truth for authentication.
+// Token is stored in localStorage under AUTH_TOKEN_KEY ('token').
+// Written by: hooks/use-auth-api.ts (useLogin, useRegister)
+// Read by: AuthGuard (this file) on every authenticated route mount
+// User context exposed via: useCurrentUser() hook
+// DO NOT add alternative auth stores or hooks — extend this file instead.
+
 import * as React from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';

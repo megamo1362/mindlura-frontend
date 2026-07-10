@@ -4,7 +4,6 @@ export * from './use-click-outside';
 export * from './use-in-view';
 export * from './use-gsap';
 export * from './use-animated-number';
-export * from './use-auth';
 export * from './use-accounts';
 export * from './use-auth-api';
 export * from './use-coach';

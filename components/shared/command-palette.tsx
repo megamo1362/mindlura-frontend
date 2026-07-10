@@ -7,7 +7,6 @@ import { Search, BarChart2, Users, UserPlus, LogOut, Home } from 'lucide-react';
 import { useUiStore } from '@/store/ui';
 import { useCurrentUser } from '@/components/layouts/auth-guard';
 import { AUTH_TOKEN_KEY, ROUTES } from '@/lib/constants';
-import { useAuthStore } from '@/store/auth';
 import { useLang } from '@/app/i18n/LangContext';
 import type { LucideIcon } from 'lucide-react';
 
@@ -24,7 +23,6 @@ export function CommandPalette() {
   const { commandPaletteOpen, closeCommandPalette } = useUiStore();
   const router = useRouter();
   const { user } = useCurrentUser();
-  const logout = useAuthStore((s) => s.logout);
   const { t, isRTL } = useLang();
 
   const [query, setQuery] = useState('');
@@ -32,8 +30,10 @@ export function CommandPalette() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleLogout = () => {
-    if (typeof window !== 'undefined') localStorage.removeItem(AUTH_TOKEN_KEY);
-    logout();
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+      localStorage.removeItem('irfx-auth'); // clean up orphaned Zustand persist key
+    }
     router.push(ROUTES.login);
     closeCommandPalette();
   };
