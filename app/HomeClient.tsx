@@ -400,6 +400,11 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
             <a href="#coaches">{t.nav.coaches}</a>
             <Link href="/blog">{t.nav.blog}</Link>
             <a href="#faq">{t.nav.faq}</a>
+            <div className="hairline" />
+            <Link href="/login" onClick={() => setMenuOpen(false)}>{t.nav.login}</Link>
+            <Link href="/register" onClick={() => setMenuOpen(false)} className="inline-block px-5 py-2 text-center" style={{ border: `1px solid ${accent}`, color: "#E9ECF3" }}>
+              {t.nav.start}
+            </Link>
             {showLangToggle && (
               <button onClick={() => setLang(isFa ? "en" : "fa")} className="text-left italic" style={{ fontFamily: displayFont }}>{isFa ? "English" : "فارسی"}</button>
             )}
