@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { submitWaitlist } from './actions';
-import { useGeoLang } from '@/lib/useGeoLang';
+import { useGeoLang, type Lang } from '@/lib/useGeoLang';
 
 const displayFont = "'Fraunces', serif";
 const accent = '#8B7CF6';
@@ -60,17 +60,21 @@ const EN = {
 export default function WaitlistClient({
   spotsRemaining,
   count,
+  initialLang,
+  initialCountry,
 }: {
   spotsRemaining: number;
   count: number;
+  initialLang: Lang;
+  initialCountry: string;
 }) {
-  const { lang, setLang, country } = useGeoLang();
+  const { lang, setLang, country } = useGeoLang(initialLang, initialCountry);
   const [email, setEmail] = useState('');
   const [state, setState] = useState<FormState>('idle');
 
   const isFa = lang === 'fa';
   const c = isFa ? FA : EN;
-  const showLangToggle = country === 'IR' || process.env.NODE_ENV === 'development';
+  const showLangToggle = country === 'IR';
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
