@@ -1,19 +1,52 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import { LoginForm } from '@/components/auth/login-form';
 import { useLang } from '@/app/i18n/LangContext';
 import { LangToggle } from '@/app/i18n/LangToggle';
 import { useGeoLang, type Lang } from '@/lib/useGeoLang';
+import { API_URL, AUTH_TOKEN_KEY, ROUTES } from '@/lib/constants';
+import { LoadingScreen } from '@/components/shared';
+import type { User } from '@/types';
 
 export default function LoginClient({ initialLang, initialCountry }: { initialLang: Lang; initialCountry: string }) {
   const { t, lang, setLang } = useLang();
   const { lang: geoLang, country, resolved } = useGeoLang(initialLang, initialCountry);
+  const router = useRouter();
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const isFa = lang === 'fa';
   const showLangToggle = country === 'IR';
+
+  // If a valid session already exists (e.g. after a browser restart with
+  // "remember me"), skip the form and go straight to the app.
+  useEffect(() => {
+    const token =
+      typeof window !== 'undefined'
+        ? localStorage.getItem(AUTH_TOKEN_KEY) ?? sessionStorage.getItem(AUTH_TOKEN_KEY)
+        : null;
+
+    if (!token) {
+      setCheckingAuth(false);
+      return;
+    }
+
+    fetch(`${API_URL}/auth/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((user: User) => {
+        router.replace(user.role === 'admin' ? ROUTES.admin.root : ROUTES.dashboard);
+      })
+      .catch(() => {
+        localStorage.removeItem(AUTH_TOKEN_KEY);
+        sessionStorage.removeItem(AUTH_TOKEN_KEY);
+        setCheckingAuth(false);
+      });
+  }, [router]);
 
   useEffect(() => {
     if (!resolved) return;
@@ -21,6 +54,8 @@ export default function LoginClient({ initialLang, initialCountry }: { initialLa
       setLang(geoLang);
     }
   }, [resolved, geoLang, setLang]);
+
+  if (checkingAuth) return <LoadingScreen />;
 
   return (
     <>
