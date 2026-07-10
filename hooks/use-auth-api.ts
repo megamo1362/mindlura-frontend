@@ -11,8 +11,9 @@ export function useLogin() {
   return useMutation({
     mutationFn: (data: LoginRequest) =>
       apiFetch<AuthResponse>('/auth/login', { method: 'POST', body: data }),
-    onSuccess: (data) => {
-      localStorage.setItem(AUTH_TOKEN_KEY, data.access_token);
+    onSuccess: (data, variables) => {
+      const storage = variables.remember_me ? localStorage : sessionStorage;
+      storage.setItem(AUTH_TOKEN_KEY, data.access_token);
       if (data.role === 'admin') {
         router.push(ROUTES.admin.root);
       } else {

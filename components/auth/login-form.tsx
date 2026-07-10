@@ -13,6 +13,7 @@ import { useLang } from '@/app/i18n/LangContext';
 export function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const { mutate: login, isPending, error } = useLogin();
   const { t } = useLang();
 
@@ -20,7 +21,7 @@ export function LoginForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    login({ email, password });
+    login({ email, password, remember_me: rememberMe });
   };
 
   return (
@@ -61,6 +62,16 @@ export function LoginForm() {
           inputSize="lg"
         />
       </div>
+
+      <label className="flex items-center gap-2 cursor-pointer select-none">
+        <input
+          type="checkbox"
+          checked={rememberMe}
+          onChange={(e) => setRememberMe(e.target.checked)}
+          className="h-4 w-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+        />
+        <span className="text-sm text-[var(--color-text-muted)]">{t.auth_remember_me}</span>
+      </label>
 
       {errorMessage && (
         <motion.div

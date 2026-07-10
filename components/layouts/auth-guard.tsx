@@ -2,7 +2,8 @@
 
 // AUTH SYSTEM NOTE:
 // This is the single source of truth for authentication.
-// Token is stored in localStorage under AUTH_TOKEN_KEY ('token').
+// Token is stored under AUTH_TOKEN_KEY ('token') in localStorage (remember me)
+// or sessionStorage (default) — read from both here.
 // Written by: hooks/use-auth-api.ts (useLogin, useRegister)
 // Read by: AuthGuard (this file) on every authenticated route mount
 // User context exposed via: useCurrentUser() hook
@@ -42,7 +43,7 @@ export function AuthGuard({ children, adminOnly = false }: AuthGuardProps) {
   useEffect(() => {
     const token =
       typeof window !== 'undefined'
-        ? localStorage.getItem(AUTH_TOKEN_KEY)
+        ? localStorage.getItem(AUTH_TOKEN_KEY) ?? sessionStorage.getItem(AUTH_TOKEN_KEY)
         : null;
 
     if (!token) {
@@ -62,7 +63,10 @@ export function AuthGuard({ children, adminOnly = false }: AuthGuardProps) {
         setAuthCtx({ user, token });
       })
       .catch(() => {
-        if (typeof window !== 'undefined') localStorage.removeItem(AUTH_TOKEN_KEY);
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem(AUTH_TOKEN_KEY);
+          sessionStorage.removeItem(AUTH_TOKEN_KEY);
+        }
         router.replace(ROUTES.login);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps

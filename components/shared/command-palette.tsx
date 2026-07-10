@@ -32,6 +32,7 @@ export function CommandPalette() {
   const handleLogout = () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem(AUTH_TOKEN_KEY);
+      sessionStorage.removeItem(AUTH_TOKEN_KEY);
       localStorage.removeItem('irfx-auth'); // clean up orphaned Zustand persist key
     }
     router.push(ROUTES.login);

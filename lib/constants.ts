@@ -3,6 +3,9 @@ export const API_URL =
 
 export const AUTH_TOKEN_KEY = 'token';
 
+export const REMEMBER_ME_DAYS = 30;
+export const DEFAULT_SESSION_DAYS = 1;
+
 export const ROUTES = {
   login: '/login',
   dashboard: '/dashboard',

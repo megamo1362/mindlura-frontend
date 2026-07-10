@@ -25,6 +25,7 @@ export function UserMenu({ user, compact = false }: UserMenuProps) {
 
   const handleLogout = () => {
     localStorage.removeItem(AUTH_TOKEN_KEY);
+    sessionStorage.removeItem(AUTH_TOKEN_KEY);
     router.push(ROUTES.login);
   };
 
