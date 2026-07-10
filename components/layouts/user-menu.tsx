@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { LogOut } from 'lucide-react';
 import { AUTH_TOKEN_KEY, ROUTES } from '@/lib/constants';
 import { getInitials } from '@/lib/utils';
@@ -14,7 +13,6 @@ interface UserMenuProps {
 }
 
 export function UserMenu({ user, compact = false }: UserMenuProps) {
-  const router = useRouter();
   const { t } = useLang();
 
   const roleLabels: Record<string, string> = {
@@ -26,7 +24,9 @@ export function UserMenu({ user, compact = false }: UserMenuProps) {
   const handleLogout = () => {
     localStorage.removeItem(AUTH_TOKEN_KEY);
     sessionStorage.removeItem(AUTH_TOKEN_KEY);
-    router.push(ROUTES.login);
+    // Hard navigation, not router.push: guarantees a clean reload (no
+    // stale client-router/AuthGuard state) and wipes all in-memory caches.
+    window.location.href = ROUTES.login;
   };
 
   const displayName = user.full_name || user.email;

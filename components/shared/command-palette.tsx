@@ -35,8 +35,10 @@ export function CommandPalette() {
       sessionStorage.removeItem(AUTH_TOKEN_KEY);
       localStorage.removeItem('irfx-auth'); // clean up orphaned Zustand persist key
     }
-    router.push(ROUTES.login);
     closeCommandPalette();
+    // Hard navigation, not router.push: guarantees a clean reload (no
+    // stale client-router/AuthGuard state) and wipes all in-memory caches.
+    window.location.href = ROUTES.login;
   };
 
   const ALL_COMMANDS: Command[] = [
