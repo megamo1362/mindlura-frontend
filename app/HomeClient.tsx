@@ -373,7 +373,7 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
             <a href="#pricing" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.pricing}</a>
             <a href="#coaches" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.coaches}</a>
             <Link href="/blog" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.blog}</Link>
-            <Link href="/market" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.market}</Link>
+            <Link href="/sentiment" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.market}</Link>
             <a href="#faq" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.faq}</a>
           </nav>
 
@@ -400,7 +400,7 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
             <a href="#pricing">{t.nav.pricing}</a>
             <a href="#coaches">{t.nav.coaches}</a>
             <Link href="/blog">{t.nav.blog}</Link>
-            <Link href="/market">{t.nav.market}</Link>
+            <Link href="/sentiment">{t.nav.market}</Link>
             <a href="#faq">{t.nav.faq}</a>
             <div className="hairline" />
             <Link href="/login" onClick={() => setMenuOpen(false)}>{t.nav.login}</Link>

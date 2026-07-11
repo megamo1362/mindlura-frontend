@@ -20,16 +20,18 @@ export async function generateMetadata({
   const sym = config.symbol;
 
   const title = isFa
-    ? `تحلیل زنده ${sym} | قدرت خریدار فروشنده | مایندلورا`
-    : `${sym} Live Analysis | Buyer Seller Strength | Mindlura`;
+    ? `سنتیمنت ${sym} | قدرت خریدار فروشنده | مایندلورا`
+    : `${sym} Sentiment | Live Buyer Seller Strength | Mindlura`;
   const description = isFa
     ? `تحلیل زنده ${sym} شامل قدرت خریدار و فروشنده، روند، RSI و MACD در چند تایم‌فریم.`
     : `Live ${sym} analysis with buyer/seller strength, trend, RSI and MACD across multiple timeframes.`;
-  const path = `/market/${sym.toLowerCase()}`;
+  const keywords = ['forex sentiment', 'crypto sentiment', 'market sentiment', 'سنتیمنت فارکس', 'سنتیمنت بازار', 'تحلیل سنتیمنت'];
+  const path = `/sentiment/${sym.toLowerCase()}`;
 
   return {
-    title,
+    title: { absolute: title },
     description,
+    keywords,
     alternates: {
       canonical: path,
       languages: {

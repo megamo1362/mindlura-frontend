@@ -29,7 +29,7 @@ const COPY = {
   en: {
     dir: 'ltr' as const,
     back: '← Mindlura',
-    eyebrow: 'Live Market Data',
+    eyebrow: 'Market Sentiment',
     title: 'Buyer & seller strength, updated in real time.',
     sub: `Behavioral market strength across forex, gold, and crypto — derived from RSI, EMA positioning, and MACD on the ${PRIMARY_TIMEFRAME} timeframe.`,
     categories: { forex: 'Forex', metal: 'Metal', crypto: 'Crypto' },
@@ -43,7 +43,7 @@ const COPY = {
   fa: {
     dir: 'rtl' as const,
     back: '→ مایندلورا',
-    eyebrow: 'داده بازار زنده',
+    eyebrow: 'سنتیمنت بازار',
     title: 'قدرت خریدار و فروشنده، به‌روز در لحظه.',
     sub: `قدرت رفتاری بازار در فارکس، طلا و ارز دیجیتال — برگرفته از RSI، موقعیت EMA و MACD در تایم‌فریم ${PRIMARY_TIMEFRAME}.`,
     categories: { forex: 'فارکس', metal: 'فلز', crypto: 'ارز دیجیتال' },
@@ -138,7 +138,7 @@ export default function MarketListClient({
               return (
                 <Link
                   key={s.symbol}
-                  href={`/market/${s.symbol.toLowerCase()}`}
+                  href={`/sentiment/${s.symbol.toLowerCase()}`}
                   className="mkt-card block p-6 mkt-focus"
                   style={{ border: '1px solid var(--color-border)', backgroundColor: 'var(--color-surface)' }}
                 >

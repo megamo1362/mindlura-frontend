@@ -10,20 +10,22 @@ export async function generateMetadata(): Promise<Metadata> {
   const isFa = country === 'IR';
 
   const title = isFa
-    ? 'تحلیل زنده بازار | قدرت خریدار فروشنده | مایندلورا'
-    : 'Live Market Analysis | Buyer Seller Strength | Mindlura';
+    ? 'سنتیمنت فارکس و کریپتو | قدرت خریدار فروشنده | مایندلورا'
+    : 'Forex & Crypto Sentiment | Live Buyer Seller Strength | Mindlura';
   const description = isFa
     ? 'قدرت خریدار و فروشنده، روند و RSI زنده برای فارکس، طلا و ارز دیجیتال.'
     : 'Live buyer/seller strength, trend, and RSI for forex, gold, and crypto pairs.';
+  const keywords = ['forex sentiment', 'crypto sentiment', 'market sentiment', 'سنتیمنت فارکس', 'سنتیمنت بازار', 'تحلیل سنتیمنت'];
 
   return {
-    title,
+    title: { absolute: title },
     description,
+    keywords,
     alternates: {
-      canonical: '/market',
-      languages: { en: '/market', fa: '/market?lang=fa', 'x-default': '/market' },
+      canonical: '/sentiment',
+      languages: { en: '/sentiment', fa: '/sentiment?lang=fa', 'x-default': '/sentiment' },
     },
-    openGraph: { title, description, url: '/market', siteName: 'Mindlura', type: 'website' },
+    openGraph: { title, description, url: '/sentiment', siteName: 'Mindlura', type: 'website' },
   };
 }
 

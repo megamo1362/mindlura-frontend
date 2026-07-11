@@ -34,6 +34,16 @@ const nextConfig: NextConfig = {
         destination: 'https://mindlura.com/:path*',
         permanent: true,
       },
+      {
+        source: '/market',
+        destination: '/sentiment',
+        permanent: true,
+      },
+      {
+        source: '/market/:symbol',
+        destination: '/sentiment/:symbol',
+        permanent: true,
+      },
     ];
   },
 

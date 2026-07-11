@@ -38,7 +38,7 @@ const COPY = {
   en: {
     dir: 'ltr' as const,
     back: '← Mindlura',
-    liveLabel: 'Live Market Data',
+    liveLabel: 'Market Sentiment',
     categories: { forex: 'Forex', metal: 'Metal', crypto: 'Crypto' },
     trend: { bullish: 'Bullish', bearish: 'Bearish', neutral: 'Neutral' },
     referencePrice: 'Reference Price',
@@ -76,7 +76,7 @@ const COPY = {
   fa: {
     dir: 'rtl' as const,
     back: '→ مایندلورا',
-    liveLabel: 'داده بازار زنده',
+    liveLabel: 'سنتیمنت بازار',
     categories: { forex: 'فارکس', metal: 'فلز', crypto: 'ارز دیجیتال' },
     trend: { bullish: 'صعودی', bearish: 'نزولی', neutral: 'خنثی' },
     referencePrice: 'قیمت مرجع',
@@ -249,7 +249,7 @@ export default function MarketClient({
             return (
               <Link
                 key={s.symbol}
-                href={`/market/${s.symbol.toLowerCase()}`}
+                href={`/sentiment/${s.symbol.toLowerCase()}`}
                 className="text-xs px-3 py-1.5 whitespace-nowrap mkt-focus"
                 style={{
                   border: `1px solid ${active ? accent : 'var(--color-border)'}`,
