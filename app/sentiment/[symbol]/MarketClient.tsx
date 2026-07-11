@@ -204,7 +204,7 @@ export default function MarketClient({
       dir={t.dir}
       style={{ backgroundColor: 'var(--color-void)', color: 'var(--color-text-primary)', fontFamily: bodyFont, minHeight: '100vh', position: 'relative' }}
     >
-      <div className="fixed inset-0 z-0">
+      <div id="ml-ambientorbs">
         <AmbientOrbs />
       </div>
 
@@ -218,8 +218,8 @@ export default function MarketClient({
       `}</style>
 
       <div className="relative z-10">
-        {/* ---------------- NAV ---------------- */}
-        <header className="sticky top-0 z-50" style={{ backgroundColor: 'rgba(10,14,23,0.9)', backdropFilter: 'blur(8px)' }}>
+        {/* ---------------- NAV + SYMBOL TABS (sticky as one unit) ---------------- */}
+        <header className="sticky top-0 z-50" style={{ backgroundColor: 'rgba(10,14,23,0.92)', backdropFilter: 'blur(8px)' }}>
           <div className="mkt-hairline" />
           <div className="max-w-screen-2xl mx-auto px-6 py-4 flex items-center justify-between">
             <Link href="/" className="text-sm mkt-focus" style={{ color: 'var(--color-text-muted)' }}>
@@ -240,28 +240,29 @@ export default function MarketClient({
               </Link>
             </div>
           </div>
-        </header>
 
-        {/* symbol switcher */}
-        <div className="max-w-screen-2xl mx-auto px-6 pt-6 flex gap-2 overflow-x-auto no-scrollbar">
-          {MARKET_SYMBOLS.map((s) => {
-            const active = s.symbol === symbolConfig.symbol;
-            return (
-              <Link
-                key={s.symbol}
-                href={`/sentiment/${s.symbol.toLowerCase()}`}
-                className="text-xs px-3 py-1.5 whitespace-nowrap mkt-focus"
-                style={{
-                  border: `1px solid ${active ? accent : 'var(--color-border)'}`,
-                  color: active ? accent : 'var(--color-text-muted)',
-                  fontFamily: "'JetBrains Mono', monospace",
-                }}
-              >
-                {s.symbol}
-              </Link>
-            );
-          })}
-        </div>
+          {/* symbol switcher */}
+          <div className="max-w-screen-2xl mx-auto px-6 pb-4 flex gap-2 overflow-x-auto no-scrollbar">
+            {MARKET_SYMBOLS.map((s) => {
+              const active = s.symbol === symbolConfig.symbol;
+              return (
+                <Link
+                  key={s.symbol}
+                  href={`/sentiment/${s.symbol.toLowerCase()}`}
+                  className="text-xs px-3 py-1.5 whitespace-nowrap mkt-focus"
+                  style={{
+                    border: `1px solid ${active ? accent : 'var(--color-border)'}`,
+                    color: active ? accent : 'var(--color-text-muted)',
+                    fontFamily: "'JetBrains Mono', monospace",
+                  }}
+                >
+                  {s.symbol}
+                </Link>
+              );
+            })}
+          </div>
+          <div className="mkt-hairline" />
+        </header>
 
         {!data ? (
           <section className="max-w-screen-2xl mx-auto px-6 py-24 text-center">
@@ -270,7 +271,7 @@ export default function MarketClient({
         ) : (
           <>
             {/* ---------------- HERO HEADER ---------------- */}
-            <section className="max-w-screen-2xl mx-auto px-6 pt-10 pb-10">
+            <section className="max-w-screen-2xl mx-auto px-6 py-14">
               <div className="flex items-center gap-3 mb-4 flex-wrap">
                 <p className="text-sm italic" style={{ color: accent, fontFamily: displayFont }}>{t.liveLabel}</p>
                 <span className="text-[10px] uppercase tracking-wide px-2 py-0.5" style={{ border: '1px solid var(--color-border)', color: 'var(--color-text-muted)' }}>
