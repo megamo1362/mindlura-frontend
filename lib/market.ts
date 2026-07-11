@@ -72,9 +72,14 @@ export function computeEmaDeviationPct(ema20?: number | null, ema50?: number | n
   return ((ema20 - ema50) / ema50) * 100;
 }
 
-/** Server-only: base URL for direct (non-proxied) fetches to the Python backend. */
+/**
+ * Server-only: base URL for direct (non-proxied) fetches to the Python backend.
+ * Deliberately excludes NEXT_PUBLIC_API_URL — that var is meant for the browser
+ * bundle and may point at a public/external address that isn't reachable (or is
+ * firewalled) from the server itself. Server-to-server calls stay on localhost.
+ */
 export function getBackendBaseUrl(): string {
-  return process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+  return process.env.BACKEND_URL || process.env.INTERNAL_API_URL || 'http://localhost:8000';
 }
 
 export async function fetchMarketData(symbol: string): Promise<MarketDataResponse | null> {
