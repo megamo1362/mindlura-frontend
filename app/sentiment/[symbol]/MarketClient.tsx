@@ -387,13 +387,13 @@ export default function MarketClient({
               <p className="text-sm mb-8" style={{ color: 'var(--color-text-muted)' }}>{t.tableSub}</p>
 
               <div className="overflow-x-auto">
-                <table className="irfx-table" dir="ltr">
+                <table className="irfx-table" style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }} dir="ltr">
                   <thead>
                     <tr>
-                      <th style={{ textAlign: isFa ? 'right' : 'left' }}>{t.th.tf}</th>
-                      <th>{t.th.trend}</th>
-                      <th>{t.th.rsi}</th>
-                      <th>{t.th.strength}</th>
+                      <th style={{ width: '20%', textAlign: 'left' }}>{t.th.tf}</th>
+                      <th style={{ width: '25%', textAlign: 'left' }}>{t.th.trend}</th>
+                      <th style={{ width: '20%', textAlign: 'center' }}>{t.th.rsi}</th>
+                      <th style={{ width: '35%', textAlign: 'right' }}>{t.th.strength}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -409,11 +409,11 @@ export default function MarketClient({
                           onClick={() => setActiveTf(tf)}
                           style={{ background: isActive ? 'var(--color-cyan-dim)' : undefined }}
                         >
-                          <td style={{ fontFamily: "'JetBrains Mono', monospace", color: isActive ? 'var(--color-cyan)' : 'var(--color-text-primary)' }}>{tf}</td>
-                          <td><TrendBadge trend={trend} label={t.trend[trend]} /></td>
-                          <td style={{ fontFamily: "'JetBrains Mono', monospace" }}>{formatPrice(tfData?.RSI, 1)}</td>
-                          <td>
-                            <div className="flex items-center gap-2">
+                          <td style={{ width: '20%', textAlign: 'left', fontFamily: "'JetBrains Mono', monospace", color: isActive ? 'var(--color-cyan)' : 'var(--color-text-primary)' }}>{tf}</td>
+                          <td style={{ width: '25%', textAlign: 'left' }}><TrendBadge trend={trend} label={t.trend[trend]} /></td>
+                          <td style={{ width: '20%', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace" }}>{formatPrice(tfData?.RSI, 1)}</td>
+                          <td style={{ width: '35%', textAlign: 'right' }}>
+                            <div className="flex items-center justify-end gap-2">
                               <div className="w-20 h-1.5" style={{ backgroundColor: 'var(--color-border)' }}>
                                 <div style={{ width: `${strength ?? 0}%`, height: '100%', backgroundColor: TREND_COLOR[trend] }} />
                               </div>
