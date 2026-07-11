@@ -119,6 +119,14 @@ const TREND_COLOR: Record<Trend, string> = {
   neutral: 'var(--color-warning)',
 };
 
+const CARD_STYLE: React.CSSProperties = {
+  background: 'var(--color-surface)',
+  border: '1px solid var(--color-border)',
+  borderRadius: '12px',
+  padding: '24px',
+  marginBottom: '24px',
+};
+
 function TrendIcon({ trend, size = 14 }: { trend: Trend; size?: number }) {
   if (trend === 'bullish') return <TrendingUp size={size} strokeWidth={1.8} />;
   if (trend === 'bearish') return <TrendingDown size={size} strokeWidth={1.8} />;
@@ -264,14 +272,15 @@ export default function MarketClient({
           <div className="mkt-hairline" />
         </header>
 
+        <main className="max-w-screen-2xl mx-auto px-6 pt-8">
         {!data ? (
-          <section className="max-w-screen-2xl mx-auto px-6 py-24 text-center">
+          <div className="py-24 text-center">
             <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>{t.noData(symbolConfig.symbol)}</p>
-          </section>
+          </div>
         ) : (
           <>
-            {/* ---------------- HERO HEADER ---------------- */}
-            <section className="max-w-screen-2xl mx-auto px-6 py-14">
+            {/* ---------------- HERO CARD ---------------- */}
+            <div style={CARD_STYLE}>
               <div className="flex items-center gap-3 mb-4 flex-wrap">
                 <p className="text-sm italic" style={{ color: accent, fontFamily: displayFont }}>{t.liveLabel}</p>
                 <span className="text-[10px] uppercase tracking-wide px-2 py-0.5" style={{ border: '1px solid var(--color-border)', color: 'var(--color-text-muted)' }}>
@@ -340,12 +349,10 @@ export default function MarketClient({
                   )}
                 </div>
               </div>
-            </section>
+            </div>
 
-            <div className="max-w-screen-2xl mx-auto px-6"><div className="mkt-hairline" /></div>
-
-            {/* ---------------- STRENGTH BARS ---------------- */}
-            <section className="max-w-screen-2xl mx-auto px-6 py-14">
+            {/* ---------------- STRENGTH BARS CARD ---------------- */}
+            <div style={CARD_STYLE}>
               <h2 className="text-2xl mb-1" style={{ fontFamily: displayFont, fontWeight: 500 }}>{t.strengthTitle}</h2>
               <p className="text-sm mb-8" style={{ color: 'var(--color-text-muted)' }}>{t.strengthSub(PRIMARY_TIMEFRAME)}</p>
 
@@ -372,12 +379,10 @@ export default function MarketClient({
                   />
                 </div>
               </div>
-            </section>
+            </div>
 
-            <div className="max-w-screen-2xl mx-auto px-6"><div className="mkt-hairline" /></div>
-
-            {/* ---------------- MULTI-TIMEFRAME TABLE ---------------- */}
-            <section className="max-w-screen-2xl mx-auto px-6 py-14">
+            {/* ---------------- MULTI-TIMEFRAME TABLE CARD ---------------- */}
+            <div style={CARD_STYLE}>
               <h2 className="text-2xl mb-1" style={{ fontFamily: displayFont, fontWeight: 500 }}>{t.tableTitle}</h2>
               <p className="text-sm mb-8" style={{ color: 'var(--color-text-muted)' }}>{t.tableSub}</p>
 
@@ -421,12 +426,10 @@ export default function MarketClient({
                   </tbody>
                 </table>
               </div>
-            </section>
+            </div>
 
-            <div className="max-w-screen-2xl mx-auto px-6"><div className="mkt-hairline" /></div>
-
-            {/* ---------------- MOMENTUM GAUGES ---------------- */}
-            <section className="max-w-screen-2xl mx-auto px-6 py-14">
+            {/* ---------------- MOMENTUM GAUGES CARD ---------------- */}
+            <div style={CARD_STYLE}>
               <h2 className="text-2xl mb-1" style={{ fontFamily: displayFont, fontWeight: 500 }}>{t.gaugesTitle}</h2>
               <p className="text-sm mb-8" style={{ color: 'var(--color-text-muted)' }}>{t.gaugesSub(activeTf)}</p>
 
@@ -492,12 +495,10 @@ export default function MarketClient({
                   })()}
                 </div>
               </div>
-            </section>
+            </div>
 
-            <div className="max-w-screen-2xl mx-auto px-6"><div className="mkt-hairline" /></div>
-
-            {/* ---------------- DISCLAIMER + CTA ---------------- */}
-            <section className="max-w-screen-2xl mx-auto px-6 py-20 text-center">
+            {/* ---------------- DISCLAIMER + CTA CARD ---------------- */}
+            <div style={{ ...CARD_STYLE, textAlign: 'center' }}>
               <p className="text-xs mb-8" style={{ color: 'var(--color-text-disabled)' }}>{t.disclaimer}</p>
               <Link
                 href="/register"
@@ -507,9 +508,10 @@ export default function MarketClient({
                 {t.cta}
                 <ArrowRight size={16} className={isFa ? 'rotate-180' : ''} />
               </Link>
-            </section>
+            </div>
           </>
         )}
+        </main>
       </div>
     </div>
   );
