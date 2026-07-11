@@ -30,7 +30,7 @@ import {
 const COPY = {
   en: {
     dir: "ltr",
-    nav: { features: "Features", how: "Process", pricing: "Pricing", coaches: "For Coaches", blog: "Blog", market: "Live Market", faq: "FAQ", login: "Log in", start: "Get Started" },
+    nav: { features: "Features", how: "Process", pricing: "Pricing", coaches: "For Coaches", blog: "Blog", market: "Sentiment", faq: "FAQ", login: "Log in", start: "Get Started" },
     toggle: { trader: "Trader", coach: "Coach" },
     hero: {
       trader: {
@@ -176,7 +176,7 @@ const COPY = {
   },
   fa: {
     dir: "rtl",
-    nav: { features: "ویژگی‌ها", how: "فرآیند", pricing: "قیمت‌گذاری", coaches: "برای کوچ‌ها", blog: "بلاگ", market: "بازار زنده", faq: "سوالات متداول", login: "ورود", start: "شروع کنید" },
+    nav: { features: "ویژگی‌ها", how: "فرآیند", pricing: "قیمت‌گذاری", coaches: "برای کوچ‌ها", blog: "بلاگ", market: "سنتیمنت", faq: "سوالات متداول", login: "ورود", start: "شروع کنید" },
     toggle: { trader: "تریدر", coach: "کوچ" },
     hero: {
       trader: {
