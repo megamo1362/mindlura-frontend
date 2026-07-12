@@ -74,6 +74,7 @@ function ScenarioColumn({
 
 export default function HighImpactAnalysis({ lang }: { lang: Lang }) {
   const t = COPY[lang];
+  const isFa = lang === 'fa';
   const [data, setData] = useState<EventAnalysis[] | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
@@ -95,7 +96,7 @@ export default function HighImpactAnalysis({ lang }: { lang: Lang }) {
   }, []);
 
   return (
-    <section className="max-w-screen-xl mx-auto px-6 pb-8">
+    <section className="max-w-screen-xl mx-auto px-6 pb-8" dir={isFa ? 'rtl' : 'ltr'}>
       <h2 className="text-lg font-semibold mb-4">{t.header}</h2>
 
       {data === null && (
@@ -119,7 +120,8 @@ export default function HighImpactAnalysis({ lang }: { lang: Lang }) {
                 <button
                   type="button"
                   onClick={() => setExpandedId(expanded ? null : event.id)}
-                  className="w-full text-left px-4 py-3"
+                  className="w-full px-4 py-3"
+                  style={{ textAlign: isFa ? 'right' : 'left' }}
                 >
                   <div className="flex items-center justify-between gap-3 flex-wrap">
                     <span className="text-sm font-medium flex items-center gap-2">
