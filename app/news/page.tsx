@@ -1,5 +1,6 @@
+import { headers } from 'next/headers';
 import type { Metadata } from 'next';
-import { getServerGeoLang } from '@/lib/geo';
+import { getServerGeoLang, resolveCountry } from '@/lib/geo';
 import { getBackendBaseUrl } from '@/lib/market';
 import NewsClient from './NewsClient';
 import type { CalendarEvent } from './types';
@@ -54,7 +55,9 @@ async function fetchCalendarEvents(): Promise<{ events: CalendarEvent[]; fetched
 }
 
 export default async function NewsPage() {
-  const [lang, { events, fetchedAt }] = await Promise.all([getServerGeoLang(), fetchCalendarEvents()]);
+  const [headersList, { events, fetchedAt }] = await Promise.all([headers(), fetchCalendarEvents()]);
+  const country = resolveCountry((name) => headersList.get(name));
+  const lang = country === 'IR' ? 'fa' : 'en';
 
   return (
     <>
@@ -62,7 +65,7 @@ export default async function NewsPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(NEWS_SCHEMA) }}
       />
-      <NewsClient initialEvents={events} initialLang={lang} fetchedAt={fetchedAt} />
+      <NewsClient initialEvents={events} initialLang={lang} initialCountry={country} fetchedAt={fetchedAt} />
     </>
   );
 }

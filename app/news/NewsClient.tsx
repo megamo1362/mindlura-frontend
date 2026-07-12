@@ -113,13 +113,16 @@ function AiButton({ active, isFa, onClick }: { active: boolean; isFa: boolean; o
 export default function NewsClient({
   initialEvents,
   initialLang,
+  initialCountry,
   fetchedAt,
 }: {
   initialEvents: CalendarEvent[];
   initialLang: Lang;
+  initialCountry: string;
   fetchedAt: string | null;
 }) {
-  const { lang, setLang } = useGeoLang(initialLang);
+  const { lang, setLang, country } = useGeoLang(initialLang, initialCountry);
+  const showLangToggle = country === 'IR';
   const t = COPY[lang];
   const isFa = lang === 'fa';
   const bodyFont = isFa ? "'Vazirmatn', sans-serif" : "'Inter', sans-serif";
@@ -201,13 +204,15 @@ export default function NewsClient({
             <Link href="/" className="text-sm" style={{ color: 'var(--color-text-muted)' }}>
               {t.back}
             </Link>
-            <button
-              onClick={() => setLang(isFa ? 'en' : 'fa')}
-              className="text-xs italic"
-              style={{ fontFamily: displayFont, color: 'var(--color-text-muted)' }}
-            >
-              {isFa ? 'English' : 'فارسی'}
-            </button>
+            {showLangToggle && (
+              <button
+                onClick={() => setLang(isFa ? 'en' : 'fa')}
+                className="text-xs italic"
+                style={{ fontFamily: displayFont, color: 'var(--color-text-muted)' }}
+              >
+                {isFa ? 'English' : 'فارسی'}
+              </button>
+            )}
           </div>
         </header>
 
