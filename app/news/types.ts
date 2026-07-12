@@ -9,3 +9,30 @@ export interface CalendarEvent {
   actual: string;
   is_released: boolean;
 }
+
+export interface AnalysisPair {
+  pair: string;
+  outlook: string;
+  level: string;
+}
+
+export interface AnalysisScenario {
+  probability: string;
+  pairs: AnalysisPair[];
+  insight: string;
+}
+
+export interface EventAnalysisContent {
+  why_matters: string;
+  bullish: AnalysisScenario;
+  bearish: AnalysisScenario;
+  key_insight: string;
+}
+
+export interface EventAnalysis {
+  event: CalendarEvent;
+  analysis: {
+    en: EventAnalysisContent;
+    fa: EventAnalysisContent;
+  };
+}

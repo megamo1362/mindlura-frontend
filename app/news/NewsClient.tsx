@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useGeoLang, type Lang } from '@/lib/useGeoLang';
 import { AmbientOrbs } from '@/components/effects';
 import { Badge } from '@/components/ui/badge';
+import { dateKeyOf, formatDateHeader } from './dateFormat';
+import HighImpactAnalysis from './HighImpactAnalysis';
 import type { CalendarEvent } from './types';
 
 const displayFont = "'Fraunces', serif";
@@ -53,28 +55,6 @@ const COPY = {
 const IMPACT_LEVELS = ['High', 'Medium', 'Low'] as const;
 const IMPACT_EMOJI: Record<string, string> = { High: '🔴', Medium: '🟡', Low: '⚪', Holiday: '🏳️' };
 const IMPACT_VARIANT: Record<string, 'red' | 'yellow' | 'gray'> = { High: 'red', Medium: 'yellow', Low: 'gray', Holiday: 'gray' };
-
-const FA_DIGITS = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-const FA_WEEKDAYS = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه'];
-const FA_MONTHS = ['ژانویه', 'فوریه', 'مارس', 'آوریل', 'می', 'ژوئن', 'جولای', 'آگوست', 'سپتامبر', 'اکتبر', 'نوامبر', 'دسامبر'];
-
-function toFaDigits(n: number): string {
-  return String(n).split('').map((d) => FA_DIGITS[Number(d)] ?? d).join('');
-}
-
-/** Groups by calendar day in UTC — matches the "Time (UTC)" column so the grouping stays consistent with what's displayed. */
-function dateKeyOf(datetimeUtc: string): string {
-  return datetimeUtc.slice(0, 10);
-}
-
-function formatDateHeader(dateKey: string, lang: Lang, isToday: boolean): string {
-  if (isToday) return lang === 'fa' ? 'امروز' : 'Today';
-  const d = new Date(`${dateKey}T00:00:00Z`);
-  if (lang === 'fa') {
-    return `${FA_WEEKDAYS[d.getUTCDay()]} ${toFaDigits(d.getUTCDate())} ${FA_MONTHS[d.getUTCMonth()]}`;
-  }
-  return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' });
-}
 
 function parseNumeric(value: string): number | null {
   if (!value) return null;
@@ -188,6 +168,8 @@ export default function NewsClient({
             </p>
           )}
         </section>
+
+        <HighImpactAnalysis lang={lang} />
 
         <section className="max-w-screen-xl mx-auto px-6 pb-4 flex flex-wrap gap-2">
           <button
