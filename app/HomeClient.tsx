@@ -30,7 +30,7 @@ import {
 const COPY = {
   en: {
     dir: "ltr",
-    nav: { features: "Features", how: "Process", pricing: "Pricing", coaches: "For Coaches", blog: "Blog", market: "Sentiment", faq: "FAQ", login: "Log in", start: "Get Started" },
+    nav: { features: "Features", how: "Process", pricing: "Pricing", coaches: "For Coaches", blog: "Blog", market: "Sentiment", news: "News", faq: "FAQ", login: "Log in", start: "Get Started" },
     toggle: { trader: "Trader", coach: "Coach" },
     hero: {
       trader: {
@@ -176,7 +176,7 @@ const COPY = {
   },
   fa: {
     dir: "rtl",
-    nav: { features: "ویژگی‌ها", how: "فرآیند", pricing: "قیمت‌گذاری", coaches: "برای کوچ‌ها", blog: "بلاگ", market: "سنتیمنت", faq: "سوالات متداول", login: "ورود", start: "شروع کنید" },
+    nav: { features: "ویژگی‌ها", how: "فرآیند", pricing: "قیمت‌گذاری", coaches: "برای کوچ‌ها", blog: "بلاگ", market: "سنتیمنت", news: "اخبار", faq: "سوالات متداول", login: "ورود", start: "شروع کنید" },
     toggle: { trader: "تریدر", coach: "کوچ" },
     hero: {
       trader: {
@@ -374,6 +374,7 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
             <a href="#coaches" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.coaches}</a>
             <Link href="/blog" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.blog}</Link>
             <Link href="/sentiment" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.market}</Link>
+            <Link href="/news" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.news}</Link>
             <a href="#faq" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.faq}</a>
           </nav>
 
@@ -401,6 +402,7 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
             <a href="#coaches">{t.nav.coaches}</a>
             <Link href="/blog">{t.nav.blog}</Link>
             <Link href="/sentiment">{t.nav.market}</Link>
+            <Link href="/news">{t.nav.news}</Link>
             <a href="#faq">{t.nav.faq}</a>
             <div className="hairline" />
             <Link href="/login" onClick={() => setMenuOpen(false)}>{t.nav.login}</Link>
