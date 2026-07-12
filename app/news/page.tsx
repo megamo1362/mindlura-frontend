@@ -55,9 +55,12 @@ async function fetchCalendarEvents(): Promise<{ events: CalendarEvent[]; fetched
 }
 
 export default async function NewsPage() {
-  const [headersList, { events, fetchedAt }] = await Promise.all([headers(), fetchCalendarEvents()]);
+  const [headersList, lang, { events, fetchedAt }] = await Promise.all([
+    headers(),
+    getServerGeoLang(),
+    fetchCalendarEvents(),
+  ]);
   const country = resolveCountry((name) => headersList.get(name));
-  const lang = country === 'IR' ? 'fa' : 'en';
 
   return (
     <>
