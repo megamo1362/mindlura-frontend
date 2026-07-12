@@ -198,6 +198,21 @@ export const translations = {
     settings_lang_fa: 'Persian (فارسی)',
     settings_saved: 'Settings saved',
 
+    // ── Settings: Economic calendar alerts ──────────────────
+    settings_calendar_section: 'Economic Calendar Alerts',
+    settings_calendar_enabled: 'Enable alerts',
+    settings_calendar_minutes_before: 'Minutes before event',
+    settings_calendar_minutes_option: (n: number) => `${n} min`,
+    settings_calendar_impact_filter: 'Impact filter',
+    settings_calendar_impact_high: 'High',
+    settings_calendar_impact_medium: 'Medium',
+    settings_calendar_impact_low: 'Low',
+    settings_calendar_currency_filter: 'Currency filter (leave empty = all)',
+    settings_calendar_notify_result: 'Also notify after result is published',
+    settings_calendar_telegram_active: 'Telegram alerts active',
+    settings_calendar_telegram_inactive: 'Connect Telegram to receive alerts',
+    settings_calendar_save: 'Save alert settings',
+
     // ── Emotions ───────────────────────────────────────────
     emotion_fear: 'Fear',
     emotion_greed: 'Greed',
@@ -856,6 +871,21 @@ export const translations = {
     settings_lang_en: 'انگلیسی (English)',
     settings_lang_fa: 'فارسی',
     settings_saved: 'تنظیمات ذخیره شد',
+
+    // ── Settings: Economic calendar alerts ──────────────────
+    settings_calendar_section: 'آلارم تقویم اقتصادی',
+    settings_calendar_enabled: 'فعال‌سازی آلارم‌ها',
+    settings_calendar_minutes_before: 'دقیقه قبل از رویداد',
+    settings_calendar_minutes_option: (n: number) => `${n} دقیقه`,
+    settings_calendar_impact_filter: 'فیلتر اهمیت',
+    settings_calendar_impact_high: 'بالا',
+    settings_calendar_impact_medium: 'متوسط',
+    settings_calendar_impact_low: 'پایین',
+    settings_calendar_currency_filter: 'فیلتر ارز (خالی = همه)',
+    settings_calendar_notify_result: 'اطلاع‌رسانی پس از انتشار نتیجه',
+    settings_calendar_telegram_active: 'آلارم تلگرام فعال است',
+    settings_calendar_telegram_inactive: 'برای دریافت آلارم، تلگرام را متصل کنید',
+    settings_calendar_save: 'ذخیره تنظیمات آلارم',
 
     // ── Emotions ───────────────────────────────────────────
     emotion_fear: 'ترس',

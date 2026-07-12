@@ -5,6 +5,7 @@ import { useLang } from '@/app/i18n/LangContext';
 import { useTheme } from '@/app/i18n/ThemeContext';
 import type { Lang } from '@/app/i18n/translations';
 import type { Theme } from '@/app/i18n/ThemeContext';
+import CalendarAlertsSection from './CalendarAlertsSection';
 
 function OptionButton<T extends string>({
   value,
@@ -100,6 +101,8 @@ export default function SettingsPage() {
           />
         </div>
       </section>
+
+      <CalendarAlertsSection />
     </div>
   );
 }
