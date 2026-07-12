@@ -5,9 +5,11 @@ import Link from 'next/link';
 import { useGeoLang, type Lang } from '@/lib/useGeoLang';
 import { AmbientOrbs } from '@/components/effects';
 import { Badge } from '@/components/ui/badge';
+import { Spinner } from '@/components/ui/spinner';
+import { apiFetch } from '@/lib/api';
 import { dateKeyOf, formatDateHeader } from './dateFormat';
-import HighImpactAnalysis from './HighImpactAnalysis';
-import type { CalendarEvent } from './types';
+import AnalysisPanel from './AnalysisPanel';
+import type { CalendarEvent, EventAnalysis } from './types';
 
 const displayFont = "'Fraunces', serif";
 
@@ -28,6 +30,7 @@ const COPY = {
     colActual: 'Actual',
     today: 'Today',
     noEvents: 'No events in the next 7 days.',
+    noAnalysis: 'AI analysis not available for this event yet.',
     footer: 'Source: Forex Factory | For educational purposes only',
     inTime: (label: string) => `in ${label}`,
   },
@@ -47,6 +50,7 @@ const COPY = {
     colActual: 'واقعی',
     today: 'امروز',
     noEvents: 'رویدادی در ۷ روز آینده نیست.',
+    noAnalysis: 'تحلیل هوش مصنوعی هنوز برای این رویداد موجود نیست.',
     footer: 'منبع: Forex Factory | صرفاً جهت آموزش',
     inTime: (label: string) => `${label} دیگر`,
   },
@@ -89,6 +93,23 @@ function ImpactBadge({ impact }: { impact: string }) {
   );
 }
 
+function AiButton({ active, isFa, onClick }: { active: boolean; isFa: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="px-2 py-0.5 rounded-md border text-[10px] font-medium whitespace-nowrap"
+      style={{
+        borderColor: 'rgba(0,212,255,0.35)',
+        color: 'var(--color-cyan)',
+        backgroundColor: active ? 'var(--color-cyan-dim)' : 'transparent',
+      }}
+    >
+      🤖 {isFa ? 'تحلیل' : 'AI'}
+    </button>
+  );
+}
+
 export default function NewsClient({
   initialEvents,
   initialLang,
@@ -105,12 +126,36 @@ export default function NewsClient({
 
   const [impactFilter, setImpactFilter] = useState<string | null>(null);
   const [now, setNow] = useState<number | null>(null);
+  const [analysisData, setAnalysisData] = useState<EventAnalysis[] | null>(null);
+  const [expandedAnalysisId, setExpandedAnalysisId] = useState<string | null>(null);
 
   useEffect(() => {
     setNow(Date.now());
     const timer = setInterval(() => setNow(Date.now()), 30_000);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    apiFetch<{ analyses: EventAnalysis[] }>('/api/calendar/analysis')
+      .then((res) => {
+        if (!cancelled) setAnalysisData(res.analyses ?? []);
+      })
+      .catch(() => {
+        if (!cancelled) setAnalysisData([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const analysisById = useMemo(() => {
+    const map = new Map<string, EventAnalysis['analysis']>();
+    (analysisData ?? []).forEach((a) => map.set(a.event.id, a.analysis));
+    return map;
+  }, [analysisData]);
+
+  const toggleAnalysis = (id: string) => setExpandedAnalysisId((prev) => (prev === id ? null : id));
 
   const filtered = useMemo(
     () => (impactFilter ? initialEvents.filter((e) => e.impact === impactFilter) : initialEvents),
@@ -169,8 +214,6 @@ export default function NewsClient({
           )}
         </section>
 
-        <HighImpactAnalysis lang={lang} />
-
         <section className="max-w-screen-xl mx-auto px-6 pb-4 flex flex-wrap gap-2">
           <button
             onClick={() => setImpactFilter(null)}
@@ -228,25 +271,47 @@ export default function NewsClient({
                     </span>
                     <div className="flex-1" style={{ height: 1, background: 'var(--color-cyan)' }} />
                   </div>
-                  {group.events.map((event) => (
-                    <div
-                      key={event.id}
-                      className="grid items-center px-4 py-3 text-sm"
-                      style={{ gridTemplateColumns: '110px 90px 1fr 110px 100px 100px 100px', borderBottom: '1px solid var(--color-border)' }}
-                    >
-                      <span style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--color-text-muted)' }}>
-                        {new Date(event.datetime_utc).toISOString().slice(11, 16)}
-                      </span>
-                      <span className="font-medium">{event.country}</span>
-                      <span>{event.title}</span>
-                      <ImpactBadge impact={event.impact} />
-                      <span style={{ color: 'var(--color-text-muted)' }}>{event.forecast || '—'}</span>
-                      <span style={{ color: 'var(--color-text-muted)' }}>{event.previous || '—'}</span>
-                      <span style={{ color: actualColor(event) ?? 'var(--color-text-secondary)' }}>
-                        {event.is_released ? (event.actual || '—') : (now !== null ? t.inTime(formatCountdown(new Date(event.datetime_utc).getTime() - now, lang)) : '')}
-                      </span>
-                    </div>
-                  ))}
+                  {group.events.map((event) => {
+                    const isHigh = event.impact === 'High';
+                    const expanded = isHigh && expandedAnalysisId === event.id;
+                    const eventAnalysis = analysisById.get(event.id);
+                    return (
+                      <div key={event.id}>
+                        <div
+                          className="grid items-center px-4 py-3 text-sm"
+                          style={{ gridTemplateColumns: '110px 90px 1fr 110px 100px 100px 100px', borderBottom: expanded ? 'none' : '1px solid var(--color-border)' }}
+                        >
+                          <span style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--color-text-muted)' }}>
+                            {new Date(event.datetime_utc).toISOString().slice(11, 16)}
+                          </span>
+                          <span className="font-medium">{event.country}</span>
+                          <span>{event.title}</span>
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <ImpactBadge impact={event.impact} />
+                            {isHigh && (
+                              <AiButton active={expanded} isFa={isFa} onClick={() => toggleAnalysis(event.id)} />
+                            )}
+                          </div>
+                          <span style={{ color: 'var(--color-text-muted)' }}>{event.forecast || '—'}</span>
+                          <span style={{ color: 'var(--color-text-muted)' }}>{event.previous || '—'}</span>
+                          <span style={{ color: actualColor(event) ?? 'var(--color-text-secondary)' }}>
+                            {event.is_released ? (event.actual || '—') : (now !== null ? t.inTime(formatCountdown(new Date(event.datetime_utc).getTime() - now, lang)) : '')}
+                          </span>
+                        </div>
+                        {expanded && (
+                          <div className="px-4 py-4" style={{ borderBottom: '1px solid var(--color-border)', backgroundColor: 'var(--color-surface)' }}>
+                            {analysisData === null ? (
+                              <div className="flex items-center justify-center py-6"><Spinner size="sm" /></div>
+                            ) : eventAnalysis ? (
+                              <AnalysisPanel event={event} content={eventAnalysis[lang]} lang={lang} />
+                            ) : (
+                              <p className="text-xs py-4 text-center" style={{ color: 'var(--color-text-disabled)' }}>{t.noAnalysis}</p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               ))}
             </div>
@@ -264,24 +329,45 @@ export default function NewsClient({
                   <div className="flex-1" style={{ height: 1, background: 'var(--color-cyan)' }} />
                 </div>
                 <div className="space-y-3 mt-3">
-                  {group.events.map((event) => (
-                    <div key={event.id} className="p-4" style={{ border: '1px solid var(--color-border)', backgroundColor: 'var(--color-surface)' }}>
-                      <div className="flex items-center justify-between mb-2">
-                        <ImpactBadge impact={event.impact} />
-                        <span className="text-xs" style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--color-text-muted)' }}>
-                          {new Date(event.datetime_utc).toISOString().slice(11, 16)} UTC
-                        </span>
+                  {group.events.map((event) => {
+                    const isHigh = event.impact === 'High';
+                    const expanded = isHigh && expandedAnalysisId === event.id;
+                    const eventAnalysis = analysisById.get(event.id);
+                    return (
+                      <div key={event.id} className="p-4" style={{ border: '1px solid var(--color-border)', backgroundColor: 'var(--color-surface)' }}>
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <ImpactBadge impact={event.impact} />
+                            {isHigh && (
+                              <AiButton active={expanded} isFa={isFa} onClick={() => toggleAnalysis(event.id)} />
+                            )}
+                          </div>
+                          <span className="text-xs" style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--color-text-muted)' }}>
+                            {new Date(event.datetime_utc).toISOString().slice(11, 16)} UTC
+                          </span>
+                        </div>
+                        <div className="text-sm font-medium mb-1">{event.country} — {event.title}</div>
+                        <div className="flex gap-4 text-xs mt-2" style={{ color: 'var(--color-text-muted)' }}>
+                          <span>{t.colForecast}: {event.forecast || '—'}</span>
+                          <span>{t.colPrevious}: {event.previous || '—'}</span>
+                          <span style={{ color: actualColor(event) }}>
+                            {t.colActual}: {event.is_released ? (event.actual || '—') : (now !== null ? t.inTime(formatCountdown(new Date(event.datetime_utc).getTime() - now, lang)) : '')}
+                          </span>
+                        </div>
+                        {expanded && (
+                          <div className="mt-3 pt-3" style={{ borderTop: '1px solid var(--color-border)' }}>
+                            {analysisData === null ? (
+                              <div className="flex items-center justify-center py-6"><Spinner size="sm" /></div>
+                            ) : eventAnalysis ? (
+                              <AnalysisPanel event={event} content={eventAnalysis[lang]} lang={lang} />
+                            ) : (
+                              <p className="text-xs py-4 text-center" style={{ color: 'var(--color-text-disabled)' }}>{t.noAnalysis}</p>
+                            )}
+                          </div>
+                        )}
                       </div>
-                      <div className="text-sm font-medium mb-1">{event.country} — {event.title}</div>
-                      <div className="flex gap-4 text-xs mt-2" style={{ color: 'var(--color-text-muted)' }}>
-                        <span>{t.colForecast}: {event.forecast || '—'}</span>
-                        <span>{t.colPrevious}: {event.previous || '—'}</span>
-                        <span style={{ color: actualColor(event) }}>
-                          {t.colActual}: {event.is_released ? (event.actual || '—') : (now !== null ? t.inTime(formatCountdown(new Date(event.datetime_utc).getTime() - now, lang)) : '')}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             ))}
