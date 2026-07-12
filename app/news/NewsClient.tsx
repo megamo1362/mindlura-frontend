@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useGeoLang, type Lang } from '@/lib/useGeoLang';
 import { AmbientOrbs } from '@/components/effects';
@@ -128,6 +128,11 @@ export default function NewsClient({
   const [now, setNow] = useState<number | null>(null);
   const [analysisData, setAnalysisData] = useState<EventAnalysis[] | null>(null);
   const [expandedAnalysisId, setExpandedAnalysisId] = useState<string | null>(null);
+  // Guards against React StrictMode's dev-mode double-invoke of effects — a ref
+  // (unlike state) persists across that mount→unmount→remount cycle, so this
+  // fetch fires exactly once per real mount no matter how many times buttons
+  // are clicked afterward or how effects re-run in development.
+  const hasFetchedAnalysis = useRef(false);
 
   useEffect(() => {
     setNow(Date.now());
@@ -136,6 +141,9 @@ export default function NewsClient({
   }, []);
 
   useEffect(() => {
+    if (hasFetchedAnalysis.current) return;
+    hasFetchedAnalysis.current = true;
+
     let cancelled = false;
     apiFetch<{ analyses: EventAnalysis[] }>('/api/calendar/analysis')
       .then((res) => {
