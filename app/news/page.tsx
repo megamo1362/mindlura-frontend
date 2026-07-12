@@ -6,23 +6,37 @@ import type { CalendarEvent } from './types';
 
 export const revalidate = 900;
 
+const NEWS_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'Dataset',
+  name: 'Forex Economic Calendar',
+  description: 'Economic events and news for forex traders — next 7 days',
+  url: 'https://mindlura.com/news',
+  provider: {
+    '@type': 'Organization',
+    name: 'Mindlura',
+    url: 'https://mindlura.com',
+  },
+};
+
 export async function generateMetadata(): Promise<Metadata> {
   const lang = await getServerGeoLang();
   const isFa = lang === 'fa';
 
   const title = isFa
-    ? 'تقویم اقتصادی فارکس | ۷ روز آینده | مایندلورا'
-    : 'Economic Calendar | Next 7 Days | Mindlura';
+    ? 'تقویم اقتصادی فارکس و اخبار | ۷ روز آینده | مایندلورا'
+    : 'Forex Economic Calendar & News | Next 7 Days | Mindlura';
   const description = isFa
-    ? 'رویدادهای اقتصادی و اخبار فارکس در ۷ روز آینده، به‌همراه پیش‌بینی، مقدار قبلی و نتیجه.'
-    : 'Upcoming forex economic calendar events for the next 7 days, with forecast, previous, and released values.';
+    ? 'تقویم اقتصادی فارکس رایگان با رتبه‌بندی تأثیر لحظه‌ای. رویدادهای پراهمیت دلار، یورو، پوند و ین را در ۷ روز آینده با تحلیل هوش مصنوعی دنبال کنید.'
+    : 'Free forex economic calendar with real-time impact ratings. Track high-impact USD, EUR, GBP, JPY events for the next 7 days with AI analysis.';
 
   return {
     title: { absolute: title },
     description,
     keywords: ['economic calendar', 'forex news', 'تقویم اقتصادی', 'اخبار فارکس'],
-    alternates: { canonical: '/news' },
-    openGraph: { title, description, url: '/news', siteName: 'Mindlura', type: 'website' },
+    alternates: { canonical: 'https://mindlura.com/news' },
+    openGraph: { title, description, url: 'https://mindlura.com/news', siteName: 'Mindlura', type: 'website' },
+    twitter: { card: 'summary', title, description },
   };
 }
 
@@ -42,5 +56,13 @@ async function fetchCalendarEvents(): Promise<{ events: CalendarEvent[]; fetched
 export default async function NewsPage() {
   const [lang, { events, fetchedAt }] = await Promise.all([getServerGeoLang(), fetchCalendarEvents()]);
 
-  return <NewsClient initialEvents={events} initialLang={lang} fetchedAt={fetchedAt} />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(NEWS_SCHEMA) }}
+      />
+      <NewsClient initialEvents={events} initialLang={lang} fetchedAt={fetchedAt} />
+    </>
+  );
 }
