@@ -9,8 +9,8 @@ import type { EventAnalysis, AnalysisScenario } from './types';
 
 const COPY = {
   en: {
-    header: '🔴 Key Events This Week — AI Analysis',
-    noEvents: 'No high-impact events in the next 3 days',
+    header: '🔴 Key Events — Past & Next 7 Days — AI Analysis',
+    noEvents: 'No high-impact events in the past or next 7 days',
     whyMatters: '📌 Why it matters',
     bullish: (country: string) => `📈 Bullish ${country}`,
     bearish: (country: string) => `📉 Bearish ${country}`,
@@ -20,8 +20,8 @@ const COPY = {
     previous: 'Previous',
   },
   fa: {
-    header: '🔴 رویدادهای کلیدی هفته — تحلیل هوش مصنوعی',
-    noEvents: 'رویداد پراهمیتی در ۳ روز آینده وجود ندارد',
+    header: '🔴 رویدادهای کلیدی — ۷ روز گذشته و آینده — تحلیل هوش مصنوعی',
+    noEvents: 'رویداد پراهمیتی در ۷ روز گذشته یا آینده وجود ندارد',
     whyMatters: '📌 چرا اهمیت دارد',
     bullish: (country: string) => `📈 صعودی ${country}`,
     bearish: (country: string) => `📉 نزولی ${country}`,
