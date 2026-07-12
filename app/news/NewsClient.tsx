@@ -15,7 +15,7 @@ const COPY = {
     back: '← Mindlura',
     eyebrow: 'Economic Calendar',
     title: 'Economic Calendar — Next 7 Days',
-    sub: 'Live forex economic events, forecasts, and released results, updated every 15 minutes.',
+    sub: 'Live forex economic events, forecasts, and released results, updated every 1 hour.',
     filterAll: 'All',
     colTime: 'Time (UTC)',
     colCurrency: 'Currency',
@@ -24,7 +24,7 @@ const COPY = {
     colForecast: 'Forecast',
     colPrevious: 'Previous',
     colActual: 'Actual',
-    now: 'Now',
+    today: 'Today',
     noEvents: 'No events in the next 7 days.',
     footer: 'Source: Forex Factory | For educational purposes only',
     inTime: (label: string) => `in ${label}`,
@@ -34,7 +34,7 @@ const COPY = {
     back: '→ مایندلورا',
     eyebrow: 'تقویم اقتصادی',
     title: 'تقویم اقتصادی — ۷ روز آینده',
-    sub: 'رویدادهای اقتصادی فارکس، پیش‌بینی‌ها و نتایج منتشرشده، هر ۱۵ دقیقه به‌روزرسانی می‌شود.',
+    sub: 'رویدادهای اقتصادی فارکس، پیش‌بینی‌ها و نتایج منتشرشده، هر ۱ ساعت به‌روزرسانی می‌شود.',
     filterAll: 'همه',
     colTime: 'زمان (UTC)',
     colCurrency: 'ارز',
@@ -43,7 +43,7 @@ const COPY = {
     colForecast: 'پیش‌بینی',
     colPrevious: 'قبلی',
     colActual: 'واقعی',
-    now: 'اکنون',
+    today: 'امروز',
     noEvents: 'رویدادی در ۷ روز آینده نیست.',
     footer: 'منبع: Forex Factory | صرفاً جهت آموزش',
     inTime: (label: string) => `${label} دیگر`,
@@ -53,6 +53,28 @@ const COPY = {
 const IMPACT_LEVELS = ['High', 'Medium', 'Low'] as const;
 const IMPACT_EMOJI: Record<string, string> = { High: '🔴', Medium: '🟡', Low: '⚪', Holiday: '🏳️' };
 const IMPACT_VARIANT: Record<string, 'red' | 'yellow' | 'gray'> = { High: 'red', Medium: 'yellow', Low: 'gray', Holiday: 'gray' };
+
+const FA_DIGITS = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+const FA_WEEKDAYS = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه'];
+const FA_MONTHS = ['ژانویه', 'فوریه', 'مارس', 'آوریل', 'می', 'ژوئن', 'جولای', 'آگوست', 'سپتامبر', 'اکتبر', 'نوامبر', 'دسامبر'];
+
+function toFaDigits(n: number): string {
+  return String(n).split('').map((d) => FA_DIGITS[Number(d)] ?? d).join('');
+}
+
+/** Groups by calendar day in UTC — matches the "Time (UTC)" column so the grouping stays consistent with what's displayed. */
+function dateKeyOf(datetimeUtc: string): string {
+  return datetimeUtc.slice(0, 10);
+}
+
+function formatDateHeader(dateKey: string, lang: Lang, isToday: boolean): string {
+  if (isToday) return lang === 'fa' ? 'امروز' : 'Today';
+  const d = new Date(`${dateKey}T00:00:00Z`);
+  if (lang === 'fa') {
+    return `${FA_WEEKDAYS[d.getUTCDay()]} ${toFaDigits(d.getUTCDate())} ${FA_MONTHS[d.getUTCMonth()]}`;
+  }
+  return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' });
+}
 
 function parseNumeric(value: string): number | null {
   if (!value) return null;
@@ -115,10 +137,20 @@ export default function NewsClient({
     [initialEvents, impactFilter],
   );
 
-  const nowDividerIndex = useMemo(() => {
-    if (now === null) return -1;
-    return filtered.findIndex((e) => new Date(e.datetime_utc).getTime() > now);
-  }, [filtered, now]);
+  // filtered is already chronologically sorted (backend sorts by datetime_utc), so grouping by
+  // insertion order via Map keeps each day's group in the right place without re-sorting.
+  const groups = useMemo(() => {
+    const map = new Map<string, CalendarEvent[]>();
+    for (const event of filtered) {
+      const key = dateKeyOf(event.datetime_utc);
+      const bucket = map.get(key);
+      if (bucket) bucket.push(event);
+      else map.set(key, [event]);
+    }
+    return Array.from(map.entries()).map(([dateKey, events]) => ({ dateKey, events }));
+  }, [filtered]);
+
+  const todayKey = now !== null ? dateKeyOf(new Date(now).toISOString()) : null;
 
   return (
     <div
@@ -202,34 +234,37 @@ export default function NewsClient({
                 <span>{t.colPrevious}</span>
                 <span>{t.colActual}</span>
               </div>
-              {filtered.map((event, i) => (
-                <div key={event.id}>
-                  {i === nowDividerIndex && (
-                    <div
-                      className="sticky flex items-center gap-3 px-4 z-40"
-                      style={{ top: 65, backgroundColor: 'var(--color-cyan-dim)' }}
-                    >
-                      <div className="flex-1" style={{ height: 1, background: 'var(--color-cyan)' }} />
-                      <span className="text-[10px] py-1" style={{ color: 'var(--color-cyan)' }}>── {t.now} ──</span>
-                      <div className="flex-1" style={{ height: 1, background: 'var(--color-cyan)' }} />
-                    </div>
-                  )}
+              {groups.map((group) => (
+                <div key={group.dateKey}>
                   <div
-                    className="grid items-center px-4 py-3 text-sm"
-                    style={{ gridTemplateColumns: '110px 90px 1fr 110px 100px 100px 100px', borderBottom: '1px solid var(--color-border)' }}
+                    className="sticky flex items-center gap-3 px-4 z-40"
+                    style={{ top: 65, backgroundColor: 'var(--color-cyan-dim)' }}
                   >
-                    <span style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--color-text-muted)' }}>
-                      {new Date(event.datetime_utc).toISOString().slice(11, 16)}
+                    <div className="flex-1" style={{ height: 1, background: 'var(--color-cyan)' }} />
+                    <span className="text-[10px] py-1 uppercase tracking-wide" style={{ color: 'var(--color-cyan)' }}>
+                      ── {formatDateHeader(group.dateKey, lang, group.dateKey === todayKey)} ──
                     </span>
-                    <span className="font-medium">{event.country}</span>
-                    <span>{event.title}</span>
-                    <ImpactBadge impact={event.impact} />
-                    <span style={{ color: 'var(--color-text-muted)' }}>{event.forecast || '—'}</span>
-                    <span style={{ color: 'var(--color-text-muted)' }}>{event.previous || '—'}</span>
-                    <span style={{ color: actualColor(event) ?? 'var(--color-text-secondary)' }}>
-                      {event.is_released ? (event.actual || '—') : (now !== null ? t.inTime(formatCountdown(new Date(event.datetime_utc).getTime() - now, lang)) : '')}
-                    </span>
+                    <div className="flex-1" style={{ height: 1, background: 'var(--color-cyan)' }} />
                   </div>
+                  {group.events.map((event) => (
+                    <div
+                      key={event.id}
+                      className="grid items-center px-4 py-3 text-sm"
+                      style={{ gridTemplateColumns: '110px 90px 1fr 110px 100px 100px 100px', borderBottom: '1px solid var(--color-border)' }}
+                    >
+                      <span style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--color-text-muted)' }}>
+                        {new Date(event.datetime_utc).toISOString().slice(11, 16)}
+                      </span>
+                      <span className="font-medium">{event.country}</span>
+                      <span>{event.title}</span>
+                      <ImpactBadge impact={event.impact} />
+                      <span style={{ color: 'var(--color-text-muted)' }}>{event.forecast || '—'}</span>
+                      <span style={{ color: 'var(--color-text-muted)' }}>{event.previous || '—'}</span>
+                      <span style={{ color: actualColor(event) ?? 'var(--color-text-secondary)' }}>
+                        {event.is_released ? (event.actual || '—') : (now !== null ? t.inTime(formatCountdown(new Date(event.datetime_utc).getTime() - now, lang)) : '')}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               ))}
             </div>
@@ -237,21 +272,34 @@ export default function NewsClient({
 
           {/* Mobile cards */}
           <div className="md:hidden space-y-3">
-            {filtered.map((event) => (
-              <div key={event.id} className="p-4" style={{ border: '1px solid var(--color-border)', backgroundColor: 'var(--color-surface)' }}>
-                <div className="flex items-center justify-between mb-2">
-                  <ImpactBadge impact={event.impact} />
-                  <span className="text-xs" style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--color-text-muted)' }}>
-                    {new Date(event.datetime_utc).toISOString().slice(11, 16)} UTC
+            {groups.map((group) => (
+              <div key={group.dateKey}>
+                <div className="sticky flex items-center gap-3 z-40 py-1" style={{ top: 65, backgroundColor: 'var(--color-void)' }}>
+                  <div className="flex-1" style={{ height: 1, background: 'var(--color-cyan)' }} />
+                  <span className="text-[10px] uppercase tracking-wide" style={{ color: 'var(--color-cyan)' }}>
+                    ── {formatDateHeader(group.dateKey, lang, group.dateKey === todayKey)} ──
                   </span>
+                  <div className="flex-1" style={{ height: 1, background: 'var(--color-cyan)' }} />
                 </div>
-                <div className="text-sm font-medium mb-1">{event.country} — {event.title}</div>
-                <div className="flex gap-4 text-xs mt-2" style={{ color: 'var(--color-text-muted)' }}>
-                  <span>{t.colForecast}: {event.forecast || '—'}</span>
-                  <span>{t.colPrevious}: {event.previous || '—'}</span>
-                  <span style={{ color: actualColor(event) }}>
-                    {t.colActual}: {event.is_released ? (event.actual || '—') : (now !== null ? t.inTime(formatCountdown(new Date(event.datetime_utc).getTime() - now, lang)) : '')}
-                  </span>
+                <div className="space-y-3 mt-3">
+                  {group.events.map((event) => (
+                    <div key={event.id} className="p-4" style={{ border: '1px solid var(--color-border)', backgroundColor: 'var(--color-surface)' }}>
+                      <div className="flex items-center justify-between mb-2">
+                        <ImpactBadge impact={event.impact} />
+                        <span className="text-xs" style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--color-text-muted)' }}>
+                          {new Date(event.datetime_utc).toISOString().slice(11, 16)} UTC
+                        </span>
+                      </div>
+                      <div className="text-sm font-medium mb-1">{event.country} — {event.title}</div>
+                      <div className="flex gap-4 text-xs mt-2" style={{ color: 'var(--color-text-muted)' }}>
+                        <span>{t.colForecast}: {event.forecast || '—'}</span>
+                        <span>{t.colPrevious}: {event.previous || '—'}</span>
+                        <span style={{ color: actualColor(event) }}>
+                          {t.colActual}: {event.is_released ? (event.actual || '—') : (now !== null ? t.inTime(formatCountdown(new Date(event.datetime_utc).getTime() - now, lang)) : '')}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
