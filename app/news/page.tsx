@@ -11,11 +11,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const isFa = lang === 'fa';
 
   const title = isFa
-    ? 'تقویم اقتصادی فارکس | ۲۴ ساعت آینده | مایندلورا'
-    : 'Economic Calendar | Next 24 Hours | Mindlura';
+    ? 'تقویم اقتصادی فارکس | ۷ روز آینده | مایندلورا'
+    : 'Economic Calendar | Next 7 Days | Mindlura';
   const description = isFa
-    ? 'رویدادهای اقتصادی و اخبار فارکس در ۲۴ ساعت آینده، به‌همراه پیش‌بینی، مقدار قبلی و نتیجه.'
-    : 'Upcoming forex economic calendar events for the next 24 hours, with forecast, previous, and released values.';
+    ? 'رویدادهای اقتصادی و اخبار فارکس در ۷ روز آینده، به‌همراه پیش‌بینی، مقدار قبلی و نتیجه.'
+    : 'Upcoming forex economic calendar events for the next 7 days, with forecast, previous, and released values.';
 
   return {
     title: { absolute: title },
