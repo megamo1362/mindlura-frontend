@@ -22,7 +22,7 @@ export default function CoachClientJournalPage({ params }: { params: Promise<{ c
   const { t } = useLang();
 
   useEffect(() => {
-    apiFetch<{ accounts: Account[] }>(`/accounts/coach/client/${clientId}/list`)
+    apiFetch<{ accounts: Account[] }>(`/coach/client/${clientId}/accounts`)
       .then(d => {
         const list = d.accounts ?? [];
         setAccounts(list);
