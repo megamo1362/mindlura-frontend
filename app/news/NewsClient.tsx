@@ -2,7 +2,9 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
 import { useGeoLang, type Lang } from '@/lib/useGeoLang';
+import { getCounterpartPath, setLocaleCookie } from '@/lib/localePath';
 import { AmbientOrbs } from '@/components/effects';
 import { Badge } from '@/components/ui/badge';
 import { Spinner } from '@/components/ui/spinner';
@@ -121,11 +123,17 @@ export default function NewsClient({
   initialCountry: string;
   fetchedAt: string | null;
 }) {
-  const { lang, setLang, country } = useGeoLang(initialLang, initialCountry);
+  const { lang, country } = useGeoLang(initialLang, initialCountry);
+  const router = useRouter();
+  const pathname = usePathname();
   const showLangToggle = country === 'IR';
   const t = COPY[lang];
   const isFa = lang === 'fa';
   const bodyFont = isFa ? "'Vazirmatn', sans-serif" : "'Inter', sans-serif";
+  const switchLang = () => {
+    setLocaleCookie(isFa ? 'en' : 'fa');
+    router.push(getCounterpartPath(pathname));
+  };
 
   const [impactFilter, setImpactFilter] = useState<string | null>(null);
   const [now, setNow] = useState<number | null>(null);
@@ -206,7 +214,7 @@ export default function NewsClient({
             </Link>
             {showLangToggle && (
               <button
-                onClick={() => setLang(isFa ? 'en' : 'fa')}
+                onClick={switchLang}
                 className="text-xs italic"
                 style={{ fontFamily: displayFont, color: 'var(--color-text-muted)' }}
               >

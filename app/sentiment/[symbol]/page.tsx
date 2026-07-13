@@ -46,6 +46,7 @@ export async function generateMetadata({
       url: path,
       siteName: 'Mindlura',
       type: 'website',
+      locale: isFa ? 'fa_IR' : 'en_US',
     },
   };
 }

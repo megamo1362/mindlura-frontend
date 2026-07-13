@@ -36,7 +36,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description,
     keywords: ['economic calendar', 'forex news', 'تقویم اقتصادی', 'اخبار فارکس'],
     alternates: { canonical: 'https://mindlura.com/news' },
-    openGraph: { title, description, url: 'https://mindlura.com/news', siteName: 'Mindlura', type: 'website' },
+    openGraph: { title, description, url: 'https://mindlura.com/news', siteName: 'Mindlura', type: 'website', locale: isFa ? 'fa_IR' : 'en_US' },
     twitter: { card: 'summary', title, description },
   };
 }

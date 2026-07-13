@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical: '/sentiment',
       languages: { en: '/sentiment', fa: '/sentiment?lang=fa', 'x-default': '/sentiment' },
     },
-    openGraph: { title, description, url: '/sentiment', siteName: 'Mindlura', type: 'website' },
+    openGraph: { title, description, url: '/sentiment', siteName: 'Mindlura', type: 'website', locale: isFa ? 'fa_IR' : 'en_US' },
   };
 }
 

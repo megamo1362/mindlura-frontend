@@ -2,7 +2,9 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 import { useGeoLang, type Lang } from "@/lib/useGeoLang";
+import { getCounterpartPath, setLocaleCookie } from "@/lib/localePath";
 import {
   TrendingUp,
   Brain,
@@ -332,7 +334,9 @@ const FOOTER_HREFS = [
 ];
 
 export default function HomeClient({ initialLang, initialCountry }: { initialLang: Lang; initialCountry: string }) {
-  const { lang, setLang, country } = useGeoLang(initialLang, initialCountry);
+  const { lang, country } = useGeoLang(initialLang, initialCountry);
+  const router = useRouter();
+  const pathname = usePathname();
   const [audience, setAudience] = useState<"trader" | "coach">("trader");
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -340,6 +344,10 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
   const showLangToggle = country === "IR";
   const t = COPY[lang];
   const isFa = lang === "fa";
+  const switchLang = () => {
+    setLocaleCookie(isFa ? "en" : "fa");
+    router.push(getCounterpartPath(pathname));
+  };
   const accent = audience === "trader" ? "#8B7CF6" : "#38BDF8";
   const accentGlow = audience === "trader" ? "rgba(139,124,246,0.5)" : "rgba(56,189,248,0.5)";
 
@@ -380,7 +388,7 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
 
           <div className="hidden md:flex items-center gap-6">
             {showLangToggle && (
-              <button onClick={() => setLang(isFa ? "en" : "fa")} className="text-xs italic ml-focus" style={{ fontFamily: displayFont, color: "#7C8296" }}>
+              <button onClick={switchLang} className="text-xs italic ml-focus" style={{ fontFamily: displayFont, color: "#7C8296" }}>
                 {isFa ? "English" : "فارسی"}
               </button>
             )}
@@ -410,7 +418,7 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
               {t.nav.start}
             </Link>
             {showLangToggle && (
-              <button onClick={() => setLang(isFa ? "en" : "fa")} className="text-left italic" style={{ fontFamily: displayFont }}>{isFa ? "English" : "فارسی"}</button>
+              <button onClick={switchLang} className="text-left italic" style={{ fontFamily: displayFont }}>{isFa ? "English" : "فارسی"}</button>
             )}
           </div>
         )}

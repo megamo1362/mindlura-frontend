@@ -1,7 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
 import { useGeoLang, type Lang } from '@/lib/useGeoLang';
+import { getCounterpartPath, setLocaleCookie } from '@/lib/localePath';
 import { AmbientOrbs } from '@/components/effects';
 import {
   MARKET_SYMBOLS,
@@ -77,11 +79,17 @@ export default function MarketListClient({
   initialLang: Lang;
   initialCountry: string;
 }) {
-  const { lang, setLang, country } = useGeoLang(initialLang, initialCountry);
+  const { lang, country } = useGeoLang(initialLang, initialCountry);
+  const router = useRouter();
+  const pathname = usePathname();
   const showLangToggle = country === 'IR';
   const t = COPY[lang];
   const isFa = lang === 'fa';
   const bodyFont = isFa ? "'Vazirmatn', sans-serif" : "'Inter', sans-serif";
+  const switchLang = () => {
+    setLocaleCookie(isFa ? 'en' : 'fa');
+    router.push(getCounterpartPath(pathname));
+  };
 
   return (
     <div
@@ -108,7 +116,7 @@ export default function MarketListClient({
             </Link>
             {showLangToggle && (
               <button
-                onClick={() => setLang(isFa ? 'en' : 'fa')}
+                onClick={switchLang}
                 className="text-xs italic mkt-focus"
                 style={{ fontFamily: displayFont, color: 'var(--color-text-muted)' }}
               >

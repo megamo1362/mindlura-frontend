@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
 import { submitWaitlist } from './actions';
 import { useGeoLang, type Lang } from '@/lib/useGeoLang';
+import { getCounterpartPath, setLocaleCookie } from '@/lib/localePath';
 
 const displayFont = "'Fraunces', serif";
 const accent = '#8B7CF6';
@@ -68,7 +70,9 @@ export default function WaitlistClient({
   initialLang: Lang;
   initialCountry: string;
 }) {
-  const { lang, setLang, country } = useGeoLang(initialLang, initialCountry);
+  const { lang, country } = useGeoLang(initialLang, initialCountry);
+  const router = useRouter();
+  const pathname = usePathname();
   const [email, setEmail] = useState('');
   const [state, setState] = useState<FormState>('idle');
 
@@ -89,8 +93,8 @@ export default function WaitlistClient({
   }
 
   function switchLang() {
-    setLang(isFa ? 'en' : 'fa');
-    setState('idle');
+    setLocaleCookie(isFa ? 'en' : 'fa');
+    router.push(getCounterpartPath(pathname));
   }
 
   return (

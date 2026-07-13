@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { headers } from 'next/headers';
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { Providers } from '@/app/providers';
@@ -44,6 +45,7 @@ export const metadata: Metadata = {
     url: siteUrl,
     siteName: 'Mindlura',
     type: 'website',
+    locale: 'en_US',
     images: [{ url: ogImage }],
   },
   twitter: {
@@ -105,15 +107,34 @@ const schemaSoftware = {
   ]
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // Set only for requests middleware.ts matches (public pages) — absent for
+  // /login, /dashboard, /admin, /api, so those keep the en/ltr default below
+  // and never get (possibly wrong) hreflang tags for a private path.
+  const headersList = await headers();
+  const pathname = headersList.get('x-pathname');
+  const isFa = pathname === '/fa' || (pathname?.startsWith('/fa/') ?? false);
+  const lang = isFa ? 'fa' : 'en';
+  const dir = isFa ? 'rtl' : 'ltr';
+
+  const enPath = pathname === null ? null : isFa ? (pathname.replace(/^\/fa/, '') || '/') : pathname;
+  const faPath = pathname === null ? null : isFa ? pathname : pathname === '/' ? '/fa' : `/fa${pathname}`;
+
   return (
     <html
-      lang="en"
-      dir="ltr"
+      lang={lang}
+      dir={dir}
       suppressHydrationWarning
       className={`${inter.variable} ${jetbrainsMono.variable}`}
     >
       <head>
+        {enPath !== null && faPath !== null && (
+          <>
+            <link rel="alternate" hrefLang="en" href={`${siteUrl}${enPath}`} />
+            <link rel="alternate" hrefLang="fa" href={`${siteUrl}${faPath}`} />
+            <link rel="alternate" hrefLang="x-default" href={`${siteUrl}${enPath}`} />
+          </>
+        )}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaOrg) }}

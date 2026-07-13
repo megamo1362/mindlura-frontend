@@ -1,9 +1,12 @@
+import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import { getAllPosts, getPostBySlug } from '@/lib/blog';
 import { BlogPostContent } from '@/components/pages/BlogPostPage';
-import type { Metadata } from 'next';
 
-export async function generateStaticParams() {
-  return getAllPosts().map((p) => ({ slug: p.slug }));
+export function generateStaticParams() {
+  return getAllPosts()
+    .filter((p) => p.lang === 'fa')
+    .map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({
@@ -13,20 +16,22 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const post = getPostBySlug(slug);
+  if (post.lang !== 'fa') return {};
   return {
-    title: `${post.title} | Mindlura Blog`,
+    title: `${post.title} | بلاگ مایندلورا`,
     description: post.description,
-    openGraph: { locale: post.lang === 'fa' ? 'fa_IR' : 'en_US' },
+    openGraph: { locale: 'fa_IR' },
   };
 }
 
-export default async function PostPage({
+export default async function FaPostPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
   const post = getPostBySlug(slug);
+  if (post.lang !== 'fa') notFound();
 
-  return <BlogPostContent post={post} />;
+  return <BlogPostContent post={post} localePrefix="/fa" />;
 }
