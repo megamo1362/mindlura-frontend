@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getAllPosts } from '@/lib/blog';
+import { getPostsByLang } from '@/lib/blog';
 import { BlogIndexContent } from '@/components/pages/BlogIndexPage';
 
 export const metadata: Metadata = {
@@ -9,6 +9,6 @@ export const metadata: Metadata = {
 };
 
 export default function FaBlogPage() {
-  const posts = getAllPosts().filter((p) => p.lang === 'fa');
+  const posts = getPostsByLang('fa');
   return <BlogIndexContent lang="fa" posts={posts} />;
 }

@@ -1,12 +1,10 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getAllPosts, getPostBySlug } from '@/lib/blog';
+import { getPostBySlug, getPostsByLang } from '@/lib/blog';
 import { BlogPostContent } from '@/components/pages/BlogPostPage';
 
 export function generateStaticParams() {
-  return getAllPosts()
-    .filter((p) => p.lang === 'fa')
-    .map((p) => ({ slug: p.slug }));
+  return getPostsByLang('fa').map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({

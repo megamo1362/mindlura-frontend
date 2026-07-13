@@ -32,7 +32,7 @@ import {
 const COPY = {
   en: {
     dir: "ltr",
-    nav: { features: "Features", how: "Process", pricing: "Pricing", coaches: "For Coaches", blog: "Blog", market: "Sentiment", news: "News", faq: "FAQ", login: "Log in", start: "Get Started" },
+    nav: { features: "Features", how: "Process", pricing: "Pricing", coaches: "For Coaches", blog: "Blog", market: "Sentiment", news: "News", faq: "FAQ", about: "About", login: "Log in", start: "Get Started" },
     toggle: { trader: "Trader", coach: "Coach" },
     hero: {
       trader: {
@@ -178,7 +178,7 @@ const COPY = {
   },
   fa: {
     dir: "rtl",
-    nav: { features: "ویژگی‌ها", how: "فرآیند", pricing: "قیمت‌گذاری", coaches: "برای کوچ‌ها", blog: "بلاگ", market: "سنتیمنت", news: "اخبار", faq: "سوالات متداول", login: "ورود", start: "شروع کنید" },
+    nav: { features: "ویژگی‌ها", how: "فرآیند", pricing: "قیمت‌گذاری", coaches: "برای کوچ‌ها", blog: "بلاگ", market: "سنتیمنت", news: "اخبار", faq: "سوالات متداول", about: "درباره ما", login: "ورود", start: "شروع کنید" },
     toggle: { trader: "تریدر", coach: "کوچ" },
     hero: {
       trader: {
@@ -345,6 +345,11 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
   const showLangToggle = country === "IR";
   const t = COPY[lang];
   const isFa = lang === "fa";
+  // Internal routes need the /fa prefix on Persian pages; anchors and the
+  // shared /login and /dashboard routes are excluded.
+  const NO_PREFIX_PATHS = ["/login", "/dashboard"];
+  const localizeHref = (href: string) =>
+    isFa && !href.startsWith("#") && !NO_PREFIX_PATHS.includes(href) ? `/fa${href}` : href;
   const switchLang = () => {
     setLocaleCookie(isFa ? "en" : "fa");
     router.push(getCounterpartPath(pathname));
@@ -381,10 +386,11 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
             <a href="#how" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.how}</a>
             <a href="#pricing" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.pricing}</a>
             <a href="#coaches" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.coaches}</a>
-            <Link href="/blog" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.blog}</Link>
-            <Link href="/sentiment" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.market}</Link>
-            <Link href="/news" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.news}</Link>
+            <Link href={localizeHref("/blog")} className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.blog}</Link>
+            <Link href={localizeHref("/sentiment")} className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.market}</Link>
+            <Link href={localizeHref("/news")} className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.news}</Link>
             <a href="#faq" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.faq}</a>
+            <Link href={localizeHref("/about")} className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.about}</Link>
           </nav>
 
           <div className="hidden md:flex items-center gap-6">
@@ -394,7 +400,7 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
               </button>
             )}
             <Link href="/login" className="text-sm ml-focus" style={{ color: "#C7CBE0" }}>{t.nav.login}</Link>
-            <Link href="/register" className="text-sm px-5 py-2 ml-focus" style={{ border: `1px solid ${accent}`, color: "#E9ECF3" }}>
+            <Link href={localizeHref("/register")} className="text-sm px-5 py-2 ml-focus" style={{ border: `1px solid ${accent}`, color: "#E9ECF3" }}>
               {t.nav.start}
             </Link>
           </div>
@@ -409,13 +415,14 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
             <a href="#how">{t.nav.how}</a>
             <a href="#pricing">{t.nav.pricing}</a>
             <a href="#coaches">{t.nav.coaches}</a>
-            <Link href="/blog">{t.nav.blog}</Link>
-            <Link href="/sentiment">{t.nav.market}</Link>
-            <Link href="/news">{t.nav.news}</Link>
+            <Link href={localizeHref("/blog")}>{t.nav.blog}</Link>
+            <Link href={localizeHref("/sentiment")}>{t.nav.market}</Link>
+            <Link href={localizeHref("/news")}>{t.nav.news}</Link>
             <a href="#faq">{t.nav.faq}</a>
+            <Link href={localizeHref("/about")}>{t.nav.about}</Link>
             <div className="hairline" />
             <Link href="/login" onClick={() => setMenuOpen(false)}>{t.nav.login}</Link>
-            <Link href="/register" onClick={() => setMenuOpen(false)} className="inline-block px-5 py-2 text-center" style={{ border: `1px solid ${accent}`, color: "#E9ECF3" }}>
+            <Link href={localizeHref("/register")} onClick={() => setMenuOpen(false)} className="inline-block px-5 py-2 text-center" style={{ border: `1px solid ${accent}`, color: "#E9ECF3" }}>
               {t.nav.start}
             </Link>
             {showLangToggle && (
@@ -453,7 +460,7 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
           </p>
 
           <div className="flex flex-wrap items-center gap-8">
-            <Link href="/register" className="px-7 py-3 text-sm ml-focus ml-glow" style={{ backgroundColor: accent, color: "#0A0E17" }}>
+            <Link href={localizeHref("/register")} className="px-7 py-3 text-sm ml-focus ml-glow" style={{ backgroundColor: accent, color: "#0A0E17" }}>
               {t.hero[audience].cta1}
             </Link>
             <a href="#how" className="text-sm flex items-center gap-2 ml-focus" style={{ color: "#C7CBE0" }}>
@@ -623,7 +630,7 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
             <p className="text-sm italic mb-4" style={{ color: "#38BDF8", fontFamily: displayFont }}>{t.coachSection.eyebrow}</p>
             <h2 className="text-2xl md:text-3xl mb-5 max-w-md" style={{ fontFamily: displayFont, fontWeight: 500 }}>{t.coachSection.title}</h2>
             <p className="text-sm leading-relaxed mb-8 max-w-md" style={{ color: "#7C8296" }}>{t.coachSection.sub}</p>
-            <Link href="/register" className="text-sm inline-flex items-center gap-2 ml-focus" style={{ color: "#38BDF8" }}>
+            <Link href={localizeHref("/register")} className="text-sm inline-flex items-center gap-2 ml-focus" style={{ color: "#38BDF8" }}>
               {t.coachSection.cta}
               <ArrowRight size={14} className={isFa ? "rotate-180" : ""} />
             </Link>
@@ -640,7 +647,7 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
         <div className="hairline mb-16" />
         <div className="flex items-end justify-between mb-12 flex-wrap gap-4">
           <h2 className="text-2xl md:text-3xl" style={{ fontFamily: displayFont, fontWeight: 500 }}>{t.blog.title}</h2>
-          <Link href="/blog" className="text-sm ml-focus" style={{ color: accent }}>{t.blog.cta} →</Link>
+          <Link href={localizeHref("/blog")} className="text-sm ml-focus" style={{ color: accent }}>{t.blog.cta} →</Link>
         </div>
         <div className="grid md:grid-cols-3 gap-8">
           {t.blog.cards.map((card, i) => (
@@ -648,7 +655,7 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
               <span className="text-xs mb-3 uppercase tracking-wide" style={{ color: accent, fontFamily: "'JetBrains Mono', monospace" }}>{card.category}</span>
               <h3 className="text-base mb-3 leading-snug flex-1" style={{ fontFamily: displayFont, fontWeight: 500 }}>{card.title}</h3>
               <p className="text-xs leading-relaxed mb-4" style={{ color: "#7C8296" }}>{card.desc}</p>
-              <Link href="/blog" className="text-xs ml-focus" style={{ color: accent }}>→</Link>
+              <Link href={localizeHref("/blog")} className="text-xs ml-focus" style={{ color: accent }}>→</Link>
             </div>
           ))}
         </div>
@@ -677,7 +684,7 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
             </div>
           ))}
         </div>
-        <Link href="/pricing" className="text-sm underline ml-focus" style={{ color: accent }}>{t.pricing.cta}</Link>
+        <Link href={localizeHref("/pricing")} className="text-sm underline ml-focus" style={{ color: accent }}>{t.pricing.cta}</Link>
       </section>
 
       {/* ---------------- FAQ ---------------- */}
@@ -709,7 +716,7 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
         <div className="hairline mb-16 max-w-xs mx-auto" style={{ backgroundColor: accent, opacity: 0.5 }} />
         <h2 className="text-2xl md:text-4xl mb-3 max-w-2xl mx-auto" style={{ fontFamily: displayFont, fontWeight: 500 }}>{t.finalCta.title}</h2>
         <p className="text-base mb-10" style={{ color: "#7C8296" }}>{t.finalCta.sub}</p>
-        <Link href="/register" className="inline-flex items-center gap-2 px-8 py-3.5 text-sm ml-focus ml-glow" style={{ backgroundColor: accent, color: "#0A0E17" }}>
+        <Link href={localizeHref("/register")} className="inline-flex items-center gap-2 px-8 py-3.5 text-sm ml-focus ml-glow" style={{ backgroundColor: accent, color: "#0A0E17" }}>
           {t.finalCta.button}
           <ArrowRight size={16} className={isFa ? "rotate-180" : ""} />
         </Link>
@@ -732,7 +739,7 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
               <ul className="space-y-2 text-sm" style={{ color: "#5A6178" }}>
                 {col.items.map((item, j) => (
                   <li key={j}>
-                    <Link href={FOOTER_HREFS[i][j]} className="hover:text-[#C7CBE0] transition-colors">{item}</Link>
+                    <Link href={localizeHref(FOOTER_HREFS[i][j])} className="hover:text-[#C7CBE0] transition-colors">{item}</Link>
                   </li>
                 ))}
               </ul>
