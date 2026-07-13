@@ -381,6 +381,36 @@ export interface AdminCoach extends User {
   active_invite_codes_count: number;
   plan_name: string | null;
   plan_slug: string | null;
+  referral_slug: string | null;
+}
+
+export interface AdminCoachClientAccount {
+  id: number;
+  login: string;
+  server: string;
+  is_demo: boolean;
+}
+
+export type CoachClientPermissionStatus = 'active' | 'revoked';
+
+export interface AdminCoachClientRow {
+  client_id: number;
+  client_coach_id: number;
+  email: string;
+  full_name: string | null;
+  display_label: string | null;
+  display_mode: DisplayMode;
+  plan_name: string | null;
+  plan_slug: string | null;
+  connected_since: string | null;
+  permission_status: CoachClientPermissionStatus;
+  mt5_accounts: AdminCoachClientAccount[];
+}
+
+export interface AdminUnassignedClient {
+  id: number;
+  email: string;
+  full_name: string | null;
 }
 
 // ── Journal ────────────────────────────────────────────────
