@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import { getAllPosts } from '@/lib/blog';
 
 const sentimentSymbols = [
   'EURUSD', 'GBPUSD', 'USDJPY', 'USDCAD',
@@ -25,5 +26,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: 'https://mindlura.com/register',    lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.6 },
   ];
 
-  return [...existingUrls, ...sentimentUrls];
+  const posts = getAllPosts();
+  const blogUrls = posts.map(post => ({
+    url: `https://mindlura.com/blog/${post.slug}`,
+    lastModified: new Date(post.date),
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }));
+
+  return [...existingUrls, ...sentimentUrls, ...blogUrls];
 }
