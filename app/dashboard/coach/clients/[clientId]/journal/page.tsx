@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { use } from 'react';
 import { apiFetch, ApiError } from '@/lib/api';
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,8 @@ export default function CoachClientJournalPage({ params }: { params: Promise<{ c
   const { clientId } = use(params);
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [accountId, setAccountId] = useState('');
+  const [accountsLoading, setAccountsLoading] = useState(true);
+  const [accountsError, setAccountsError] = useState('');
   const [data, setData] = useState<JournalAnalysisData | null>(null);
   const [loading, setLoading] = useState(false);
   const [forbidden, setForbidden] = useState(false);
@@ -22,24 +24,33 @@ export default function CoachClientJournalPage({ params }: { params: Promise<{ c
   const { t } = useLang();
 
   useEffect(() => {
+    setAccountsLoading(true);
+    setAccountsError('');
     apiFetch<{ accounts: Account[] }>(`/coach/client/${clientId}/accounts`)
       .then(d => {
+        console.log('[coach-client-journal] accounts response:', d);
         const list = d.accounts ?? [];
         setAccounts(list);
         if (list.length > 0) setAccountId(String(list[0].id));
       })
-      .catch(() => {});
-  }, [clientId]);
+      .catch(e => {
+        console.error('[coach-client-journal] failed to load accounts:', e);
+        setAccountsError(e instanceof Error ? e.message : t.error_generic);
+      })
+      .finally(() => setAccountsLoading(false));
+  }, [clientId, t.error_generic]);
 
-  const load = async () => {
-    if (!accountId) return;
+  const load = useCallback(async (id: string) => {
+    if (!id) return;
     setLoading(true);
     setError('');
     setForbidden(false);
     try {
-      const result = await apiFetch<JournalAnalysisData>(`/journal/analysis/${accountId}?client_id=${clientId}`);
+      const result = await apiFetch<JournalAnalysisData>(`/journal/analysis/${id}?client_id=${clientId}`);
+      console.log('[coach-client-journal] analysis response:', result);
       setData(result);
     } catch (e) {
+      console.error('[coach-client-journal] failed to load analysis:', e);
       if (e instanceof ApiError && e.status === 403) {
         setForbidden(true);
       } else {
@@ -48,7 +59,12 @@ export default function CoachClientJournalPage({ params }: { params: Promise<{ c
     } finally {
       setLoading(false);
     }
-  };
+  }, [clientId, t.error_generic]);
+
+  // Auto-load analysis as soon as an account is selected, instead of waiting on a manual click.
+  useEffect(() => {
+    if (accountId) load(accountId);
+  }, [accountId, load]);
 
   return (
     <div>
@@ -68,8 +84,16 @@ export default function CoachClientJournalPage({ params }: { params: Promise<{ c
             ))}
           </SelectContent>
         </Select>
-        <Button onClick={load} loading={loading} disabled={!accountId}>{t.coach_client_view_analysis}</Button>
+        <Button onClick={() => load(accountId)} loading={loading} disabled={!accountId}>{t.coach_client_view_analysis}</Button>
       </div>
+
+      {!accountsLoading && !accountsError && accounts.length === 0 && (
+        <div className="glass rounded-2xl p-8 border border-[var(--color-border)] text-center">
+          <p className="text-[var(--color-text-muted)]">{t.client_no_accounts}</p>
+        </div>
+      )}
+
+      {accountsError && <p className="text-sm text-[var(--color-status-error)] mb-4">{accountsError}</p>}
 
       {forbidden && (
         <div className="glass rounded-2xl p-8 border border-[var(--color-border)] text-center">

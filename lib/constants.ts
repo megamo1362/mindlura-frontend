@@ -12,6 +12,7 @@ export const ROUTES = {
   analyze: (id: number | string) => `/dashboard/analyze/${id}`,
   connectCoach: '/dashboard/connect-coach',
   coachClients: '/dashboard/coach/clients',
+  coachClientJournal: (clientId: number | string) => `/dashboard/coach/clients/${clientId}/journal`,
   coachEvents: '/dashboard/coach/events',
   admin: {
     root: '/admin',

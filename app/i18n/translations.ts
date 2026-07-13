@@ -377,6 +377,7 @@ export const translations = {
     client_no_accounts: 'No accounts shared',
     client_no_analysis: 'No analysis',
     client_analyze: 'Analyze',
+    client_journal: 'Journal',
     client_ago: (h: string) => `${h} ago`,
 
     // ── Connect coach ──────────────────────────────────────
@@ -1122,6 +1123,7 @@ export const translations = {
     client_no_accounts: 'حسابی به اشتراک گذاشته نشده',
     client_no_analysis: 'بدون آنالیز',
     client_analyze: 'آنالیز',
+    client_journal: 'ژورنال',
     client_ago: (h: string) => `${h} پیش`,
 
     // ── Connect coach ──────────────────────────────────────

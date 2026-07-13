@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, BarChart2 } from 'lucide-react';
+import { ChevronDown, BarChart2, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getInitials } from '@/lib/utils';
@@ -87,6 +87,12 @@ export function ClientCard({ client, index = 0 }: ClientCardProps) {
               {client.plan_name}
             </Badge>
           )}
+          <Button variant="secondary" size="sm" asChild>
+            <Link href={ROUTES.coachClientJournal(client.client_id)}>
+              <BookOpen className="h-3.5 w-3.5 ml-1" />
+              {t.client_journal}
+            </Link>
+          </Button>
           <Button variant="ghost" size="icon-sm" onClick={() => setOpen(!open)}>
             <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
           </Button>
