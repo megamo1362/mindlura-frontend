@@ -14,19 +14,12 @@ export async function generateMetadata({
   const config = getSymbolConfig(symbol);
   if (!config) return {};
 
-  const headersList = await headers();
-  const country = resolveCountry((name) => headersList.get(name));
-  const isFa = country === 'IR';
   const sym = config.symbol;
-
-  const title = isFa
-    ? `سنتیمنت ${sym} | قدرت خریدار فروشنده | مایندلورا`
-    : `${sym} Sentiment | Live Buyer Seller Strength | Mindlura`;
-  const description = isFa
-    ? `تحلیل زنده ${sym} شامل قدرت خریدار و فروشنده، روند، RSI و MACD در چند تایم‌فریم.`
-    : `Live ${sym} analysis with buyer/seller strength, trend, RSI and MACD across multiple timeframes.`;
-  const keywords = ['forex sentiment', 'crypto sentiment', 'market sentiment', 'سنتیمنت فارکس', 'سنتیمنت بازار', 'تحلیل سنتیمنت'];
+  const title = `${sym} Sentiment | Live Buyer Seller Strength | Mindlura`;
+  const description = `Live ${sym} analysis with buyer/seller strength, trend, RSI and MACD across multiple timeframes.`;
+  const keywords = ['forex sentiment', 'crypto sentiment', 'market sentiment'];
   const path = `/sentiment/${sym.toLowerCase()}`;
+  const faPath = `/fa/sentiment/${sym.toLowerCase()}`;
 
   return {
     title: { absolute: title },
@@ -36,7 +29,7 @@ export async function generateMetadata({
       canonical: path,
       languages: {
         en: path,
-        fa: `${path}?lang=fa`,
+        fa: faPath,
         'x-default': path,
       },
     },
@@ -46,7 +39,7 @@ export async function generateMetadata({
       url: path,
       siteName: 'Mindlura',
       type: 'website',
-      locale: isFa ? 'fa_IR' : 'en_US',
+      locale: 'en_US',
     },
   };
 }
@@ -62,7 +55,6 @@ export default async function MarketSymbolPage({
 
   const headersList = await headers();
   const country = resolveCountry((name) => headersList.get(name));
-  const lang = country === 'IR' ? 'fa' : 'en';
 
   const initialData = await fetchMarketData(config.symbol);
 
@@ -70,7 +62,7 @@ export default async function MarketSymbolPage({
     <MarketClient
       symbolConfig={config}
       initialData={initialData}
-      initialLang={lang}
+      initialLang="en"
       initialCountry={country}
     />
   );

@@ -5,7 +5,6 @@ import HomeClient from './HomeClient';
 export default async function Home() {
   const headersList = await headers();
   const country = resolveCountry((name) => headersList.get(name));
-  const lang = country === 'IR' ? 'fa' : 'en';
 
-  return <HomeClient initialLang={lang} initialCountry={country} />;
+  return <HomeClient initialLang="en" initialCountry={country} />;
 }

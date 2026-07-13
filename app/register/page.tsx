@@ -11,7 +11,6 @@ export default async function RegisterPage() {
 
   const headersList = await headers();
   const country = resolveCountry((name) => headersList.get(name));
-  const lang = country === 'IR' ? 'fa' : 'en';
 
-  return <WaitlistClient spotsRemaining={spotsRemaining} count={count} initialLang={lang} initialCountry={country} />;
+  return <WaitlistClient spotsRemaining={spotsRemaining} count={count} initialLang="en" initialCountry={country} />;
 }

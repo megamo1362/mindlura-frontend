@@ -23,7 +23,10 @@ export const metadata: Metadata = {
   description:
     'تقویم اقتصادی فارکس رایگان با رتبه‌بندی تأثیر لحظه‌ای. رویدادهای پراهمیت دلار، یورو، پوند و ین را در ۷ روز آینده با تحلیل هوش مصنوعی دنبال کنید.',
   keywords: ['تقویم اقتصادی', 'اخبار فارکس', 'economic calendar', 'forex news'],
-  alternates: { canonical: 'https://mindlura.com/fa/news' },
+  alternates: {
+    canonical: 'https://mindlura.com/fa/news',
+    languages: { en: 'https://mindlura.com/news', fa: 'https://mindlura.com/fa/news', 'x-default': 'https://mindlura.com/news' },
+  },
   openGraph: {
     title: 'تقویم اقتصادی فارکس و اخبار | ۷ روز آینده | مایندلورا',
     description: 'تقویم اقتصادی فارکس رایگان با رتبه‌بندی تأثیر لحظه‌ای.',

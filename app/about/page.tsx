@@ -1,4 +1,3 @@
-import { getServerGeoLang } from '@/lib/geo';
 import { AboutPageContent } from '@/components/pages/AboutPage';
 
 export const metadata = {
@@ -8,7 +7,6 @@ export const metadata = {
   openGraph: { locale: 'en_US' },
 };
 
-export default async function AboutPage() {
-  const lang = await getServerGeoLang();
-  return <AboutPageContent lang={lang} />;
+export default function AboutPage() {
+  return <AboutPageContent lang="en" />;
 }

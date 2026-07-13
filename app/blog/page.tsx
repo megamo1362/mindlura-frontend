@@ -1,5 +1,4 @@
 import { getAllPosts } from '@/lib/blog';
-import { getServerGeoLang } from '@/lib/geo';
 import { BlogIndexContent } from '@/components/pages/BlogIndexPage';
 
 export const metadata = {
@@ -8,17 +7,7 @@ export const metadata = {
   openGraph: { locale: 'en_US' },
 };
 
-export default async function BlogPage() {
-  const detectedLang = await getServerGeoLang();
-  const allPosts = getAllPosts();
-
-  let lang = detectedLang;
-  let posts = allPosts.filter((p) => p.lang === lang);
-
-  if (posts.length === 0 && lang !== 'en') {
-    lang = 'en';
-    posts = allPosts.filter((p) => p.lang === lang);
-  }
-
-  return <BlogIndexContent lang={lang} posts={posts} />;
+export default function BlogPage() {
+  const posts = getAllPosts().filter((p) => p.lang === 'en');
+  return <BlogIndexContent lang="en" posts={posts} />;
 }

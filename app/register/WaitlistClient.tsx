@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { submitWaitlist } from './actions';
-import { useGeoLang, type Lang } from '@/lib/useGeoLang';
+import type { Lang } from '@/lib/useGeoLang';
 import { getCounterpartPath, setLocaleCookie } from '@/lib/localePath';
 
 const displayFont = "'Fraunces', serif";
@@ -70,7 +70,8 @@ export default function WaitlistClient({
   initialLang: Lang;
   initialCountry: string;
 }) {
-  const { lang, country } = useGeoLang(initialLang, initialCountry);
+  const lang = initialLang;
+  const country = initialCountry;
   const router = useRouter();
   const pathname = usePathname();
   const [email, setEmail] = useState('');

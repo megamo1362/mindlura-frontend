@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
 import type { Metadata } from 'next';
-import { getServerGeoLang, resolveCountry } from '@/lib/geo';
+import { resolveCountry } from '@/lib/geo';
 import { getBackendBaseUrl } from '@/lib/market';
 import NewsClient from './NewsClient';
 import type { CalendarEvent } from './types';
@@ -20,26 +20,25 @@ const NEWS_SCHEMA = {
   },
 };
 
-export async function generateMetadata(): Promise<Metadata> {
-  const lang = await getServerGeoLang();
-  const isFa = lang === 'fa';
-
-  const title = isFa
-    ? 'تقویم اقتصادی فارکس و اخبار | ۷ روز آینده | مایندلورا'
-    : 'Forex Economic Calendar & News | Next 7 Days | Mindlura';
-  const description = isFa
-    ? 'تقویم اقتصادی فارکس رایگان با رتبه‌بندی تأثیر لحظه‌ای. رویدادهای پراهمیت دلار، یورو، پوند و ین را در ۷ روز آینده با تحلیل هوش مصنوعی دنبال کنید.'
-    : 'Free forex economic calendar with real-time impact ratings. Track high-impact USD, EUR, GBP, JPY events for the next 7 days with AI analysis.';
-
-  return {
-    title: { absolute: title },
-    description,
-    keywords: ['economic calendar', 'forex news', 'تقویم اقتصادی', 'اخبار فارکس'],
-    alternates: { canonical: 'https://mindlura.com/news' },
-    openGraph: { title, description, url: 'https://mindlura.com/news', siteName: 'Mindlura', type: 'website', locale: isFa ? 'fa_IR' : 'en_US' },
-    twitter: { card: 'summary', title, description },
-  };
-}
+export const metadata: Metadata = {
+  title: { absolute: 'Forex Economic Calendar & News | Next 7 Days | Mindlura' },
+  description:
+    'Free forex economic calendar with real-time impact ratings. Track high-impact USD, EUR, GBP, JPY events for the next 7 days with AI analysis.',
+  keywords: ['economic calendar', 'forex news'],
+  alternates: {
+    canonical: 'https://mindlura.com/news',
+    languages: { en: 'https://mindlura.com/news', fa: 'https://mindlura.com/fa/news', 'x-default': 'https://mindlura.com/news' },
+  },
+  openGraph: {
+    title: 'Forex Economic Calendar & News | Next 7 Days | Mindlura',
+    description: 'Free forex economic calendar with real-time impact ratings.',
+    url: 'https://mindlura.com/news',
+    siteName: 'Mindlura',
+    type: 'website',
+    locale: 'en_US',
+  },
+  twitter: { card: 'summary', title: 'Forex Economic Calendar & News | Mindlura' },
+};
 
 async function fetchCalendarEvents(): Promise<{ events: CalendarEvent[]; fetchedAt: string | null }> {
   try {
@@ -55,9 +54,8 @@ async function fetchCalendarEvents(): Promise<{ events: CalendarEvent[]; fetched
 }
 
 export default async function NewsPage() {
-  const [headersList, lang, { events, fetchedAt }] = await Promise.all([
+  const [headersList, { events, fetchedAt }] = await Promise.all([
     headers(),
-    getServerGeoLang(),
     fetchCalendarEvents(),
   ]);
   const country = resolveCountry((name) => headersList.get(name));
@@ -68,7 +66,7 @@ export default async function NewsPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(NEWS_SCHEMA) }}
       />
-      <NewsClient initialEvents={events} initialLang={lang} initialCountry={country} fetchedAt={fetchedAt} />
+      <NewsClient initialEvents={events} initialLang="en" initialCountry={country} fetchedAt={fetchedAt} />
     </>
   );
 }

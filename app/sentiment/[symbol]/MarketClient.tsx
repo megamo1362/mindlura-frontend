@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { useGeoLang, type Lang } from '@/lib/useGeoLang';
+import type { Lang } from '@/lib/useGeoLang';
 import { getCounterpartPath, setLocaleCookie } from '@/lib/localePath';
 import { AmbientOrbs } from '@/components/effects';
 import {
@@ -159,7 +159,8 @@ export default function MarketClient({
   initialLang: Lang;
   initialCountry: string;
 }) {
-  const { lang, country } = useGeoLang(initialLang, initialCountry);
+  const lang = initialLang;
+  const country = initialCountry;
   const router = useRouter();
   const pathname = usePathname();
   const [data, setData] = useState<MarketDataResponse | null>(initialData);
