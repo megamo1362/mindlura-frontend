@@ -6,7 +6,7 @@ import { QUERY_KEYS } from '@/lib/constants';
 import { toast } from '@/store/toast';
 import { ApiError } from '@/lib/api';
 import { useLang } from '@/app/i18n/LangContext';
-import type { CoachClient, InviteCode, DisplayMode, AccountPermissions } from '@/types';
+import type { CoachClient, InviteCode, DisplayMode, AccountPermissions, CoachEvent } from '@/types';
 
 // ── Client-side types ──────────────────────────────────────
 
@@ -145,6 +145,80 @@ export function useDeleteInviteCode() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: QUERY_KEYS.inviteCodes });
       toast.success(t.coach_code_deleted_msg);
+    },
+  });
+}
+
+// ── Coach: events ──────────────────────────────────────────
+
+export interface CreateCoachEventInput {
+  name: string;
+  description?: string | null;
+  event_code: string;
+}
+
+export interface UpdateCoachEventInput {
+  name?: string;
+  description?: string | null;
+  is_active?: boolean;
+}
+
+export function useCoachEvents() {
+  return useQuery({
+    queryKey: QUERY_KEYS.coachEvents,
+    queryFn: () => apiFetch<CoachEvent[]>('/coach/events'),
+  });
+}
+
+export function useGenerateEventCode() {
+  return useMutation({
+    mutationFn: () => apiFetch<{ event_code: string }>('/coach/events/generate-code'),
+  });
+}
+
+export function useCreateCoachEvent() {
+  const { t } = useLang();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateCoachEventInput) =>
+      apiFetch<CoachEvent>('/coach/events', { method: 'POST', body: data }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.coachEvents });
+      toast.success(t.event_created);
+    },
+    onError: (err) => {
+      toast.error(err instanceof ApiError ? err.message : t.error_generic);
+    },
+  });
+}
+
+export function useUpdateCoachEvent() {
+  const { t } = useLang();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: UpdateCoachEventInput }) =>
+      apiFetch<CoachEvent>(`/coach/events/${id}`, { method: 'PATCH', body: data }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.coachEvents });
+      toast.success(t.event_updated);
+    },
+    onError: (err) => {
+      toast.error(err instanceof ApiError ? err.message : t.error_generic);
+    },
+  });
+}
+
+export function useDeleteCoachEvent() {
+  const { t } = useLang();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => apiFetch(`/coach/events/${id}`, { method: 'DELETE' }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.coachEvents });
+      toast.success(t.event_deleted);
+    },
+    onError: (err) => {
+      toast.error(err instanceof ApiError ? err.message : t.error_generic);
     },
   });
 }

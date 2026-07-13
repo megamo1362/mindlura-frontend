@@ -325,6 +325,17 @@ export interface CoachClient {
   accounts: CoachClientAccount[];
 }
 
+// ── Coach Events ───────────────────────────────────────────
+export interface CoachEvent {
+  id: number;
+  name: string;
+  description: string | null;
+  event_code: string;
+  is_active: boolean;
+  client_count: number;
+  created_at: string;
+}
+
 // ── Invite Codes ───────────────────────────────────────────
 export type InviteCodeType = 'coach' | 'client';
 

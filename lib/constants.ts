@@ -12,6 +12,7 @@ export const ROUTES = {
   analyze: (id: number | string) => `/dashboard/analyze/${id}`,
   connectCoach: '/dashboard/connect-coach',
   coachClients: '/dashboard/coach/clients',
+  coachEvents: '/dashboard/coach/events',
   admin: {
     root: '/admin',
     users: '/admin/users',
@@ -55,6 +56,7 @@ export const QUERY_KEYS = {
   coaches: ['coaches'] as const,
   clients: ['clients'] as const,
   inviteCodes: ['invite-codes'] as const,
+  coachEvents: ['coach-events'] as const,
   adminStats: ['admin-stats'] as const,
   plans: ['plans'] as const,
 } as const;

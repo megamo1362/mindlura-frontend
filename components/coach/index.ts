@@ -2,3 +2,6 @@ export * from './client-card';
 export * from './display-settings';
 export * from './coach-clients-page';
 export * from './connect-coach-page';
+export * from './event-card';
+export * from './event-modal';
+export * from './coach-events-page';
