@@ -312,6 +312,8 @@ export interface CoachClientAccount {
   allow_journal: boolean;
 }
 
+export type JoinedVia = 'referral_link' | 'event_code' | 'invite_code' | 'manual';
+
 export interface CoachClient {
   client_coach_id: number;
   client_id: number;
@@ -323,6 +325,14 @@ export interface CoachClient {
   plan_slug: string | null;
   connected_since: string | null;
   accounts: CoachClientAccount[];
+  joined_via: JoinedVia | null;
+  event_id: number | null;
+  event_name: string | null;
+  profit: number | null;
+  drawdown: number | null;
+  win_rate: number | null;
+  rr_ratio: number | null;
+  trade_count: number | null;
 }
 
 // ── Coach Events ───────────────────────────────────────────

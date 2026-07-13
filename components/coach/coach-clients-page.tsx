@@ -2,12 +2,21 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, KeyRound, Plus, Copy, Check, Trash2, Loader2 } from 'lucide-react';
+import { Users, KeyRound, Plus, Copy, Check, Trash2, Loader2, Search, ArrowUp, ArrowDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { InlineLoader } from '@/components/shared';
 import { ClientCard } from './client-card';
-import { useMyClients, useInviteCodes, useCreateInviteCode, useDeleteInviteCode } from '@/hooks/use-coach';
+import {
+  useMyClients,
+  useInviteCodes,
+  useCreateInviteCode,
+  useDeleteInviteCode,
+  useCoachEvents,
+  type ClientSortBy,
+  type SortDir,
+} from '@/hooks/use-coach';
+import { useDebounce } from '@/hooks/use-debounce';
 import { useLang } from '@/app/i18n/LangContext';
 
 function InviteCodesPanel() {
@@ -185,8 +194,20 @@ type Tab = 'clients' | 'invite-codes';
 
 export function CoachClientsPage() {
   const [tab, setTab] = useState<Tab>('clients');
-  const { data: clients = [], isLoading, isError } = useMyClients();
+  const [searchInput, setSearchInput] = useState('');
+  const [sortBy, setSortBy] = useState<ClientSortBy>('joined_at');
+  const [sortDir, setSortDir] = useState<SortDir>('desc');
+  const [eventId, setEventId] = useState<number | null>(null);
+  const debouncedSearch = useDebounce(searchInput, 300);
+  const { data: clients = [], isLoading, isError } = useMyClients({
+    search: debouncedSearch || undefined,
+    sortBy,
+    sortDir,
+    eventId,
+  });
+  const { data: events = [] } = useCoachEvents();
   const { t } = useLang();
+  const isFiltered = Boolean(debouncedSearch) || eventId !== null;
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -225,7 +246,55 @@ export function CoachClientsPage() {
       {/* Content */}
       <AnimatePresence mode="wait">
         {tab === 'clients' && (
-          <motion.div key="clients" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+          <motion.div key="clients" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="relative flex-1 min-w-[200px]">
+                <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)]" />
+                <input
+                  type="text"
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  placeholder={t.search_clients}
+                  className="input-dark rounded-xl pr-9 pl-3 py-2 text-sm w-full"
+                />
+              </div>
+
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as ClientSortBy)}
+                aria-label={t.sort_by}
+                className="input-dark rounded-xl px-3 py-2 text-sm"
+              >
+                <option value="joined_at">{t.sort_joined_date}</option>
+                <option value="profit">{t.sort_profit}</option>
+                <option value="drawdown">{t.sort_drawdown}</option>
+                <option value="win_rate">{t.sort_win_rate}</option>
+                <option value="rr_ratio">{t.sort_rr_ratio}</option>
+                <option value="trade_count">{t.sort_trade_count}</option>
+              </select>
+
+              <Button
+                variant="secondary"
+                size="icon-sm"
+                onClick={() => setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))}
+                aria-label={t.sort_direction}
+              >
+                {sortDir === 'asc' ? <ArrowUp className="h-3.5 w-3.5" /> : <ArrowDown className="h-3.5 w-3.5" />}
+              </Button>
+
+              <select
+                value={eventId ?? ''}
+                onChange={(e) => setEventId(e.target.value ? Number(e.target.value) : null)}
+                aria-label={t.filter_by_event}
+                className="input-dark rounded-xl px-3 py-2 text-sm"
+              >
+                <option value="">{t.all_events}</option>
+                {events.map((ev) => (
+                  <option key={ev.id} value={ev.id}>{ev.name}</option>
+                ))}
+              </select>
+            </div>
+
             {isLoading && <InlineLoader label={t.coach_loading_clients} />}
             {isError && (
               <p className="text-sm text-[var(--color-status-error)]">{t.coach_error}</p>
@@ -233,8 +302,12 @@ export function CoachClientsPage() {
             {!isLoading && !isError && clients.length === 0 && (
               <div className="card-surface rounded-2xl p-16 text-center">
                 <Users className="h-12 w-12 text-[var(--color-text-muted)] mx-auto mb-3" />
-                <p className="text-[var(--color-text-muted)] text-lg">{t.coach_no_clients}</p>
-                <p className="text-sm text-[var(--color-text-muted)]/60 mt-1">{t.coach_no_clients_desc}</p>
+                <p className="text-[var(--color-text-muted)] text-lg">
+                  {isFiltered ? t.no_clients_found : t.coach_no_clients}
+                </p>
+                {!isFiltered && (
+                  <p className="text-sm text-[var(--color-text-muted)]/60 mt-1">{t.coach_no_clients_desc}</p>
+                )}
               </div>
             )}
             {!isLoading && clients.length > 0 && (

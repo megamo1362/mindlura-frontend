@@ -37,11 +37,28 @@ export interface ConnectCoachInput {
 
 // ── Coach: client list ─────────────────────────────────────
 
-export function useMyClients() {
+export type ClientSortBy = 'joined_at' | 'profit' | 'drawdown' | 'win_rate' | 'rr_ratio' | 'trade_count';
+export type SortDir = 'asc' | 'desc';
+
+export interface MyClientsParams {
+  search?: string;
+  sortBy?: ClientSortBy;
+  sortDir?: SortDir;
+  eventId?: number | null;
+}
+
+export function useMyClients(params: MyClientsParams = {}) {
+  const { search, sortBy, sortDir, eventId } = params;
   return useQuery({
-    queryKey: QUERY_KEYS.clients,
+    queryKey: [...QUERY_KEYS.clients, search ?? '', sortBy ?? '', sortDir ?? '', eventId ?? ''],
     queryFn: async () => {
-      const data = await apiFetch<{ clients: CoachClient[] }>('/coach/my-clients');
+      const query = new URLSearchParams();
+      if (search) query.set('search', search);
+      if (sortBy) query.set('sort_by', sortBy);
+      if (sortDir) query.set('sort_dir', sortDir);
+      if (eventId != null) query.set('event_id', String(eventId));
+      const qs = query.toString();
+      const data = await apiFetch<{ clients: CoachClient[] }>(`/coach/my-clients${qs ? `?${qs}` : ''}`);
       return data.clients ?? [];
     },
   });

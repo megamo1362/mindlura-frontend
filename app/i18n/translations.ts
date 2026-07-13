@@ -320,6 +320,25 @@ export const translations = {
     coach_copy: 'Copy',
     coach_copied: 'Copied',
 
+    // ── Client filters ───────────────────────────────────────
+    search_clients: 'Search clients...',
+    sort_by: 'Sort by',
+    sort_direction: 'Sort direction',
+    filter_by_event: 'Filter by event',
+    all_events: 'All Events',
+    joined_via: 'Joined via',
+    via_referral: 'Referral',
+    via_event: 'Event',
+    via_invite: 'Invite',
+    via_manual: 'Manual',
+    sort_profit: 'Profit',
+    sort_drawdown: 'Drawdown',
+    sort_win_rate: 'Win Rate',
+    sort_rr_ratio: 'RR Ratio',
+    sort_trade_count: 'Trade Count',
+    sort_joined_date: 'Joined Date',
+    no_clients_found: 'No clients found',
+
     // ── Coach events ───────────────────────────────────────
     coach_events: 'Events',
     my_events: 'My Events',
@@ -1045,6 +1064,25 @@ export const translations = {
     coach_no_codes_desc: 'کلاینت‌ها با کد دعوت شما ثبت‌نام می‌کنند',
     coach_copy: 'کپی',
     coach_copied: 'کپی شد',
+
+    // ── Client filters ───────────────────────────────────────
+    search_clients: 'جستجوی کلاینت‌ها...',
+    sort_by: 'مرتب‌سازی بر اساس',
+    sort_direction: 'جهت مرتب‌سازی',
+    filter_by_event: 'فیلتر بر اساس رویداد',
+    all_events: 'همه رویدادها',
+    joined_via: 'روش عضویت',
+    via_referral: 'لینک معرف',
+    via_event: 'رویداد',
+    via_invite: 'دعوتنامه',
+    via_manual: 'دستی',
+    sort_profit: 'سود',
+    sort_drawdown: 'دراداون',
+    sort_win_rate: 'نرخ برد',
+    sort_rr_ratio: 'نسبت ریسک',
+    sort_trade_count: 'تعداد معاملات',
+    sort_joined_date: 'تاریخ عضویت',
+    no_clients_found: 'کلاینتی یافت نشد',
 
     // ── Coach events ───────────────────────────────────────
     coach_events: 'رویدادها',

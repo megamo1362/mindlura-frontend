@@ -29,6 +29,13 @@ const PLAN_VARIANT: Record<string, 'purple' | 'cyan' | 'blue' | 'yellow'> = {
   trial: 'yellow',
 };
 
+const JOINED_VIA_VARIANT: Record<string, 'blue' | 'purple' | 'green' | 'gray'> = {
+  referral_link: 'blue',
+  event_code: 'purple',
+  invite_code: 'green',
+  manual: 'gray',
+};
+
 interface ClientCardProps {
   client: CoachClient;
   index?: number;
@@ -38,6 +45,13 @@ export function ClientCard({ client, index = 0 }: ClientCardProps) {
   const [open, setOpen] = useState(true);
   const { t } = useLang();
   const name = getDisplayName(client);
+
+  const JOINED_VIA_LABEL: Record<string, string> = {
+    referral_link: t.via_referral,
+    event_code: t.via_event,
+    invite_code: t.via_invite,
+    manual: t.via_manual,
+  };
 
   return (
     <motion.div
@@ -63,6 +77,11 @@ export function ClientCard({ client, index = 0 }: ClientCardProps) {
         </div>
 
         <div className="flex items-center gap-2 flex-shrink-0">
+          {client.joined_via && (
+            <Badge variant={JOINED_VIA_VARIANT[client.joined_via] ?? 'gray'}>
+              {JOINED_VIA_LABEL[client.joined_via] ?? client.joined_via}
+            </Badge>
+          )}
           {client.plan_name && client.plan_slug && (
             <Badge variant={PLAN_VARIANT[client.plan_slug] ?? 'blue'}>
               {client.plan_name}
