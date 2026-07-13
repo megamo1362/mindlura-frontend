@@ -3,6 +3,9 @@ import type { Metadata } from 'next';
 import { getPostBySlug, getPostsByLang } from '@/lib/blog';
 import { BlogPostContent } from '@/components/pages/BlogPostPage';
 
+const siteUrl = 'https://mindlura.com';
+const ogImage = `${siteUrl}/og-image.png`;
+
 export function generateStaticParams() {
   return getPostsByLang('fa').map((p) => ({ slug: p.slug }));
 }
@@ -15,10 +18,32 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = getPostBySlug(slug);
   if (post.lang !== 'fa') return {};
+
+  const url = `${siteUrl}/fa/blog/${slug}`;
+  const title = `${post.title} | بلاگ مایندلورا`;
+
   return {
-    title: `${post.title} | بلاگ مایندلورا`,
+    title: { absolute: title },
     description: post.description,
-    openGraph: { locale: 'fa_IR' },
+    keywords: post.keywords,
+    alternates: { canonical: url },
+    openGraph: {
+      title,
+      description: post.description,
+      url,
+      siteName: 'Mindlura',
+      type: 'article',
+      locale: 'fa_IR',
+      publishedTime: post.date,
+      authors: ['Mindlura'],
+      images: [{ url: ogImage }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description: post.description,
+      images: [ogImage],
+    },
   };
 }
 
@@ -31,5 +56,34 @@ export default async function FaPostPage({
   const post = getPostBySlug(slug);
   if (post.lang !== 'fa') notFound();
 
-  return <BlogPostContent post={post} localePrefix="/fa" />;
+  const url = `${siteUrl}/fa/blog/${slug}`;
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.description,
+    datePublished: post.date,
+    dateModified: post.date,
+    inLanguage: 'fa-IR',
+    keywords: post.keywords.join(', '),
+    url,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+    image: ogImage,
+    author: { '@type': 'Organization', name: 'Mindlura', url: siteUrl },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Mindlura',
+      logo: { '@type': 'ImageObject', url: `${siteUrl}/logo.png` },
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
+      <BlogPostContent post={post} localePrefix="/fa" />
+    </>
+  );
 }

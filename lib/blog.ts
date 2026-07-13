@@ -13,6 +13,7 @@ export type Post = {
   category: string;
   lang: 'en' | 'fa';
   description: string;
+  keywords: string[];
   readingTime: string;
   content: string;
 };
@@ -30,6 +31,7 @@ function parsePost(filename: string): Post {
     category: data.category ?? '',
     lang: data.lang === 'fa' ? 'fa' : 'en',
     description: data.description ?? '',
+    keywords: Array.isArray(data.keywords) ? data.keywords : [],
     readingTime: readingTime(content).text as string,
     content,
   };
