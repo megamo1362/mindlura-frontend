@@ -38,7 +38,7 @@ function CoachHierarchy({ isFa }: { isFa: boolean }) {
 }
 
 export function CoachPlatformSection({ copy, chrome }: { copy: CoachPlatformCopy; chrome: SectionChrome }) {
-  const { accent, isFa, displayFont } = chrome;
+  const { isFa, displayFont } = chrome;
   const coachAccent = tokens.color.coach;
 
   return (
