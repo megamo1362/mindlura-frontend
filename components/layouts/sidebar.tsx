@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import type { LucideIcon } from 'lucide-react';
-import { BarChart2, Users, LayoutDashboard, UserCheck, KeyRound, CreditCard, BookOpen, TrendingUp, Shield, Settings, UserCircle, BotMessageSquare, Bot, Calendar } from 'lucide-react';
+import { BarChart2, Users, LayoutDashboard, UserCheck, KeyRound, CreditCard, BookOpen, TrendingUp, Shield, Settings, UserCircle, BotMessageSquare, Bot, Calendar, Bell } from 'lucide-react';
 import { NavItem } from './nav-item';
 import { UserMenu } from './user-menu';
 import { cn } from '@/lib/utils';
@@ -26,6 +26,7 @@ const DASHBOARD_NAV: NavEntry[] = [
   { href: '/dashboard/coach/clients', labelKey: 'nav_my_clients', icon: Users, roles: ['coach'] },
   { href: '/dashboard/coach/events', labelKey: 'nav_coach_events', icon: Calendar, roles: ['coach'] },
   { href: '/dashboard/coach/analytics', labelKey: 'nav_coach_analytics', icon: BarChart2, roles: ['coach'] },
+  { href: '/dashboard/coach/notifications', labelKey: 'nav_coach_notifications', icon: Bell, roles: ['coach'] },
   { href: '/dashboard/settings', labelKey: 'nav_settings', icon: Settings, exact: true },
   { href: '/dashboard/profile', labelKey: 'nav_profile', icon: UserCircle },
 ];

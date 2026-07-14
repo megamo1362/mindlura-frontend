@@ -39,9 +39,11 @@ const JOINED_VIA_VARIANT: Record<string, 'blue' | 'purple' | 'green' | 'gray'> =
 interface ClientCardProps {
   client: CoachClient;
   index?: number;
+  selected?: boolean;
+  onToggleSelect?: (clientId: number) => void;
 }
 
-export function ClientCard({ client, index = 0 }: ClientCardProps) {
+export function ClientCard({ client, index = 0, selected = false, onToggleSelect }: ClientCardProps) {
   const [open, setOpen] = useState(true);
   const { t } = useLang();
   const name = getDisplayName(client);
@@ -63,6 +65,16 @@ export function ClientCard({ client, index = 0 }: ClientCardProps) {
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--color-border)]">
         <div className="flex items-center gap-3 min-w-0">
+          {onToggleSelect && (
+            <input
+              type="checkbox"
+              checked={selected}
+              onChange={() => onToggleSelect(client.client_id)}
+              onClick={(e) => e.stopPropagation()}
+              className="w-4 h-4 rounded border-[var(--color-border)] accent-[var(--color-cyan)] flex-shrink-0 cursor-pointer"
+              aria-label={name}
+            />
+          )}
           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[var(--color-blue)] to-[var(--color-purple)] flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
             {getInitials(name)}
           </div>

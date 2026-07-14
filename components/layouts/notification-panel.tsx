@@ -1,11 +1,14 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Bell, X, CheckCheck, ShieldAlert, BarChart2 } from 'lucide-react';
+import { Bell, X, CheckCheck, ShieldAlert, BarChart2, UserCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNotifications, useMarkRead, useMarkAllRead, useDeleteNotification } from '@/hooks/use-notifications';
+import {
+  useNotifications, useMarkRead, useMarkAllRead, useDeleteNotification,
+  useMyCoachNotifications, useMarkCoachNotificationRead,
+} from '@/hooks/use-notifications';
 import { useLang } from '@/app/i18n/LangContext';
-import type { Notification } from '@/types';
+import type { Notification, User } from '@/types';
 
 const LEVEL_COLOR: Record<string, string> = {
   info:    'var(--color-cyan)',
@@ -19,20 +22,29 @@ const LEVEL_BG: Record<string, string> = {
   danger:  'rgba(239,68,68,0.08)',
 };
 
-export function NotificationPanel() {
+interface NotificationPanelProps {
+  role: User['role'];
+}
+
+export function NotificationPanel({ role }: NotificationPanelProps) {
   const [open, setOpen] = useState(false);
-  const [tab, setTab] = useState<'system' | 'analysis'>('system');
+  const [tab, setTab] = useState<'system' | 'analysis' | 'coach'>('system');
   const ref = useRef<HTMLDivElement>(null);
   const { t, lang } = useLang();
+  const isClient = role === 'client';
 
   const { data } = useNotifications();
   const { mutate: markRead } = useMarkRead();
   const { mutate: markAll } = useMarkAllRead();
   const { mutate: deleteNotif } = useDeleteNotification();
 
-  const unread = data?.unread_count ?? 0;
+  const { data: coachData } = useMyCoachNotifications(1, 20);
+  const { mutate: markCoachRead } = useMarkCoachNotificationRead();
+
+  const unread = (data?.unread_count ?? 0) + (isClient ? coachData?.unread_count ?? 0 : 0);
   const all = data?.notifications ?? [];
   const filtered = all.filter((n) => n.category === tab);
+  const coachNotifs = coachData?.items ?? [];
 
   function timeAgo(dateStr: string): string {
     const diff = (Date.now() - new Date(dateStr).getTime()) / 1000;
@@ -82,7 +94,7 @@ export function NotificationPanel() {
             <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--color-border)]">
               <span className="font-bold text-sm text-[var(--color-text-primary)]">{t.notif_title}</span>
               <div className="flex items-center gap-2">
-                {filtered.some((n) => !n.is_read) && (
+                {tab !== 'coach' && filtered.some((n) => !n.is_read) && (
                   <button
                     onClick={() => markAll(tab)}
                     className="text-[10px] text-[var(--color-cyan)] hover:opacity-70 flex items-center gap-1"
@@ -102,6 +114,7 @@ export function NotificationPanel() {
               {([
                 { key: 'system',   label: t.notif_tab_system,   icon: ShieldAlert },
                 { key: 'analysis', label: t.notif_tab_analysis,  icon: BarChart2  },
+                ...(isClient ? [{ key: 'coach' as const, label: t.notification_from_coach, icon: UserCheck }] : []),
               ] as const).map(({ key, label, icon: Icon }) => (
                 <button
                   key={key}
@@ -120,7 +133,39 @@ export function NotificationPanel() {
 
             {/* List */}
             <div className="overflow-y-auto max-h-80">
-              {filtered.length === 0 ? (
+              {tab === 'coach' ? (
+                coachNotifs.length === 0 ? (
+                  <div className="py-10 text-center text-sm text-[var(--color-text-muted)]">
+                    {t.no_notifications}
+                  </div>
+                ) : (
+                  coachNotifs.map((n) => (
+                    <div
+                      key={n.id}
+                      onClick={() => { if (!n.is_read) markCoachRead(n.id); }}
+                      className="relative px-4 py-3 border-b border-[var(--color-border)] cursor-pointer hover:bg-[var(--color-elevated)] transition-colors"
+                      style={{ background: n.is_read ? undefined : LEVEL_BG.info }}
+                    >
+                      <div className="flex items-center gap-2 mb-0.5">
+                        {!n.is_read && (
+                          <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: LEVEL_COLOR.info }} />
+                        )}
+                        <p className="text-xs font-bold truncate" style={{ color: LEVEL_COLOR.info }}>
+                          {n.coach_name ?? t.notification_from_coach}
+                        </p>
+                      </div>
+                      <p className="text-xs text-[var(--color-text-muted)] leading-relaxed whitespace-pre-line">
+                        {lang === 'fa' ? n.message_fa : n.message_en}
+                      </p>
+                      {n.sent_at && (
+                        <p className="text-[10px] text-[var(--color-text-muted)] mt-1 opacity-60">
+                          {timeAgo(n.sent_at)}
+                        </p>
+                      )}
+                    </div>
+                  ))
+                )
+              ) : filtered.length === 0 ? (
                 <div className="py-10 text-center text-sm text-[var(--color-text-muted)]">
                   {t.notif_empty}
                 </div>

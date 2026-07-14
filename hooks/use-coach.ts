@@ -6,7 +6,10 @@ import { QUERY_KEYS } from '@/lib/constants';
 import { toast } from '@/store/toast';
 import { ApiError } from '@/lib/api';
 import { useLang } from '@/app/i18n/LangContext';
-import type { CoachClient, InviteCode, DisplayMode, AccountPermissions, CoachEvent, RosterAnalytics } from '@/types';
+import type {
+  CoachClient, InviteCode, DisplayMode, AccountPermissions, CoachEvent, RosterAnalytics,
+  CoachNotificationsResponse, NotifyClientsInput, NotifyClientsResponse,
+} from '@/types';
 
 // ── Client-side types ──────────────────────────────────────
 
@@ -249,5 +252,30 @@ export function useDeleteCoachEvent() {
     onError: (err) => {
       toast.error(err instanceof ApiError ? err.message : t.error_generic);
     },
+  });
+}
+
+// ── Coach: notify clients ───────────────────────────────────
+
+export function useNotifyClients() {
+  const { t } = useLang();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: NotifyClientsInput) =>
+      apiFetch<NotifyClientsResponse>('/coach/notify', { method: 'POST', body: data }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.coachNotifications });
+    },
+    onError: (err) => {
+      toast.error(err instanceof ApiError ? err.message : t.error_generic);
+    },
+  });
+}
+
+export function useCoachNotifications(page: number = 1, limit: number = 20) {
+  return useQuery({
+    queryKey: [...QUERY_KEYS.coachNotifications, page, limit],
+    queryFn: () =>
+      apiFetch<CoachNotificationsResponse>(`/coach/notifications?page=${page}&limit=${limit}`),
   });
 }

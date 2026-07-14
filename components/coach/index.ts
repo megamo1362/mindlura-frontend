@@ -6,3 +6,5 @@ export * from './event-card';
 export * from './event-modal';
 export * from './coach-events-page';
 export * from './coach-analytics-page';
+export * from './notification-compose-modal';
+export * from './coach-notifications-page';

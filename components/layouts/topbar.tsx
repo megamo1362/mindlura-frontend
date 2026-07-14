@@ -51,7 +51,7 @@ export function Topbar({ user, className }: TopbarProps) {
 
       {/* Right side: notifications + user avatar */}
       <div className="flex items-center gap-3">
-        <NotificationPanel />
+        <NotificationPanel role={user.role} />
 
         <Link href="/dashboard/profile" className="flex items-center gap-2.5 pl-3 border-r border-[var(--color-border)] hover:opacity-80 transition-opacity">
           <div className="hidden sm:block text-left">

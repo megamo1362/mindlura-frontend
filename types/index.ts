@@ -635,6 +635,54 @@ export interface NotificationsResponse {
   unread_count: number;
 }
 
+// ── Coach notifications ─────────────────────────────────────
+export type NotifyChannel = 'telegram' | 'inapp' | 'both';
+export type SentChannel = 'telegram' | 'inapp' | 'both' | 'inapp_only';
+
+export interface CoachNotification {
+  id: number;
+  coach_id: number;
+  coach_name: string | null;
+  client_id: number;
+  client_name: string | null;
+  message_en: string;
+  message_fa: string;
+  channel: SentChannel;
+  is_read: boolean;
+  sent_at: string | null;
+}
+
+export interface CoachNotificationsResponse {
+  items: CoachNotification[];
+  total: number;
+  page: number;
+  pages: number;
+}
+
+export interface MyCoachNotificationsResponse extends CoachNotificationsResponse {
+  unread_count: number;
+}
+
+export interface NotifyClientsInput {
+  client_ids: number[];
+  message_en: string;
+  message_fa: string;
+  channel: NotifyChannel;
+}
+
+export interface NotifyClientDetail {
+  client_id: number;
+  status: 'sent' | 'failed';
+  channel?: SentChannel;
+  reason?: string;
+}
+
+export interface NotifyClientsResponse {
+  sent: number;
+  failed: number;
+  details: NotifyClientDetail[];
+}
+
 // ── API ────────────────────────────────────────────────────
 export interface ApiError {
   detail: string;

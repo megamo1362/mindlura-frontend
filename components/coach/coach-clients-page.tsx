@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, KeyRound, Plus, Copy, Check, Trash2, Loader2, Search, ArrowUp, ArrowDown } from 'lucide-react';
+import { Users, KeyRound, Plus, Copy, Check, Trash2, Loader2, Search, ArrowUp, ArrowDown, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { InlineLoader } from '@/components/shared';
 import { ClientCard } from './client-card';
+import { NotificationComposeModal } from './notification-compose-modal';
 import {
   useMyClients,
   useInviteCodes,
@@ -209,6 +210,20 @@ export function CoachClientsPage() {
   const { t } = useLang();
   const isFiltered = Boolean(debouncedSearch) || eventId !== null;
 
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [notifyModalOpen, setNotifyModalOpen] = useState(false);
+  const allSelected = clients.length > 0 && selectedIds.length === clients.length;
+
+  const toggleSelect = (clientId: number) => {
+    setSelectedIds((prev) =>
+      prev.includes(clientId) ? prev.filter((id) => id !== clientId) : [...prev, clientId],
+    );
+  };
+
+  const toggleSelectAll = () => {
+    setSelectedIds(allSelected ? [] : clients.map((c) => c.client_id));
+  };
+
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
@@ -312,8 +327,23 @@ export function CoachClientsPage() {
             )}
             {!isLoading && clients.length > 0 && (
               <div className="space-y-4">
+                <label className="flex items-center gap-2 text-sm text-[var(--color-text-muted)] px-1 cursor-pointer w-fit">
+                  <input
+                    type="checkbox"
+                    checked={allSelected}
+                    onChange={toggleSelectAll}
+                    className="w-4 h-4 rounded border-[var(--color-border)] accent-[var(--color-cyan)] cursor-pointer"
+                  />
+                  {t.select_all}
+                </label>
                 {clients.map((c, i) => (
-                  <ClientCard key={c.client_coach_id} client={c} index={i} />
+                  <ClientCard
+                    key={c.client_coach_id}
+                    client={c}
+                    index={i}
+                    selected={selectedIds.includes(c.client_id)}
+                    onToggleSelect={toggleSelect}
+                  />
                 ))}
               </div>
             )}
@@ -326,6 +356,32 @@ export function CoachClientsPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Floating action bar for bulk notification */}
+      <AnimatePresence>
+        {tab === 'clients' && selectedIds.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 card-surface rounded-2xl px-5 py-3 shadow-2xl border border-[var(--color-border)]"
+          >
+            <span className="text-sm text-[var(--color-text-muted)]">
+              {t.notification_selected_count(selectedIds.length)}
+            </span>
+            <Button variant="primary" size="sm" onClick={() => setNotifyModalOpen(true)}>
+              <Send className="h-3.5 w-3.5 ml-1" />
+              {t.send_to_clients(selectedIds.length)}
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <NotificationComposeModal
+        open={notifyModalOpen}
+        onClose={() => { setNotifyModalOpen(false); setSelectedIds([]); }}
+        clientIds={selectedIds}
+      />
     </div>
   );
 }
