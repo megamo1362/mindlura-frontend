@@ -10,6 +10,7 @@ import type {
   CoachClient, InviteCode, DisplayMode, AccountPermissions, CoachEvent, RosterAnalytics,
   CoachNotificationsResponse, NotifyClientsInput, NotifyClientsResponse,
   CoachAIReportFilters, CoachAIReportResponse, CoachAIReportLatest, CoachAIReportStatus,
+  CoachPurchasesResponse,
 } from '@/types';
 
 // ── Client-side types ──────────────────────────────────────
@@ -318,6 +319,46 @@ export function useRequestAIReport() {
       if (!(err instanceof ApiError) || err.message !== 'already_requested_today') {
         toast.error(err instanceof ApiError ? err.message : t.error_generic);
       }
+    },
+  });
+}
+
+// ── Coach: purchase history ─────────────────────────────────
+
+export interface CoachPurchasesParams {
+  dateFrom?: string;
+  dateTo?: string;
+  planSlug?: string;
+  eventId?: number | null;
+  clientId?: number | null;
+  sortBy?: 'date' | 'amount';
+  sortDir?: SortDir;
+  page?: number;
+  limit?: number;
+}
+
+export function useCoachPurchases(params: CoachPurchasesParams = {}) {
+  const {
+    dateFrom, dateTo, planSlug, eventId, clientId, sortBy, sortDir, page = 1, limit = 20,
+  } = params;
+  return useQuery({
+    queryKey: [
+      ...QUERY_KEYS.coachPurchases,
+      dateFrom ?? '', dateTo ?? '', planSlug ?? '', eventId ?? '', clientId ?? '',
+      sortBy ?? '', sortDir ?? '', page, limit,
+    ],
+    queryFn: () => {
+      const query = new URLSearchParams();
+      if (dateFrom) query.set('date_from', dateFrom);
+      if (dateTo) query.set('date_to', dateTo);
+      if (planSlug) query.set('plan_slug', planSlug);
+      if (eventId != null) query.set('event_id', String(eventId));
+      if (clientId != null) query.set('client_id', String(clientId));
+      if (sortBy) query.set('sort_by', sortBy);
+      if (sortDir) query.set('sort_dir', sortDir);
+      query.set('page', String(page));
+      query.set('limit', String(limit));
+      return apiFetch<CoachPurchasesResponse>(`/coach/purchases?${query.toString()}`);
     },
   });
 }

@@ -9,3 +9,4 @@ export * from './coach-analytics-page';
 export * from './notification-compose-modal';
 export * from './coach-notifications-page';
 export * from './coach-ai-report-page';
+export * from './coach-purchases-page';

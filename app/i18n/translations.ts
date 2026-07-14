@@ -324,6 +324,7 @@ export const translations = {
     // ── Coach → client notifications ────────────────────────
     nav_coach_notifications: 'Notifications',
     nav_coach_ai_report: 'AI Report',
+    nav_coach_purchases: 'Purchases',
     send_notification: 'Send Message to Clients',
     select_all: 'Select All',
     notification_selected_count: (n: number) => `${n} selected`,
@@ -436,6 +437,23 @@ export const translations = {
     no_report_yet: 'No report yet',
     no_report_description: 'Generate your first AI report to see insights about your clients.',
     report_language_toggle: 'Report language',
+
+    // ── Coach purchases ──────────────────────────────────────
+    client_purchases: 'Client Purchases',
+    client_purchases_desc: 'Purchase history and commission summary for your clients',
+    total_revenue: 'Total Revenue',
+    commission_rate: 'Commission Rate',
+    your_commission: 'Your Commission',
+    total_purchases_count: 'Total Purchases',
+    filter_date_from: 'From',
+    filter_date_to: 'To',
+    filter_plan: 'Plan',
+    all_plans: 'All Plans',
+    reset_filters: 'Reset Filters',
+    purchase_date: 'Date',
+    purchase_amount: 'Amount',
+    no_purchases_yet: 'No purchases yet',
+    commission_note: 'Commission is calculated on total revenue from your connected clients’ purchases, at your current commission rate.',
 
     // ── Client card ────────────────────────────────────────
     client_connected_since: (date: string) => `Connected since ${date}`,
@@ -1139,6 +1157,7 @@ export const translations = {
     // ── Coach → client notifications ────────────────────────
     nav_coach_notifications: 'اعلان‌ها',
     nav_coach_ai_report: 'گزارش AI',
+    nav_coach_purchases: 'خریدها',
     send_notification: 'ارسال پیام به کلاینت‌ها',
     select_all: 'انتخاب همه',
     notification_selected_count: (n: number) => `${n} انتخاب شده`,
@@ -1251,6 +1270,23 @@ export const translations = {
     no_report_yet: 'هنوز گزارشی وجود ندارد',
     no_report_description: 'برای مشاهده بینش‌های مربوط به کلاینت‌های خود، اولین گزارش هوش مصنوعی را تولید کنید.',
     report_language_toggle: 'زبان گزارش',
+
+    // ── Coach purchases ──────────────────────────────────────
+    client_purchases: 'خریدهای کلاینت‌ها',
+    client_purchases_desc: 'تاریخچه خرید و خلاصه کمیسیون کلاینت‌های شما',
+    total_revenue: 'کل درآمد',
+    commission_rate: 'نرخ کمیسیون',
+    your_commission: 'کمیسیون شما',
+    total_purchases_count: 'تعداد خریدها',
+    filter_date_from: 'از تاریخ',
+    filter_date_to: 'تا تاریخ',
+    filter_plan: 'پلن',
+    all_plans: 'همه پلن‌ها',
+    reset_filters: 'حذف فیلترها',
+    purchase_date: 'تاریخ',
+    purchase_amount: 'مبلغ',
+    no_purchases_yet: 'هنوز خریدی وجود ندارد',
+    commission_note: 'کمیسیون بر اساس کل درآمد حاصل از خریدهای کلاینت‌های متصل به شما و با نرخ کمیسیون فعلی شما محاسبه می‌شود.',
 
     // ── Client card ────────────────────────────────────────
     client_connected_since: (date: string) => `متصل از ${date}`,

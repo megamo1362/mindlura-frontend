@@ -407,6 +407,35 @@ export interface CoachAIReportStatus {
   can_request_again_at: string | null;
 }
 
+// ── Coach Purchases ───────────────────────────────────────────
+export interface CoachPurchase {
+  id: number;
+  client_id: number;
+  client_name: string;
+  plan_name: string;
+  plan_slug: string;
+  amount: number;
+  currency: string;
+  purchased_at: string;
+  event_id: number | null;
+  event_name: string | null;
+}
+
+export interface CoachPurchasesSummary {
+  total_revenue: number;
+  commission_rate: number;
+  coach_commission: number;
+  total_purchases: number;
+}
+
+export interface CoachPurchasesResponse {
+  items: CoachPurchase[];
+  total: number;
+  page: number;
+  pages: number;
+  summary: CoachPurchasesSummary;
+}
+
 // ── Invite Codes ───────────────────────────────────────────
 export type InviteCodeType = 'coach' | 'client';
 
