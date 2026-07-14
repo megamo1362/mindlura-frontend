@@ -328,7 +328,7 @@ const ICONS = { trend: TrendingUp, brain: Brain, journal: NotebookPen, clock: Cl
 
 // Matches the order of footer cols in COPY (Product | Company | Legal)
 const FOOTER_HREFS = [
-  ["#features", "/pricing", "#coaches", "/security"],
+  ["#features", "/pricing", "/for-coaches", "/security"],
   ["/about", "/contact", "/blog"],
   ["/privacy", "/terms"],
 ];
@@ -385,7 +385,7 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
             <a href="#features" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.features}</a>
             <a href="#how" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.how}</a>
             <a href="#pricing" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.pricing}</a>
-            <a href="#coaches" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.coaches}</a>
+            <Link href={localizeHref("/for-coaches")} className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.coaches}</Link>
             <Link href={localizeHref("/blog")} className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.blog}</Link>
             <Link href={localizeHref("/sentiment")} className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.market}</Link>
             <Link href={localizeHref("/news")} className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.news}</Link>
@@ -414,7 +414,7 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
             <a href="#features">{t.nav.features}</a>
             <a href="#how">{t.nav.how}</a>
             <a href="#pricing">{t.nav.pricing}</a>
-            <a href="#coaches">{t.nav.coaches}</a>
+            <Link href={localizeHref("/for-coaches")}>{t.nav.coaches}</Link>
             <Link href={localizeHref("/blog")}>{t.nav.blog}</Link>
             <Link href={localizeHref("/sentiment")}>{t.nav.market}</Link>
             <Link href={localizeHref("/news")}>{t.nav.news}</Link>

@@ -32,6 +32,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local data storage (contains PII — waitlist emails, coach applications)
+/data
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

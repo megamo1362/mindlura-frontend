@@ -38,16 +38,17 @@ const sentimentUrls = sentimentSymbols.flatMap((symbol) => {
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // Static public pages that exist in both languages.
-  // pricing/for-coaches/faq are sections of the homepage (#pricing, #coaches,
-  // #faq), not standalone routes, so they aren't listed separately here —
-  // the homepage entry below already covers that content.
+  // pricing/faq are sections of the homepage (#pricing, #faq), not standalone
+  // routes, so they aren't listed separately here — the homepage entry below
+  // already covers that content. for-coaches is a standalone route.
   const bilingualPages: { path: string; changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency']; priority: number }[] = [
-    { path: '',          changeFrequency: 'weekly',  priority: 1.0 },
-    { path: '/sentiment', changeFrequency: 'hourly', priority: 0.9 },
-    { path: '/news',     changeFrequency: 'hourly',  priority: 0.8 },
-    { path: '/blog',     changeFrequency: 'weekly',  priority: 0.8 },
-    { path: '/about',    changeFrequency: 'monthly', priority: 0.6 },
-    { path: '/register', changeFrequency: 'monthly', priority: 0.6 },
+    { path: '',            changeFrequency: 'weekly',  priority: 1.0 },
+    { path: '/sentiment',  changeFrequency: 'hourly', priority: 0.9 },
+    { path: '/news',       changeFrequency: 'hourly', priority: 0.8 },
+    { path: '/blog',       changeFrequency: 'weekly',  priority: 0.8 },
+    { path: '/for-coaches',changeFrequency: 'monthly', priority: 0.7 },
+    { path: '/about',      changeFrequency: 'monthly', priority: 0.6 },
+    { path: '/register',   changeFrequency: 'monthly', priority: 0.6 },
   ];
 
   const staticUrls = bilingualPages.flatMap(({ path, changeFrequency, priority }) => {
