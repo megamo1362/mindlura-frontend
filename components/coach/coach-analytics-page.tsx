@@ -1,11 +1,11 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { Users, TrendingUp, TrendingDown } from 'lucide-react';
 import { EmptyState } from '@/components/shared';
 import { StatCardSkeleton } from '@/components/shared/skeletons';
-import { useRosterAnalytics } from '@/hooks/use-coach';
+import { useRosterAnalytics, useCoachEvents } from '@/hooks/use-coach';
 import { useLang } from '@/app/i18n/LangContext';
 import type { RosterPerformer } from '@/types';
 
@@ -54,13 +54,29 @@ function PerformerRow({ p }: { p: RosterPerformer }) {
 
 export function CoachAnalyticsPage() {
   const { t } = useLang();
-  const { data, isLoading, isError } = useRosterAnalytics();
+  const [eventId, setEventId] = useState<number | null>(null);
+  const { data, isLoading, isError } = useRosterAnalytics(eventId);
+  const { data: events = [] } = useCoachEvents();
 
   return (
     <div className="space-y-6 max-w-5xl">
-      <div>
-        <h1 className="text-2xl font-black text-[var(--color-text-primary)]">{t.roster_analytics}</h1>
-        <p className="text-sm text-[var(--color-text-muted)] mt-1">{t.roster_analytics_desc}</p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-black text-[var(--color-text-primary)]">{t.roster_analytics}</h1>
+          <p className="text-sm text-[var(--color-text-muted)] mt-1">{t.roster_analytics_desc}</p>
+        </div>
+
+        <select
+          value={eventId ?? ''}
+          onChange={(e) => setEventId(e.target.value ? Number(e.target.value) : null)}
+          aria-label={t.filter_by_event}
+          className="input-dark rounded-xl px-3 py-2 text-sm"
+        >
+          <option value="">{t.all_events}</option>
+          {events.map((ev) => (
+            <option key={ev.id} value={ev.id}>{ev.name}</option>
+          ))}
+        </select>
       </div>
 
       {isLoading && (

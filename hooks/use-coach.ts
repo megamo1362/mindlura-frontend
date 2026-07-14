@@ -122,10 +122,13 @@ export function useDisconnectCoach() {
 
 // ── Coach: roster analytics ─────────────────────────────────
 
-export function useRosterAnalytics() {
+export function useRosterAnalytics(eventId?: number | null) {
   return useQuery({
-    queryKey: QUERY_KEYS.coachRosterAnalytics,
-    queryFn: () => apiFetch<RosterAnalytics>('/coach/analytics/roster'),
+    queryKey: [...QUERY_KEYS.coachRosterAnalytics, eventId ?? ''],
+    queryFn: () => {
+      const qs = eventId != null ? `?event_id=${eventId}` : '';
+      return apiFetch<RosterAnalytics>(`/coach/analytics/roster${qs}`);
+    },
   });
 }
 
