@@ -24,8 +24,7 @@ const CHANNEL_OPTIONS: { key: NotifyChannel; icon: typeof MessageCircle }[] = [
 
 export function NotificationComposeModal({ open, onClose, clientIds }: NotificationComposeModalProps) {
   const { t } = useLang();
-  const [messageEn, setMessageEn] = useState('');
-  const [messageFa, setMessageFa] = useState('');
+  const [message, setMessage] = useState('');
   const [channel, setChannel] = useState<NotifyChannel>('both');
 
   const { mutate: sendNotification, isPending, error } = useNotifyClients();
@@ -39,17 +38,17 @@ export function NotificationComposeModal({ open, onClose, clientIds }: Notificat
 
   useEffect(() => {
     if (!open) return;
-    setMessageEn('');
-    setMessageFa('');
+    setMessage('');
     setChannel('both');
   }, [open]);
 
-  const canSubmit = messageEn.trim().length > 0 && messageFa.trim().length > 0 && clientIds.length > 0 && !isPending;
+  const canSubmit = message.trim().length > 0 && clientIds.length > 0 && !isPending;
 
   const handleSubmit = () => {
     if (!canSubmit) return;
+    const trimmed = message.trim();
     sendNotification(
-      { client_ids: clientIds, message_en: messageEn.trim(), message_fa: messageFa.trim(), channel },
+      { client_ids: clientIds, message_en: trimmed, message_fa: trimmed, channel },
       {
         onSuccess: (res) => {
           if (res.failed > 0) {
@@ -72,22 +71,11 @@ export function NotificationComposeModal({ open, onClose, clientIds }: Notificat
 
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-xs text-[var(--color-text-muted)]">{t.notification_message_en}</label>
+            <label className="text-xs text-[var(--color-text-muted)]">{t.notification_message}</label>
             <textarea
               className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-elevated)] px-3 py-2 text-sm text-[var(--color-text-primary)] resize-none h-20 focus:outline-none focus:border-[var(--color-cyan)]"
-              value={messageEn}
-              onChange={(e) => setMessageEn(e.target.value)}
-              dir="ltr"
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-xs text-[var(--color-text-muted)]">{t.notification_message_fa}</label>
-            <textarea
-              className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-elevated)] px-3 py-2 text-sm text-[var(--color-text-primary)] resize-none h-20 focus:outline-none focus:border-[var(--color-cyan)]"
-              value={messageFa}
-              onChange={(e) => setMessageFa(e.target.value)}
-              dir="rtl"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
             />
           </div>
 

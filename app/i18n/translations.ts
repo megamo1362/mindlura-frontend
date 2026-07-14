@@ -323,11 +323,10 @@ export const translations = {
 
     // ── Coach → client notifications ────────────────────────
     nav_coach_notifications: 'Notifications',
-    send_notification: 'Send Notification',
+    send_notification: 'Send Message to Clients',
     select_all: 'Select All',
     notification_selected_count: (n: number) => `${n} selected`,
-    notification_message_en: 'Message (English)',
-    notification_message_fa: 'Message (Persian)',
+    notification_message: 'Message',
     select_channel: 'Channel',
     channel_telegram: 'Telegram',
     channel_inapp: 'In-app',
@@ -1116,11 +1115,10 @@ export const translations = {
 
     // ── Coach → client notifications ────────────────────────
     nav_coach_notifications: 'اعلان‌ها',
-    send_notification: 'ارسال اعلان',
+    send_notification: 'ارسال پیام به کلاینت‌ها',
     select_all: 'انتخاب همه',
     notification_selected_count: (n: number) => `${n} انتخاب شده`,
-    notification_message_en: 'پیام (انگلیسی)',
-    notification_message_fa: 'پیام (فارسی)',
+    notification_message: 'پیام',
     select_channel: 'کانال',
     channel_telegram: 'تلگرام',
     channel_inapp: 'درون‌برنامه‌ای',
