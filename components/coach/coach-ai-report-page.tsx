@@ -57,7 +57,6 @@ function renderMarkdown(md: string): string {
 export function CoachAIReportPage() {
   const { t, lang } = useLang();
   const l = (lang === 'fa' ? 'fa' : 'en') as 'en' | 'fa';
-  const isRTL = l === 'fa';
 
   const { data: status } = useAIReportStatus();
   const { data: latest } = useLatestAIReport();
