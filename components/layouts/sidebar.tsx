@@ -25,6 +25,7 @@ const DASHBOARD_NAV: NavEntry[] = [
   { href: '/dashboard/settings/journal-permissions', labelKey: 'nav_coach_access', icon: Shield, roles: ['client'] },
   { href: '/dashboard/coach/clients', labelKey: 'nav_my_clients', icon: Users, roles: ['coach'] },
   { href: '/dashboard/coach/events', labelKey: 'nav_coach_events', icon: Calendar, roles: ['coach'] },
+  { href: '/dashboard/coach/analytics', labelKey: 'nav_coach_analytics', icon: BarChart2, roles: ['coach'] },
   { href: '/dashboard/settings', labelKey: 'nav_settings', icon: Settings, exact: true },
   { href: '/dashboard/profile', labelKey: 'nav_profile', icon: UserCircle },
 ];

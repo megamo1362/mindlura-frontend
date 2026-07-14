@@ -95,6 +95,7 @@ export const translations = {
     nav_coach_access: 'Coach Access',
     nav_my_clients: 'My Clients',
     nav_coach_events: 'Events',
+    nav_coach_analytics: 'Analytics',
     nav_admin_dashboard: 'Dashboard',
     nav_admin_users: 'Users',
     nav_admin_coaches: 'Coaches',
@@ -367,6 +368,23 @@ export const translations = {
     event_name_placeholder: 'e.g. Price Action Course',
     event_description_placeholder: 'Optional description',
     event_created_at: (date: string) => `Created ${date}`,
+
+    // ── Coach roster analytics ───────────────────────────────
+    coach_analytics: 'Analytics',
+    roster_analytics: 'Roster Analytics',
+    roster_analytics_desc: 'Aggregate performance across all your clients',
+    active_clients: 'Active Clients',
+    total_accounts: 'Total Accounts',
+    avg_profit: 'Avg Profit',
+    avg_drawdown: 'Avg Drawdown',
+    avg_win_rate: 'Avg Win Rate',
+    avg_rr_ratio: 'Avg RR Ratio',
+    avg_trade_count: 'Avg Trade Count',
+    top_performers: 'Top Performers',
+    needs_attention: 'Needs Attention',
+    event_breakdown: 'Event Breakdown',
+    active_last_30_days: 'Active in the last 30 days',
+    no_data_yet: 'No data yet',
 
     // ── Client card ────────────────────────────────────────
     client_connected_since: (date: string) => `Connected since ${date}`,
@@ -841,6 +859,7 @@ export const translations = {
     nav_coach_access: 'دسترسی کوچ',
     nav_my_clients: 'کلاینت‌های من',
     nav_coach_events: 'رویدادها',
+    nav_coach_analytics: 'آنالیتیکس',
     nav_admin_dashboard: 'داشبورد',
     nav_admin_users: 'کاربران',
     nav_admin_coaches: 'کوچ‌ها',
@@ -1113,6 +1132,23 @@ export const translations = {
     event_name_placeholder: 'مثلاً دوره پرایس اکشن',
     event_description_placeholder: 'توضیحات اختیاری',
     event_created_at: (date: string) => `ایجاد شده در ${date}`,
+
+    // ── Coach roster analytics ───────────────────────────────
+    coach_analytics: 'آنالیتیکس',
+    roster_analytics: 'آنالیز کلی کلاینت‌ها',
+    roster_analytics_desc: 'عملکرد تجمیعی تمام کلاینت‌های شما',
+    active_clients: 'کلاینت‌های فعال',
+    total_accounts: 'کل حساب‌ها',
+    avg_profit: 'میانگین سود',
+    avg_drawdown: 'میانگین دراداون',
+    avg_win_rate: 'میانگین نرخ برد',
+    avg_rr_ratio: 'میانگین نسبت ریسک',
+    avg_trade_count: 'میانگین تعداد معاملات',
+    top_performers: 'بهترین‌ها',
+    needs_attention: 'نیاز به توجه',
+    event_breakdown: 'تفکیک بر اساس رویداد',
+    active_last_30_days: 'فعال در ۳۰ روز اخیر',
+    no_data_yet: 'هنوز داده‌ای وجود ندارد',
 
     // ── Client card ────────────────────────────────────────
     client_connected_since: (date: string) => `متصل از ${date}`,

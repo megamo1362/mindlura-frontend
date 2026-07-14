@@ -6,7 +6,7 @@ import { QUERY_KEYS } from '@/lib/constants';
 import { toast } from '@/store/toast';
 import { ApiError } from '@/lib/api';
 import { useLang } from '@/app/i18n/LangContext';
-import type { CoachClient, InviteCode, DisplayMode, AccountPermissions, CoachEvent } from '@/types';
+import type { CoachClient, InviteCode, DisplayMode, AccountPermissions, CoachEvent, RosterAnalytics } from '@/types';
 
 // ── Client-side types ──────────────────────────────────────
 
@@ -117,6 +117,15 @@ export function useDisconnectCoach() {
       qc.invalidateQueries({ queryKey: QUERY_KEYS.coaches });
       toast.success(t.coach_disconnected_msg);
     },
+  });
+}
+
+// ── Coach: roster analytics ─────────────────────────────────
+
+export function useRosterAnalytics() {
+  return useQuery({
+    queryKey: QUERY_KEYS.coachRosterAnalytics,
+    queryFn: () => apiFetch<RosterAnalytics>('/coach/analytics/roster'),
   });
 }
 

@@ -335,6 +335,37 @@ export interface CoachClient {
   trade_count: number | null;
 }
 
+// ── Coach Roster Analytics ──────────────────────────────────
+export interface RosterPerformer {
+  client_id: number;
+  full_name: string;
+  profit: number | null;
+  win_rate: number | null;
+  drawdown: number | null;
+}
+
+export interface RosterEventBreakdown {
+  event_id: number;
+  event_name: string;
+  client_count: number;
+  avg_profit: number | null;
+  avg_win_rate: number | null;
+}
+
+export interface RosterAnalytics {
+  total_clients: number;
+  active_clients: number;
+  total_accounts: number;
+  avg_profit: number | null;
+  avg_drawdown: number | null;
+  avg_win_rate: number | null;
+  avg_rr_ratio: number | null;
+  avg_trade_count: number | null;
+  top_performers: RosterPerformer[];
+  needs_attention: RosterPerformer[];
+  by_event: RosterEventBreakdown[];
+}
+
 // ── Coach Events ───────────────────────────────────────────
 export interface CoachEvent {
   id: number;
