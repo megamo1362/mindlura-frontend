@@ -8,3 +8,4 @@ export * from './coach-events-page';
 export * from './coach-analytics-page';
 export * from './notification-compose-modal';
 export * from './coach-notifications-page';
+export * from './coach-ai-report-page';

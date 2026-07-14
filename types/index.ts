@@ -377,6 +377,36 @@ export interface CoachEvent {
   created_at: string;
 }
 
+// ── Coach AI Report ──────────────────────────────────────────
+export interface CoachAIReportFilters {
+  max_drawdown?: number | null;
+  min_rr_ratio?: number | null;
+  min_win_rate?: number | null;
+  event_id?: number | null;
+  include_inactive?: boolean;
+}
+
+export interface CoachAIReportResponse {
+  report_en: string;
+  report_fa: string;
+  generated_at: string;
+  client_count: number;
+  can_request_again_at: string;
+}
+
+export interface CoachAIReportLatest {
+  report_en: string;
+  report_fa: string;
+  generated_at: string | null;
+  filters: CoachAIReportFilters | null;
+}
+
+export interface CoachAIReportStatus {
+  can_request: boolean;
+  last_requested_at: string | null;
+  can_request_again_at: string | null;
+}
+
 // ── Invite Codes ───────────────────────────────────────────
 export type InviteCodeType = 'coach' | 'client';
 

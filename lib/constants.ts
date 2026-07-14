@@ -16,6 +16,7 @@ export const ROUTES = {
   coachEvents: '/dashboard/coach/events',
   coachAnalytics: '/dashboard/coach/analytics',
   coachNotifications: '/dashboard/coach/notifications',
+  coachAIReport: '/dashboard/coach/ai-report',
   admin: {
     root: '/admin',
     users: '/admin/users',
@@ -63,6 +64,8 @@ export const QUERY_KEYS = {
   coachRosterAnalytics: ['coach-roster-analytics'] as const,
   coachNotifications: ['coach-notifications'] as const,
   myCoachNotifications: ['my-coach-notifications'] as const,
+  coachAIReportStatus: ['coach-ai-report-status'] as const,
+  coachAIReportLatest: ['coach-ai-report-latest'] as const,
   adminStats: ['admin-stats'] as const,
   plans: ['plans'] as const,
 } as const;

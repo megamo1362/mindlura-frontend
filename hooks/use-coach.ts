@@ -9,6 +9,7 @@ import { useLang } from '@/app/i18n/LangContext';
 import type {
   CoachClient, InviteCode, DisplayMode, AccountPermissions, CoachEvent, RosterAnalytics,
   CoachNotificationsResponse, NotifyClientsInput, NotifyClientsResponse,
+  CoachAIReportFilters, CoachAIReportResponse, CoachAIReportLatest, CoachAIReportStatus,
 } from '@/types';
 
 // ── Client-side types ──────────────────────────────────────
@@ -277,5 +278,46 @@ export function useCoachNotifications(page: number = 1, limit: number = 20) {
     queryKey: [...QUERY_KEYS.coachNotifications, page, limit],
     queryFn: () =>
       apiFetch<CoachNotificationsResponse>(`/coach/notifications?page=${page}&limit=${limit}`),
+  });
+}
+
+// ── Coach: AI daily report ───────────────────────────────────
+
+export function useAIReportStatus() {
+  return useQuery({
+    queryKey: QUERY_KEYS.coachAIReportStatus,
+    queryFn: () => apiFetch<CoachAIReportStatus>('/coach/ai-report/status'),
+  });
+}
+
+export function useLatestAIReport() {
+  return useQuery({
+    queryKey: QUERY_KEYS.coachAIReportLatest,
+    queryFn: () => apiFetch<CoachAIReportLatest | null>('/coach/ai-report/latest'),
+  });
+}
+
+export function useRequestAIReport() {
+  const { t } = useLang();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (filters: CoachAIReportFilters) =>
+      apiFetch<CoachAIReportResponse>('/coach/ai-report', { method: 'POST', body: { filters } }),
+    onSuccess: (data) => {
+      qc.setQueryData<CoachAIReportLatest>(QUERY_KEYS.coachAIReportLatest, {
+        report_en: data.report_en,
+        report_fa: data.report_fa,
+        generated_at: data.generated_at,
+        filters: null,
+      });
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.coachAIReportStatus });
+    },
+    onError: (err) => {
+      if (!(err instanceof ApiError) || err.message !== 'already_requested_today') {
+        toast.error(err instanceof ApiError ? err.message : t.error_generic);
+      }
+    },
   });
 }

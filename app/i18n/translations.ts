@@ -323,6 +323,7 @@ export const translations = {
 
     // ── Coach → client notifications ────────────────────────
     nav_coach_notifications: 'Notifications',
+    nav_coach_ai_report: 'AI Report',
     send_notification: 'Send Message to Clients',
     select_all: 'Select All',
     notification_selected_count: (n: number) => `${n} selected`,
@@ -413,6 +414,28 @@ export const translations = {
     event_breakdown: 'Event Breakdown',
     active_last_30_days: 'Active in the last 30 days',
     no_data_yet: 'No data yet',
+
+    // ── Coach AI report ──────────────────────────────────────
+    ai_daily_report: 'AI Daily Report',
+    ai_daily_report_desc: 'Get an AI-generated coaching report about your clients, once per day.',
+    generate_report: 'Generate Report',
+    report_ready: 'Ready',
+    report_used_today: 'Used today',
+    available_tomorrow: 'available tomorrow at 00:00 UTC',
+    advanced_filters: 'Advanced Filters',
+    max_drawdown_filter: 'Max Drawdown %',
+    min_rr_filter: 'Min RR Ratio',
+    min_win_rate_filter: 'Min Win Rate %',
+    include_inactive: 'Include inactive clients',
+    analyzing_clients: 'Gathering client data...',
+    analyzing_performance: 'Analyzing performance...',
+    generating_insights: 'Generating insights...',
+    translating_report: 'Translating report...',
+    report_generated_at: (date: string) => `Generated at: ${date}`,
+    clients_analyzed: (n: number) => `Client count analyzed: ${n}`,
+    no_report_yet: 'No report yet',
+    no_report_description: 'Generate your first AI report to see insights about your clients.',
+    report_language_toggle: 'Report language',
 
     // ── Client card ────────────────────────────────────────
     client_connected_since: (date: string) => `Connected since ${date}`,
@@ -1115,6 +1138,7 @@ export const translations = {
 
     // ── Coach → client notifications ────────────────────────
     nav_coach_notifications: 'اعلان‌ها',
+    nav_coach_ai_report: 'گزارش AI',
     send_notification: 'ارسال پیام به کلاینت‌ها',
     select_all: 'انتخاب همه',
     notification_selected_count: (n: number) => `${n} انتخاب شده`,
@@ -1205,6 +1229,28 @@ export const translations = {
     event_breakdown: 'تفکیک بر اساس رویداد',
     active_last_30_days: 'فعال در ۳۰ روز اخیر',
     no_data_yet: 'هنوز داده‌ای وجود ندارد',
+
+    // ── Coach AI report ──────────────────────────────────────
+    ai_daily_report: 'گزارش روزانه هوش مصنوعی',
+    ai_daily_report_desc: 'یک گزارش کوچینگ تولیدشده توسط هوش مصنوعی درباره کلاینت‌های خود دریافت کنید، روزی یک‌بار.',
+    generate_report: 'تولید گزارش',
+    report_ready: 'آماده',
+    report_used_today: 'امروز استفاده شد',
+    available_tomorrow: 'فردا ساعت ۰۰:۰۰ در دسترس است',
+    advanced_filters: 'فیلترهای پیشرفته',
+    max_drawdown_filter: 'حداکثر افت سرمایه %',
+    min_rr_filter: 'حداقل نسبت ریسک به ریوارد',
+    min_win_rate_filter: 'حداقل نرخ برد %',
+    include_inactive: 'شامل کلاینت‌های غیرفعال',
+    analyzing_clients: 'جمع‌آوری داده‌های کلاینت‌ها...',
+    analyzing_performance: 'تحلیل عملکرد...',
+    generating_insights: 'تولید بینش‌ها...',
+    translating_report: 'ترجمه گزارش...',
+    report_generated_at: (date: string) => `تولید شده در: ${date}`,
+    clients_analyzed: (n: number) => `تعداد کلاینت‌های تحلیل‌شده: ${n}`,
+    no_report_yet: 'هنوز گزارشی وجود ندارد',
+    no_report_description: 'برای مشاهده بینش‌های مربوط به کلاینت‌های خود، اولین گزارش هوش مصنوعی را تولید کنید.',
+    report_language_toggle: 'زبان گزارش',
 
     // ── Client card ────────────────────────────────────────
     client_connected_since: (date: string) => `متصل از ${date}`,
