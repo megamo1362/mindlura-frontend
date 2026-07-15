@@ -178,7 +178,7 @@ const COPY = {
   },
   fa: {
     dir: "rtl",
-    nav: { features: "ویژگی‌ها", how: "فرآیند", pricing: "قیمت‌گذاری", coaches: "برای کوچ‌ها", blog: "بلاگ", market: "سنتیمنت", news: "اخبار", faq: "سوالات متداول", about: "درباره ما", login: "ورود", start: "شروع کنید" },
+    nav: { features: "ویژگی‌ها", how: "فرآیند", pricing: "قیمت‌ها", coaches: "برای کوچ‌ها", blog: "بلاگ", market: "سنتیمنت", news: "اخبار", faq: "سوالات متداول", about: "درباره ما", login: "ورود", start: "شروع کنید" },
     toggle: { trader: "تریدر", coach: "کوچ" },
     hero: {
       trader: {
@@ -315,7 +315,7 @@ const COPY = {
     footer: {
       tagline: "روان‌شناسی معاملاتی، قابل مشاهده.",
       cols: [
-        { h: "محصول", items: ["ویژگی‌ها", "قیمت‌گذاری", "برای کوچ‌ها", "امنیت"] },
+        { h: "محصول", items: ["ویژگی‌ها", "قیمت‌ها", "برای کوچ‌ها", "امنیت"] },
         { h: "شرکت", items: ["درباره ما", "تماس با ما", "بلاگ", "سوالات متداول"] },
         { h: "قوانین", items: ["حریم خصوصی", "شرایط استفاده"] },
       ],
@@ -384,7 +384,7 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
           <nav className="hidden md:flex items-center gap-9 text-sm" style={{ color: "#7C8296" }}>
             <a href="#features" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.features}</a>
             <a href="#how" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.how}</a>
-            <a href="#pricing" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.pricing}</a>
+            <Link href={localizeHref("/pricing")} className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.pricing}</Link>
             <Link href={localizeHref("/for-coaches")} className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.coaches}</Link>
             <Link href={localizeHref("/blog")} className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.blog}</Link>
             <Link href={localizeHref("/sentiment")} className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.market}</Link>
@@ -413,7 +413,7 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
           <div className="md:hidden px-6 pb-5 flex flex-col gap-3 text-sm" style={{ color: "#C7CBE0" }}>
             <a href="#features">{t.nav.features}</a>
             <a href="#how">{t.nav.how}</a>
-            <a href="#pricing">{t.nav.pricing}</a>
+            <Link href={localizeHref("/pricing")}>{t.nav.pricing}</Link>
             <Link href={localizeHref("/for-coaches")}>{t.nav.coaches}</Link>
             <Link href={localizeHref("/blog")}>{t.nav.blog}</Link>
             <Link href={localizeHref("/sentiment")}>{t.nav.market}</Link>
