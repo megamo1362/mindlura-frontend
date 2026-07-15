@@ -275,6 +275,9 @@ export interface Plan {
   name: string;
   slug: PlanSlug;
   price_usd: number;
+  price_usd_ir?: number | null;
+  coach_price_usd?: number | null;
+  coach_price_usd_ir?: number | null;
   duration_days: number;
   max_mt5_accounts: number;
   is_active: boolean;
@@ -450,6 +453,20 @@ export interface InviteCode {
   created_at: string | null;
   used_at: string | null;
   used_by_name?: string | null;
+}
+
+// ── FAQ ──────────────────────────────────────────────────
+export type FAQCategory = 'general' | 'coaches' | 'payments' | 'technical';
+
+export interface FAQItem {
+  id: number;
+  question_en: string;
+  question_fa: string;
+  answer_en: string;
+  answer_fa: string;
+  category: FAQCategory;
+  sort_order: number;
+  is_active: boolean;
 }
 
 // ── Admin ──────────────────────────────────────────────────

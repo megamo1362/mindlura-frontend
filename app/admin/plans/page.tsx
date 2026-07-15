@@ -65,6 +65,9 @@ export default function AdminPlansPage() {
         duration_days: editPlan.duration_days, max_mt5_accounts: editPlan.max_mt5_accounts,
         is_active: editPlan.is_active,
       };
+      if (editPlan.price_usd_ir != null) body.price_usd_ir = editPlan.price_usd_ir;
+      if (editPlan.coach_price_usd != null) body.coach_price_usd = editPlan.coach_price_usd;
+      if (editPlan.coach_price_usd_ir != null) body.coach_price_usd_ir = editPlan.coach_price_usd_ir;
       if (editPlan.ai_monthly_limit == null) {
         body.ai_monthly_limit_clear = true;
       } else {
@@ -161,6 +164,27 @@ export default function AdminPlansPage() {
               <Input label={t.admin_plans_name_label} value={editPlan.name} onChange={e => setEditPlan({ ...editPlan, name: e.target.value })} />
               <Input label={t.admin_plans_price_label} type="number" min={0} step={0.01} value={editPlan.price_usd}
                 onChange={e => setEditPlan({ ...editPlan, price_usd: parseFloat(e.target.value) || 0 })} />
+              <Input label={t.admin_plans_price_ir_label} type="number" min={0} step={0.01}
+                placeholder={t.admin_plans_price_placeholder_default}
+                value={editPlan.price_usd_ir ?? ''}
+                onChange={e => {
+                  const v = e.target.value;
+                  setEditPlan({ ...editPlan, price_usd_ir: v === '' ? null : parseFloat(v) || 0 });
+                }} />
+              <Input label={t.admin_plans_coach_price_label} type="number" min={0} step={0.01}
+                placeholder={t.admin_plans_price_placeholder_default}
+                value={editPlan.coach_price_usd ?? ''}
+                onChange={e => {
+                  const v = e.target.value;
+                  setEditPlan({ ...editPlan, coach_price_usd: v === '' ? null : parseFloat(v) || 0 });
+                }} />
+              <Input label={t.admin_plans_coach_price_ir_label} type="number" min={0} step={0.01}
+                placeholder={t.admin_plans_price_placeholder_default}
+                value={editPlan.coach_price_usd_ir ?? ''}
+                onChange={e => {
+                  const v = e.target.value;
+                  setEditPlan({ ...editPlan, coach_price_usd_ir: v === '' ? null : parseFloat(v) || 0 });
+                }} />
               <Input label={t.admin_plans_duration_label} type="number" min={1} value={editPlan.duration_days}
                 onChange={e => setEditPlan({ ...editPlan, duration_days: parseInt(e.target.value) || 1 })} />
               <Input label={t.admin_plans_max_mt5_label} type="number" min={1} value={editPlan.max_mt5_accounts}
