@@ -7,13 +7,7 @@ export type BillingPeriod = (typeof BILLING_PERIODS)[number];
 function isHidden(plan: PricingPlan): boolean {
   const name = plan.name.trim().toLowerCase();
   const slug = String(plan.slug).trim().toLowerCase();
-  return (
-    name === 'trial' ||
-    name === 'elite' ||
-    slug === 'trial' ||
-    slug === 'elite' ||
-    plan.price_usd === 0
-  );
+  return name === 'elite' || slug === 'elite';
 }
 
 /** Server-side fetch of public pricing data, filtered to display rules and sorted by price. */

@@ -30,6 +30,12 @@ const COPY = {
     empty: 'Pricing is being updated — check back shortly.',
     total: (months: number, total: string) =>
       months === 12 ? `Billed $${total} per year` : `Billed $${total} every ${months} months`,
+    trialName: 'Free Trial',
+    trialBadge: 'Start Here',
+    trialPrice: '$0',
+    trialLimitations: ['1 demo MT5 account', '30 days access', 'Limited features'],
+    trialCta: 'Start Free',
+    trialCtaHref: '/register',
   },
   fa: {
     dir: 'rtl' as const,
@@ -50,6 +56,12 @@ const COPY = {
       months === 12
         ? `${toFaDigits(total)} دلار سالانه پرداخت می‌شود`
         : `${toFaDigits(total)} دلار هر ${toFaDigits(String(months))} ماه پرداخت می‌شود`,
+    trialName: 'دوره آزمایشی رایگان',
+    trialBadge: 'از اینجا شروع کن',
+    trialPrice: 'رایگان',
+    trialLimitations: ['۱ حساب دمو MT5', 'دسترسی ۳۰ روزه', 'امکانات محدود'],
+    trialCta: 'شروع رایگان',
+    trialCtaHref: '/fa/register',
   },
 };
 
@@ -151,7 +163,8 @@ function PlanCard({
   isFa: boolean;
   displayFont: string;
 }) {
-  const isPro = plan.slug === 'pro' || plan.name.toLowerCase() === 'pro';
+  const isTrial = plan.slug === 'trial' || plan.name.toLowerCase() === 'trial';
+  const isPro = !isTrial && (plan.slug === 'pro' || plan.name.toLowerCase() === 'pro');
   const months = period === '1' ? 1 : Number(period);
   const discountPct = period === '1' ? 0 : (plan.discounts[period] ?? 0);
   const displayMonthly = (isIran ? plan.price_usd_ir : plan.price_usd) * (1 - discountPct / 100);
@@ -178,46 +191,75 @@ function PlanCard({
           {t.mostPopular}
         </span>
       )}
+      {isTrial && (
+        <span
+          className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-wide px-3 py-1"
+          style={{ backgroundColor: '#232332', color: '#C7CBE0', fontFamily: displayFont }}
+        >
+          {t.trialBadge}
+        </span>
+      )}
 
       <h2 className="text-2xl mb-1" style={{ fontFamily: displayFont, fontWeight: 500, color: isPro ? accent : '#E9ECF3' }}>
-        {plan.name}
+        {isTrial ? t.trialName : plan.name}
       </h2>
 
       <div className="my-6">
-        {isIran && (
-          <div className="text-sm mb-1" style={{ color: '#5A6178', textDecoration: 'line-through' }}>
-            ${plan.price_usd.toFixed(2)}{t.perMonth}
+        {isTrial ? (
+          <div className="flex items-baseline gap-1">
+            <span className="text-4xl" style={{ fontFamily: "'JetBrains Mono', monospace", color: '#E9ECF3' }}>
+              {t.trialPrice}
+            </span>
           </div>
-        )}
-        <div className="flex items-baseline gap-1">
-          <span className="text-4xl" style={{ fontFamily: "'JetBrains Mono', monospace", color: '#E9ECF3' }}>
-            ${displayMonthly.toFixed(2)}
-          </span>
-          <span className="text-sm" style={{ color: '#7C8296' }}>{t.perMonth}</span>
-        </div>
-        {period !== '1' && (
-          <div className="text-xs mt-1" style={{ color: '#5A6178' }}>
-            {t.total(months, totalPrice.toFixed(2))}
-          </div>
+        ) : (
+          <>
+            {isIran && (
+              <div className="text-sm mb-1" style={{ color: '#5A6178', textDecoration: 'line-through' }}>
+                ${plan.price_usd.toFixed(2)}{t.perMonth}
+              </div>
+            )}
+            <div className="flex items-baseline gap-1">
+              <span className="text-4xl" style={{ fontFamily: "'JetBrains Mono', monospace", color: '#E9ECF3' }}>
+                ${displayMonthly.toFixed(2)}
+              </span>
+              <span className="text-sm" style={{ color: '#7C8296' }}>{t.perMonth}</span>
+            </div>
+            {period !== '1' && (
+              <div className="text-xs mt-1" style={{ color: '#5A6178' }}>
+                {t.total(months, totalPrice.toFixed(2))}
+              </div>
+            )}
+          </>
         )}
       </div>
 
-      <ul className="space-y-2.5 mb-8 flex-1">
-        {shown.map((f) => (
-          <li key={f.key} className="flex items-start gap-2 text-sm" style={{ color: '#C7CBE0' }}>
-            <Check size={15} strokeWidth={2} style={{ color: accent, marginTop: 2, flexShrink: 0 }} />
-            <span>{isFa ? f.label_fa : f.label_en}</span>
-          </li>
-        ))}
-        {remaining > 0 && (
-          <li className="text-xs italic" style={{ color: '#5A6178', fontFamily: displayFont }}>
-            {t.andMore(remaining)}
-          </li>
-        )}
-      </ul>
+      {isTrial ? (
+        <ul className="space-y-2.5 mb-8 flex-1">
+          {t.trialLimitations.map((label) => (
+            <li key={label} className="flex items-start gap-2 text-sm" style={{ color: '#C7CBE0' }}>
+              <Check size={15} strokeWidth={2} style={{ color: '#7C8296', marginTop: 2, flexShrink: 0 }} />
+              <span>{label}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <ul className="space-y-2.5 mb-8 flex-1">
+          {shown.map((f) => (
+            <li key={f.key} className="flex items-start gap-2 text-sm" style={{ color: '#C7CBE0' }}>
+              <Check size={15} strokeWidth={2} style={{ color: accent, marginTop: 2, flexShrink: 0 }} />
+              <span>{isFa ? f.label_fa : f.label_en}</span>
+            </li>
+          ))}
+          {remaining > 0 && (
+            <li className="text-xs italic" style={{ color: '#5A6178', fontFamily: displayFont }}>
+              {t.andMore(remaining)}
+            </li>
+          )}
+        </ul>
+      )}
 
       <Link
-        href={t.ctaHref}
+        href={isTrial ? t.trialCtaHref : t.ctaHref}
         className="text-center px-6 py-3 text-sm pr-focus"
         style={
           isPro
@@ -225,7 +267,7 @@ function PlanCard({
             : { border: '1px solid #232332', color: '#E9ECF3' }
         }
       >
-        {t.cta}
+        {isTrial ? t.trialCta : t.cta}
       </Link>
     </div>
   );
