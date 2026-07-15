@@ -14,7 +14,7 @@ export const chromeCopy = {
       login: 'Log in',
       start: 'Get Started',
     },
-    toggle: { trader: 'Trader', coach: 'Coach' },
+    toggle: { trader: 'Trader', coach: 'Coach', hint: 'Adjusts the opening message below — the rest of the page stays the same for everyone.' },
     footer: {
       tagline: 'Trading psychology, made visible.',
       cols: [
@@ -36,7 +36,7 @@ export const chromeCopy = {
       login: 'ورود',
       start: 'شروع کنید',
     },
-    toggle: { trader: 'تریدر', coach: 'کوچ' },
+    toggle: { trader: 'تریدر', coach: 'کوچ', hint: 'فقط پیام ابتدایی زیر را تغییر می‌دهد — بقیه صفحه برای همه یکسان است.' },
     footer: {
       tagline: 'روان‌شناسی معاملاتی، قابل مشاهده.',
       cols: [
@@ -273,13 +273,25 @@ export const trustCopy = {
 export const testimonialsCopy = {
   en: {
     eyebrow: 'Early Access',
-    title: 'The words of early traders and coaches will live here.',
-    sub: 'We’re building this section with real accounts, not invented ones — check back soon.',
+    title: 'Real accounts are just getting started here — no invented reviews, ever.',
+    sub: 'Mindlura is in early access with traders and coaches who joined before there was a page built to convince them. Their results will replace this section as they come in — not stock quotes.',
+    chips: [
+      { t: 'Read-only by design', d: 'We can’t place, modify, or close a single trade on your account.' },
+      { t: 'Built from the inside', d: 'By someone who managed brokerage infrastructure, not just a landing page.' },
+      { t: 'No manufactured proof', d: 'No stock photos, no paid reviews — what you see here is what exists today.' },
+    ],
+    cta: 'Join Early Access',
   },
   fa: {
     eyebrow: 'دسترسی زودهنگام',
-    title: 'حرف‌های تریدرها و کوچ‌های اولیه، اینجا خواهند بود',
-    sub: 'این بخش را با حساب‌های واقعی می‌سازیم، نه ساختگی؛ به‌زودی برمی‌گردیم.',
+    title: 'حساب‌های واقعی همین حالا اینجا شروع شده‌اند — بدون نظر ساختگی، هرگز.',
+    sub: 'مایندلورا با تریدرها و کوچ‌هایی در دسترسی زودهنگام است که پیش از ساخته‌شدن این صفحه برای متقاعدکردن‌شان، پیوسته‌اند. نتایج واقعی آن‌ها این بخش را جایگزین خواهد کرد — نه نقل‌قول‌های ساختگی.',
+    chips: [
+      { t: 'فقط‌خواندنی، از پایه', d: 'ما نمی‌توانیم هیچ معامله‌ای در حساب شما ثبت، تغییر یا بسته کنیم.' },
+      { t: 'ساخته‌شده از درون صنعت', d: 'توسط کسی که زیرساخت بروکری را مدیریت کرده، نه فقط یک صفحه فرود ساخته.' },
+      { t: 'بدون اثبات ساختگی', d: 'بدون عکس استوک، بدون نظر خریداری‌شده — آنچه اینجا می‌بینید همان چیزی است که امروز وجود دارد.' },
+    ],
+    cta: 'پیوستن به دسترسی زودهنگام',
   },
 };
 

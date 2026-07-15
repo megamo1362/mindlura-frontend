@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ArrowRight, FileText, BarChart2, Lightbulb, Users, Sparkles } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion';
 import { tokens } from '@/lib/design-tokens';
+import { SectionShell } from '../SectionShell';
 import type { SectionChrome } from '../types';
 import type { coachPlatformCopy } from '../copy';
 
@@ -42,8 +43,7 @@ export function CoachPlatformSection({ copy, chrome }: { copy: CoachPlatformCopy
   const coachAccent = tokens.color.coach;
 
   return (
-    <section id="coaches" className="max-w-screen-2xl mx-auto px-6 py-16">
-      <div className="hairline mb-16" />
+    <SectionShell id="coaches" tone="alt" spacing="lg">
       <div className="grid md:grid-cols-2 gap-14 items-center">
         <ScrollReveal variant="fadeUp">
           <p className="text-sm italic mb-4" style={{ color: coachAccent, fontFamily: displayFont }}>{copy.eyebrow}</p>
@@ -78,6 +78,6 @@ export function CoachPlatformSection({ copy, chrome }: { copy: CoachPlatformCopy
           <p className="text-xs italic text-center" style={{ color: tokens.color.mutedDim, fontFamily: displayFont }}>{copy.note}</p>
         </ScrollReveal>
       </div>
-    </section>
+    </SectionShell>
   );
 }

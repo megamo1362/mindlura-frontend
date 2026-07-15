@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { AlertTriangle, Sparkles, FlaskConical } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion';
 import { tokens } from '@/lib/design-tokens';
+import { SectionShell } from '../SectionShell';
 import type { SectionChrome } from '../types';
 import type { aiDemoCopy } from '../copy';
 
@@ -29,9 +30,7 @@ export function AIDemoSection({ copy, chrome }: { copy: AIDemoCopy; chrome: Sect
   const offset = circumference - (score / 100) * circumference;
 
   return (
-    <section id="ai-demo" className="max-w-screen-2xl mx-auto px-6 py-20">
-      <div className="hairline mb-16" />
-
+    <SectionShell id="ai-demo" tone="canvas" spacing="lg">
       <ScrollReveal variant="fadeUp">
         <div className="flex items-center gap-3 mb-4 flex-wrap">
           <p className="text-sm italic" style={{ color: accent, fontFamily: displayFont }}>{copy.eyebrow}</p>
@@ -163,6 +162,6 @@ export function AIDemoSection({ copy, chrome }: { copy: AIDemoCopy; chrome: Sect
           </div>
         </div>
       </ScrollReveal>
-    </section>
+    </SectionShell>
   );
 }

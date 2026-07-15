@@ -3,6 +3,7 @@
 import { ArrowDown } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion';
 import { tokens } from '@/lib/design-tokens';
+import { SectionShell } from '../SectionShell';
 import type { SectionChrome } from '../types';
 import type { howCopy } from '../copy';
 
@@ -12,8 +13,7 @@ export function HowItWorks({ copy, chrome }: { copy: HowCopy; chrome: SectionChr
   const { accent, displayFont } = chrome;
 
   return (
-    <section id="how" className="max-w-screen-2xl mx-auto px-6 py-16">
-      <div className="hairline mb-16" />
+    <SectionShell id="how" tone="canvas" spacing="md">
       <ScrollReveal variant="fadeUp">
         <h2 className="text-2xl md:text-3xl mb-14 max-w-lg" style={{ fontFamily: displayFont, fontWeight: 500, color: tokens.color.text }}>
           {copy.title}
@@ -33,6 +33,6 @@ export function HowItWorks({ copy, chrome }: { copy: HowCopy; chrome: SectionChr
           </ScrollReveal>
         ))}
       </div>
-    </section>
+    </SectionShell>
   );
 }

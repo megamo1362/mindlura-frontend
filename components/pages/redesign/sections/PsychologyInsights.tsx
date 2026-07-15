@@ -3,6 +3,7 @@
 import { Repeat, LineChart, CalendarClock, ListChecks } from 'lucide-react';
 import { ScrollReveal, StaggerList, StaggerItem } from '@/components/motion';
 import { tokens } from '@/lib/design-tokens';
+import { SectionShell } from '../SectionShell';
 import type { SectionChrome } from '../types';
 import type { psychologyInsightsCopy } from '../copy';
 
@@ -14,8 +15,7 @@ export function PsychologyInsights({ copy, chrome }: { copy: PsychInsightsCopy; 
   const { accent, displayFont } = chrome;
 
   return (
-    <section className="max-w-screen-2xl mx-auto px-6 py-16">
-      <div className="hairline mb-16" />
+    <SectionShell tone="alt" spacing="md">
       <ScrollReveal variant="fadeUp">
         <p className="text-sm italic mb-4" style={{ color: accent, fontFamily: displayFont }}>{copy.eyebrow}</p>
         <h2 className="text-2xl md:text-3xl mb-4 max-w-xl" style={{ fontFamily: displayFont, fontWeight: 500, color: tokens.color.text }}>
@@ -36,6 +36,6 @@ export function PsychologyInsights({ copy, chrome }: { copy: PsychInsightsCopy; 
           );
         })}
       </StaggerList>
-    </section>
+    </SectionShell>
   );
 }
