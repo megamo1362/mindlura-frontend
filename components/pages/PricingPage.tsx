@@ -9,6 +9,9 @@ import { BILLING_PERIODS, type BillingPeriod } from '@/lib/pricing';
 const accent = '#8B7CF6';
 const MAX_FEATURES_SHOWN = 10;
 
+const FA_DIGITS: Record<string, string> = { '0': '۰', '1': '۱', '2': '۲', '3': '۳', '4': '۴', '5': '۵', '6': '۶', '7': '۷', '8': '۸', '9': '۹' };
+const toFaDigits = (s: string) => s.replace(/[0-9]/g, (d) => FA_DIGITS[d]);
+
 const COPY = {
   en: {
     dir: 'ltr' as const,
@@ -25,6 +28,8 @@ const COPY = {
     ctaHref: '/register',
     andMore: (n: number) => `and ${n} more`,
     empty: 'Pricing is being updated — check back shortly.',
+    total: (months: number, total: string) =>
+      months === 12 ? `Billed $${total} per year` : `Billed $${total} every ${months} months`,
   },
   fa: {
     dir: 'rtl' as const,
@@ -41,6 +46,10 @@ const COPY = {
     ctaHref: '/fa/register',
     andMore: (n: number) => `و ${n} مورد دیگر`,
     empty: 'قیمت‌گذاری در حال به‌روزرسانی است — کمی بعد دوباره سر بزنید.',
+    total: (months: number, total: string) =>
+      months === 12
+        ? `${toFaDigits(total)} دلار سالانه پرداخت می‌شود`
+        : `${toFaDigits(total)} دلار هر ${toFaDigits(String(months))} ماه پرداخت می‌شود`,
   },
 };
 
@@ -141,10 +150,10 @@ function PlanCard({
   displayFont: string;
 }) {
   const isPro = plan.slug === 'pro' || plan.name.toLowerCase() === 'pro';
-  const basePrice = isIran ? plan.price_usd_ir : plan.price_usd;
+  const months = period === '1' ? 1 : Number(period);
   const discountPct = period === '1' ? 0 : (plan.discounts[period] ?? 0);
-  const discountedPrice = basePrice * (1 - discountPct / 100);
-  const showStrikethrough = period !== '1' && discountPct > 0;
+  const displayMonthly = (isIran ? plan.price_usd_ir : plan.price_usd) * (1 - discountPct / 100);
+  const totalPrice = displayMonthly * months;
 
   const features = plan.features;
   const shown = features.slice(0, MAX_FEATURES_SHOWN);
@@ -173,17 +182,22 @@ function PlanCard({
       </h2>
 
       <div className="my-6">
-        {showStrikethrough && (
+        {isIran && (
           <div className="text-sm mb-1" style={{ color: '#5A6178', textDecoration: 'line-through' }}>
-            ${basePrice.toFixed(2)}
+            ${plan.price_usd.toFixed(2)}{t.perMonth}
           </div>
         )}
         <div className="flex items-baseline gap-1">
           <span className="text-4xl" style={{ fontFamily: "'JetBrains Mono', monospace", color: '#E9ECF3' }}>
-            ${discountedPrice.toFixed(2)}
+            ${displayMonthly.toFixed(2)}
           </span>
           <span className="text-sm" style={{ color: '#7C8296' }}>{t.perMonth}</span>
         </div>
+        {period !== '1' && (
+          <div className="text-xs mt-1" style={{ color: '#5A6178' }}>
+            {t.total(months, totalPrice.toFixed(2))}
+          </div>
+        )}
       </div>
 
       <ul className="space-y-2.5 mb-8 flex-1">
