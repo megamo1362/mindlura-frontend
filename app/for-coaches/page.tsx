@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
+import { resolveCountry } from '@/lib/geo';
 import { ForCoachesPageContent } from '@/components/pages/ForCoachesPage';
 import { FOR_COACHES_FAQ_EN } from '@/lib/forCoachesFaq';
 
@@ -26,7 +28,10 @@ export const metadata: Metadata = {
   twitter: { card: 'summary', title, description },
 };
 
-export default function ForCoachesPage() {
+export default async function ForCoachesPage() {
+  const headersList = await headers();
+  const country = resolveCountry((name) => headersList.get(name));
+
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -43,7 +48,7 @@ export default function ForCoachesPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
-      <ForCoachesPageContent lang="en" />
+      <ForCoachesPageContent lang="en" country={country} />
     </>
   );
 }

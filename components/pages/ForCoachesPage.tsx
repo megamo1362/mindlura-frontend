@@ -222,9 +222,10 @@ function readFileAsBase64(file: File): Promise<string> {
   });
 }
 
-export function ForCoachesPageContent({ lang }: { lang: 'en' | 'fa' }) {
+export function ForCoachesPageContent({ lang, country }: { lang: 'en' | 'fa'; country: string }) {
   const t = COPY[lang];
   const isFa = lang === 'fa';
+  const showLangToggle = country === 'IR';
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [status, setStatus] = useState<FormStatus>('idle');
   const [fileError, setFileError] = useState('');
@@ -311,9 +312,11 @@ export function ForCoachesPageContent({ lang }: { lang: 'en' | 'fa' }) {
           <Link href={isFa ? '/fa' : '/'} className="text-sm hover:text-[#C7CBE0] transition-colors fc-focus" style={{ color: '#5A6178' }}>
             {t.back}
           </Link>
-          <Link href={t.langToggleHref} className="text-xs italic fc-focus" style={{ fontFamily: displayFont, color: '#7C8296' }}>
-            {t.langToggleLabel}
-          </Link>
+          {showLangToggle && (
+            <Link href={t.langToggleHref} className="text-xs italic fc-focus" style={{ fontFamily: displayFont, color: '#7C8296' }}>
+              {t.langToggleLabel}
+            </Link>
+          )}
         </div>
 
         {/* ---------------- HERO ---------------- */}

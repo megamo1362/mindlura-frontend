@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
+import { resolveCountry } from '@/lib/geo';
 import { FaqPageContent } from '@/components/pages/FaqPage';
 
 const siteUrl = 'https://mindlura.com';
@@ -24,6 +26,9 @@ export const metadata: Metadata = {
   twitter: { card: 'summary', title, description },
 };
 
-export default function FaFaqPage() {
-  return <FaqPageContent lang="fa" />;
+export default async function FaFaqPage() {
+  const headersList = await headers();
+  const country = resolveCountry((name) => headersList.get(name));
+
+  return <FaqPageContent lang="fa" country={country} />;
 }

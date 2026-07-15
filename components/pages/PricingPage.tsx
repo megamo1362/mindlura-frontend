@@ -82,9 +82,11 @@ export function PricingPageContent({
           <Link href={isFa ? '/fa' : '/'} className="text-sm hover:text-[#C7CBE0] transition-colors pr-focus" style={{ color: '#5A6178' }}>
             {t.back}
           </Link>
-          <Link href={t.langToggleHref} className="text-xs italic pr-focus" style={{ fontFamily: displayFont, color: '#7C8296' }}>
-            {t.langToggleLabel}
-          </Link>
+          {isIran && (
+            <Link href={t.langToggleHref} className="text-xs italic pr-focus" style={{ fontFamily: displayFont, color: '#7C8296' }}>
+              {t.langToggleLabel}
+            </Link>
+          )}
         </div>
 
         {/* ---------------- HEADING ---------------- */}
