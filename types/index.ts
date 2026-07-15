@@ -286,6 +286,27 @@ export interface Plan {
   ai_monthly_limit?: number | null;
 }
 
+// ── Public pricing (GET /plans/pricing) ─────────────────────
+export interface PricingFeature {
+  key: string;
+  label_en: string;
+  label_fa: string;
+}
+
+export interface PricingPlan {
+  id: number;
+  name: string;
+  slug: PlanSlug;
+  description: string | null;
+  price_usd: number;
+  price_usd_ir: number;
+  coach_price_usd: number;
+  coach_price_usd_ir: number | null;
+  duration_days: number;
+  features: PricingFeature[];
+  discounts: Record<string, number>;
+}
+
 // ── Coaching ───────────────────────────────────────────────
 export type DisplayMode = 'name' | 'email' | 'both';
 

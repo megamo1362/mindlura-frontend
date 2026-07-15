@@ -18,6 +18,8 @@ interface PlanFeature {
   label: string;
   description: string | null;
   is_enabled: boolean;
+  label_en: string | null;
+  label_fa: string | null;
 }
 
 const planAccent: Record<string, string> = {
@@ -87,7 +89,12 @@ export default function AdminPlansPage() {
     try {
       await apiFetch(`/admin/plans/${featuresPlan.id}/features`, {
         method: 'PATCH',
-        body: { features: features.map(f => ({ feature_id: f.id, is_enabled: f.is_enabled })) },
+        body: {
+          features: features.map(f => ({
+            feature_id: f.id, is_enabled: f.is_enabled,
+            label_en: f.label_en ?? '', label_fa: f.label_fa ?? '',
+          })),
+        },
       });
       setFeaturesPlan(null);
     } finally {
@@ -236,15 +243,34 @@ export default function AdminPlansPage() {
               ) : (
                 <div className="space-y-2 max-h-80 overflow-y-auto mb-2">
                   {features.map(f => (
-                    <div key={f.id} className="flex items-center justify-between rounded-lg border border-[var(--color-border)] px-4 py-3">
-                      <div>
-                        <p className="text-sm font-medium text-[var(--color-text-primary)]">{f.label}</p>
-                        {f.description && <p className="text-xs text-[var(--color-text-muted)] mt-0.5">{f.description}</p>}
+                    <div key={f.id} className="rounded-lg border border-[var(--color-border)] px-4 py-3 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-[var(--color-text-primary)]">{f.label}</p>
+                          {f.description && <p className="text-xs text-[var(--color-text-muted)] mt-0.5">{f.description}</p>}
+                        </div>
+                        <Switch
+                          checked={f.is_enabled}
+                          onCheckedChange={v => setFeatures(prev => prev.map(x => x.id === f.id ? { ...x, is_enabled: v } : x))}
+                        />
                       </div>
-                      <Switch
-                        checked={f.is_enabled}
-                        onCheckedChange={v => setFeatures(prev => prev.map(x => x.id === f.id ? { ...x, is_enabled: v } : x))}
-                      />
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          className="flex-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-deep)] px-3 py-1.5 text-xs text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-cyan)]"
+                          placeholder={t.admin_plans_label_en_placeholder}
+                          value={f.label_en ?? ''}
+                          onChange={e => setFeatures(prev => prev.map(x => x.id === f.id ? { ...x, label_en: e.target.value } : x))}
+                        />
+                        <input
+                          type="text"
+                          dir="rtl"
+                          className="flex-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-deep)] px-3 py-1.5 text-xs text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-cyan)]"
+                          placeholder={t.admin_plans_label_fa_placeholder}
+                          value={f.label_fa ?? ''}
+                          onChange={e => setFeatures(prev => prev.map(x => x.id === f.id ? { ...x, label_fa: e.target.value } : x))}
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>

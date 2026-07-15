@@ -585,6 +585,8 @@ export const translations = {
     admin_plans_status_label: 'Plan Status',
     admin_plans_features_title: (name: string) => `Features for ${name}`,
     admin_plans_no_features: 'No features defined yet.',
+    admin_plans_label_en_placeholder: 'EN label',
+    admin_plans_label_fa_placeholder: 'FA label',
 
     // ── Admin FAQ ────────────────────────────────────────
     nav_admin_faq: 'FAQ',
@@ -1450,6 +1452,8 @@ export const translations = {
     admin_plans_status_label: 'وضعیت پلن',
     admin_plans_features_title: (name: string) => `ویژگی‌های پلن ${name}`,
     admin_plans_no_features: 'هنوز ویژگی‌ای تعریف نشده.',
+    admin_plans_label_en_placeholder: 'برچسب انگلیسی',
+    admin_plans_label_fa_placeholder: 'برچسب فارسی',
 
     // ── Admin FAQ ────────────────────────────────────────
     nav_admin_faq: 'سوالات متداول',
