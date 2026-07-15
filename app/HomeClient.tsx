@@ -170,7 +170,7 @@ const COPY = {
       tagline: "Trading psychology, made visible.",
       cols: [
         { h: "Product", items: ["Features", "Pricing", "For Coaches", "Security"] },
-        { h: "Company", items: ["About", "Contact", "Blog"] },
+        { h: "Company", items: ["About", "Contact", "Blog", "FAQ"] },
         { h: "Legal", items: ["Privacy", "Terms"] },
       ],
       rights: "All rights reserved.",
@@ -316,7 +316,7 @@ const COPY = {
       tagline: "روان‌شناسی معاملاتی، قابل مشاهده.",
       cols: [
         { h: "محصول", items: ["ویژگی‌ها", "قیمت‌گذاری", "برای کوچ‌ها", "امنیت"] },
-        { h: "شرکت", items: ["درباره ما", "تماس با ما", "بلاگ"] },
+        { h: "شرکت", items: ["درباره ما", "تماس با ما", "بلاگ", "سوالات متداول"] },
         { h: "قوانین", items: ["حریم خصوصی", "شرایط استفاده"] },
       ],
       rights: "تمامی حقوق محفوظ است.",
@@ -329,7 +329,7 @@ const ICONS = { trend: TrendingUp, brain: Brain, journal: NotebookPen, clock: Cl
 // Matches the order of footer cols in COPY (Product | Company | Legal)
 const FOOTER_HREFS = [
   ["#features", "/pricing", "/for-coaches", "/security"],
-  ["/about", "/contact", "/blog"],
+  ["/about", "/contact", "/blog", "/faq"],
   ["/privacy", "/terms"],
 ];
 
@@ -389,7 +389,7 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
             <Link href={localizeHref("/blog")} className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.blog}</Link>
             <Link href={localizeHref("/sentiment")} className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.market}</Link>
             <Link href={localizeHref("/news")} className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.news}</Link>
-            <a href="#faq" className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.faq}</a>
+            <Link href={localizeHref("/faq")} className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.faq}</Link>
             <Link href={localizeHref("/about")} className="hover:text-[#E9ECF3] transition-colors ml-focus">{t.nav.about}</Link>
           </nav>
 
@@ -418,7 +418,7 @@ export default function HomeClient({ initialLang, initialCountry }: { initialLan
             <Link href={localizeHref("/blog")}>{t.nav.blog}</Link>
             <Link href={localizeHref("/sentiment")}>{t.nav.market}</Link>
             <Link href={localizeHref("/news")}>{t.nav.news}</Link>
-            <a href="#faq">{t.nav.faq}</a>
+            <Link href={localizeHref("/faq")}>{t.nav.faq}</Link>
             <Link href={localizeHref("/about")}>{t.nav.about}</Link>
             <div className="hairline" />
             <Link href="/login" onClick={() => setMenuOpen(false)}>{t.nav.login}</Link>
