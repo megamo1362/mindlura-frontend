@@ -10,16 +10,17 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false, nocache: true },
 };
 
-// STAGING NOTE: same admin-only gate as app/redesign/dashboard/layout.tsx —
-// see that file for the go-live removal note. The live coach pages this
-// mirrors actually live under app/dashboard/coach/** (there is no separate
-// app/coach/** today); the go-live checklist documents the real move.
+// STAGING NOTE: same open (auth-required, not admin-only) gate as
+// app/redesign/dashboard/layout.tsx — see that file for details. The live
+// coach pages this mirrors actually live under app/dashboard/coach/**
+// (there is no separate app/coach/** today); the go-live checklist
+// documents the real move.
 export default async function RedesignCoachLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
   const initialTheme = cookieStore.get('rd-theme')?.value === 'light' ? 'light' : 'dark';
 
   return (
-    <AuthGuard adminOnly>
+    <AuthGuard>
       <RedesignThemeProvider initialTheme={initialTheme}>
         <Shell variant="coach">{children}</Shell>
       </RedesignThemeProvider>

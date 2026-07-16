@@ -13,16 +13,17 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false, nocache: true },
 };
 
-// STAGING NOTE: admin-only gate. Non-admin users are bounced to the live
-// dashboard by <AuthGuard adminOnly>. At go-live this gate is removed
-// entirely (real client users need to reach this route) and the page files
-// under app/redesign/dashboard/** move to app/dashboard/**.
+// STAGING NOTE: any authenticated user can reach this route — the
+// admin-only gate was removed. Auth itself (AuthGuard, no adminOnly) still
+// applies, so anonymous visitors are redirected to /login as usual. At
+// go-live the page files under app/redesign/dashboard/** move to
+// app/dashboard/**.
 export default async function RedesignDashboardLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
   const initialTheme = cookieStore.get('rd-theme')?.value === 'light' ? 'light' : 'dark';
 
   return (
-    <AuthGuard adminOnly>
+    <AuthGuard>
       <RedesignThemeProvider initialTheme={initialTheme}>
         <Shell variant="client">{children}</Shell>
       </RedesignThemeProvider>
