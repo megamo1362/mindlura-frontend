@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MindLura</title>
+<style>
+  :root{
+    --primary:#7B5CFF;
+    --deep:#5B3DFF;
+    --accent:#A78BFA;
+    --bg:#080F1A;
+    --text:#E6E9F0;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;background:var(--bg);overflow:hidden;font-family:'Inter','Segoe UI',system-ui,sans-serif}
+  #canvas-wrap{position:fixed;inset:0}
+  canvas{display:block}
+
+  #welcome{
+    position:fixed;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:18px;
+    opacity:0;transform:scale(.94);pointer-events:none;
+    transition:opacity 1s cubic-bezier(.65,0,.35,1),transform 1.2s cubic-bezier(.65,0,.35,1);
+    z-index:5;text-align:center;padding:0 24px;
+  }
+  #welcome.show{opacity:1;transform:scale(1)}
+  #welcome .hello{
+    color:var(--text);font-weight:300;opacity:.85;
+    font-size:clamp(14px,2vw,20px);
+    letter-spacing:.55em;text-indent:.55em;direction:ltr;
+  }
+  #welcome h1{
+    font-weight:800;font-size:clamp(38px,7vw,72px);line-height:1.2;
+    letter-spacing:.18em;text-indent:.18em;direction:ltr;
+    background:linear-gradient(120deg,var(--accent),var(--primary) 50%,var(--deep));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 30px rgba(123,92,255,.35));
+  }
+  #welcome p{
+    color:var(--accent);font-size:clamp(10px,1.2vw,13px);
+    letter-spacing:.42em;text-indent:.42em;direction:ltr;opacity:.7;font-weight:500;
+  }
+
+  /* fade to site at the very end */
+  #fadeout{
+    position:fixed;inset:0;background:var(--bg);opacity:0;
+    pointer-events:none;z-index:8;
+    transition:opacity .9s cubic-bezier(.65,0,.35,1);
+  }
+  #fadeout.show{opacity:1}
+
+  #flash{
+    position:fixed;inset:0;pointer-events:none;opacity:0;z-index:4;
+    background:radial-gradient(circle at 50% 50%,rgba(167,139,250,.35),rgba(91,61,255,.12) 40%,transparent 70%);
+  }
+
+  #controls{
+    position:fixed;bottom:26px;left:50%;transform:translateX(-50%);
+    display:flex;gap:12px;z-index:10;
+  }
+  #controls button{
+    background:rgba(123,92,255,.08);border:1px solid rgba(123,92,255,.35);
+    color:var(--text);padding:9px 22px;border-radius:999px;cursor:pointer;
+    font-size:12px;letter-spacing:.14em;font-family:inherit;
+    backdrop-filter:blur(8px);transition:all .25s;opacity:0;pointer-events:none;
+  }
+  #controls button.visible{opacity:1;pointer-events:auto}
+  #controls button:hover{background:rgba(123,92,255,.22);border-color:var(--primary)}
+
+  #phase{
+    position:fixed;top:22px;left:26px;direction:ltr;z-index:10;
+    color:rgba(230,233,240,.35);font-size:10px;letter-spacing:.3em;
+    transition:opacity .5s;
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    #logo{transition:none}
+  }
+</style>
+</head>
+<body>
+
+<div id="canvas-wrap"></div>
+<div id="flash"></div>
+
+<div id="welcome" aria-label="Welcome to MindLura">
+  <p class="hello">WELCOME&nbsp;TO</p>
+  <h1>MINDLURA</h1>
+  <p>INSIGHT&nbsp;BEYOND&nbsp;DATA</p>
+</div>
+<div id="fadeout"></div>
+
+<div id="phase">DATA EMERGENCE</div>
+
+<div id="controls">
+  <button id="skip">SKIP →</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* =========================================================
+   MINDLURA INTRO — v3
+   Brain is built from a real anatomical SIDE-PROFILE
+   silhouette (cerebrum + temporal lobe + cerebellum + stem),
+   so it reads instantly as a brain. It forms in profile view,
+   then rotates to face the camera before splitting open.
+
+   Phase 1  0.0–1.2  Data Emergence   (scattered candles, all sizes)
+   Phase 2  1.2–2.8  Intelligence     (candles converge → brain profile)
+   Phase 3  2.8–4.2  Core Reveal      (brain turns, hemispheres open)
+   Phase 4  4.2–5.6  Logo Reveal      (particles → orbit ring, DOM logo)
+========================================================= */
+
+/* ============================================================
+   🔧 CONFIG — فقط این یه خط رو عوض کن
+   ============================================================ */
+const LANDING_URL = '/landing';   // آدرس صفحهٔ اصلی/لندینگ
+
+/* ============================================================ */
+
+const BRAND = {
+  primary: 0x7B5CFF,
+  deep:    0x5B3DFF,
+  accent:  0xA78BFA,
+  bg:      0x080F1A,
+  text:    0xE6E9F0
+};
+
+const DURATION = 6.4;
+const isMobile = Math.min(innerWidth, innerHeight) < 640 || /Mobi|Android/i.test(navigator.userAgent);
+// در production این رو true کن تا به تنظیم Reduce Motion کاربر احترام گذاشته بشه
+const RESPECT_REDUCED_MOTION = false;
+const REDUCED  = RESPECT_REDUCED_MOTION && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const N_PARTICLES = isMobile ? 1500 : 3000;
+const N_CANDLES   = isMobile ? 45   : 85;
+const MAX_LINKS   = isMobile ? 950  : 2000;
+const LINK_DIST   = 0.30;
+const BRAIN_SCALE = 1.18;
+
+/* ---------- helpers ---------- */
+const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
+const easeInOutCubic = t => t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+const phaseT = (t,a,b)=>easeInOutCubic(clamp((t-a)/(b-a),0,1));
+const rand = (a,b)=>a+Math.random()*(b-a);
+
+/* ---------- renderer / scene ---------- */
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(BRAND.bg);
+scene.fog = new THREE.FogExp2(BRAND.bg, 0.05);
+
+const camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, .1, 100);
+const renderer = new THREE.WebGLRenderer({antialias:!isMobile, alpha:false});
+renderer.setPixelRatio(Math.min(devicePixelRatio, isMobile?1.5:2));
+renderer.setSize(innerWidth, innerHeight);
+document.getElementById('canvas-wrap').appendChild(renderer.domElement);
+
+/* ---------- glow texture ---------- */
+function glowTexture(inner, outer){
+  const c = document.createElement('canvas'); c.width = c.height = 64;
+  const g = c.getContext('2d');
+  const grad = g.createRadialGradient(32,32,0,32,32,32);
+  grad.addColorStop(0, inner);
+  grad.addColorStop(.35, outer);
+  grad.addColorStop(1,'rgba(0,0,0,0)');
+  g.fillStyle = grad; g.fillRect(0,0,64,64);
+  return new THREE.CanvasTexture(c);
+}
+const dotTex  = glowTexture('rgba(255,255,255,1)','rgba(167,139,250,.55)');
+const coreTex = glowTexture('rgba(230,233,240,1)','rgba(123,92,255,.5)');
+
+/* =========================================================
+   BRAIN — anatomical side-profile silhouette (x = front/back,
+   y = up/down, z = thickness / left–right hemispheres).
+   Front of the head = +x.
+========================================================= */
+const PROFILE = [
+  [ 1.10,  0.10],           // frontal pole
+  [ 1.04,  0.42],
+  [ 0.80,  0.70],
+  [ 0.44,  0.90],
+  [ 0.02,  0.98],           // vertex (top)
+  [-0.40,  0.91],
+  [-0.78,  0.72],
+  [-1.03,  0.42],
+  [-1.13,  0.06],           // occipital pole (back)
+  [-1.04, -0.22],
+  [-0.88, -0.30],           // notch above cerebellum
+  [-0.94, -0.44],
+  [-0.82, -0.64],           // cerebellum (back)
+  [-0.58, -0.74],           // cerebellum (bottom)
+  [-0.36, -0.68],
+  [-0.27, -0.52],           // cerebellum → stem junction
+  [-0.08, -0.57],
+  [ 0.26, -0.60],           // temporal lobe underside
+  [ 0.56, -0.52],
+  [ 0.74, -0.34],
+  [ 0.93, -0.29],           // orbital (frontal underside)
+  [ 1.07, -0.10],
+];
+const NP = PROFILE.length;
+
+/* edge lengths for weighted boundary sampling */
+const edges = [];
+let totalLen = 0;
+for(let i=0;i<NP;i++){
+  const a = PROFILE[i], b = PROFILE[(i+1)%NP];
+  const dx = b[0]-a[0], dy = b[1]-a[1];
+  const len = Math.hypot(dx,dy);
+  // inward normal for CCW polygon
+  const nx = -dy/len, ny = dx/len;
+  edges.push({a,b,len,nx,ny,acc: totalLen});
+  totalLen += len;
+}
+
+function pointInPoly(x,y){
+  let inside = false;
+  for(let i=0,j=NP-1;i<NP;j=i++){
+    const xi=PROFILE[i][0], yi=PROFILE[i][1];
+    const xj=PROFILE[j][0], yj=PROFILE[j][1];
+    if(((yi>y)!==(yj>y)) && (x < (xj-xi)*(y-yi)/(yj-yi)+xi)) inside=!inside;
+  }
+  return inside;
+}
+function distToBoundary(x,y){
+  let best = Infinity;
+  for(const e of edges){
+    const ax=e.a[0], ay=e.a[1];
+    const dx=e.b[0]-ax, dy=e.b[1]-ay;
+    const tt = clamp(((x-ax)*dx+(y-ay)*dy)/(e.len*e.len),0,1);
+    const px = ax+dx*tt, py = ay+dy*tt;
+    const d = Math.hypot(x-px, y-py);
+    if(d<best) best=d;
+  }
+  return best;
+}
+/* thickness envelope: thin at the outline, thick in the middle */
+function thickness(x,y){
+  const d = distToBoundary(x,y);
+  return 0.07 + 0.52*Math.sqrt(clamp(d/0.5,0,1));
+}
+
+function brainPoint(){
+  const pick = Math.random();
+
+  /* --- brainstem (small stalk under the cerebellum) --- */
+  if(pick < 0.04){
+    const h = Math.random();
+    const a = Math.random()*Math.PI*2, rr = rand(0,0.085)*(1-h*0.4);
+    return new THREE.Vector3(
+      (-0.30 - 0.14*h + Math.cos(a)*rr) * BRAIN_SCALE,
+      (-0.60 - 0.42*h) * BRAIN_SCALE + 0.08,
+      Math.sin(a)*rr * BRAIN_SCALE
+    );
+  }
+
+  let x, y;
+  if(pick < 0.58){
+    /* --- boundary band: crisp silhouette + wavy cortex --- */
+    let L = Math.random()*totalLen, e = edges[0];
+    for(const ee of edges){ if(L>=ee.acc && L<ee.acc+ee.len){ e=ee; break; } }
+    const tt = (L-e.acc)/e.len;
+    const wig = 0.026*Math.sin(tt*22 + e.acc*9.0);          // gyri waviness
+    const inward = Math.pow(Math.random(),1.6)*0.16 + 0.01;
+    x = e.a[0] + (e.b[0]-e.a[0])*tt + e.nx*(inward+wig);
+    y = e.a[1] + (e.b[1]-e.a[1])*tt + e.ny*(inward+wig);
+    if(!pointInPoly(x,y)){ x -= e.nx*wig*2; y -= e.ny*wig*2; }
+  }else{
+    /* --- interior fill --- */
+    do{ x = rand(-1.15,1.12); y = rand(-0.76,1.0); }while(!pointInPoly(x,y));
+  }
+
+  const zmax = thickness(x,y);
+  const side = Math.random()<0.5 ? -1 : 1;
+  let z = side * zmax * Math.pow(Math.random(),0.32);       // biased to surface
+  z *= 1 + 0.08*Math.sin(x*7.3)*Math.sin(y*6.1);            // subtle folds
+
+  return new THREE.Vector3(x*BRAIN_SCALE, y*BRAIN_SCALE + 0.08, z*BRAIN_SCALE);
+}
+
+/* ---------- particle buffers ---------- */
+const scatterPos = new Float32Array(N_PARTICLES*3);
+const brainPos   = new Float32Array(N_PARTICLES*3);
+const ringPos    = new Float32Array(N_PARTICLES*3);
+const hemi       = new Float32Array(N_PARTICLES);   // left/right hemisphere = sign(z)
+const jitterPh   = new Float32Array(N_PARTICLES);
+
+for(let i=0;i<N_PARTICLES;i++){
+  const dir = new THREE.Vector3(rand(-1,1),rand(-1,1),rand(-1,1)).normalize();
+  const d = rand(3.6, 8.5);
+  scatterPos.set([dir.x*d, dir.y*d*0.7, dir.z*d], i*3);
+
+  const bp = brainPoint();
+  brainPos.set([bp.x,bp.y,bp.z], i*3);
+  hemi[i] = Math.sign(bp.z)||1;
+
+  const a = Math.random()*Math.PI*2;
+  const rr = rand(2.4,3.4);
+  ringPos.set([Math.cos(a)*rr*1.35, rand(-0.4,0.4)+Math.sin(a*3)*0.12, Math.sin(a)*rr], i*3);
+
+  jitterPh[i] = Math.random()*Math.PI*2;
+}
+
+const pGeo = new THREE.BufferGeometry();
+const livePos = new Float32Array(scatterPos);
+pGeo.setAttribute('position', new THREE.BufferAttribute(livePos,3));
+
+const cols = new Float32Array(N_PARTICLES*3);
+const palette = [new THREE.Color(BRAND.primary), new THREE.Color(BRAND.deep), new THREE.Color(BRAND.accent)];
+for(let i=0;i<N_PARTICLES;i++){
+  const c = palette[Math.random()<.5?0:(Math.random()<.6?2:1)];
+  cols.set([c.r,c.g,c.b], i*3);
+}
+pGeo.setAttribute('color', new THREE.BufferAttribute(cols,3));
+
+const pMat = new THREE.PointsMaterial({
+  size: isMobile? .07 : .055,
+  map: dotTex, vertexColors:true, transparent:true, opacity:0,
+  blending:THREE.AdditiveBlending, depthWrite:false, sizeAttenuation:true
+});
+const points = new THREE.Points(pGeo, pMat);
+scene.add(points);
+
+/* ---------- neural links ---------- */
+const links = [];
+const crossLinks = [];
+{
+  const v = new THREE.Vector3(), w = new THREE.Vector3();
+  const step = Math.max(1, Math.floor(N_PARTICLES/1500));
+  outer:
+  for(let i=0;i<N_PARTICLES;i+=step){
+    v.fromArray(brainPos, i*3);
+    for(let j=i+1;j<N_PARTICLES;j+=step){
+      w.fromArray(brainPos, j*3);
+      if(v.distanceToSquared(w) < LINK_DIST*LINK_DIST){
+        (hemi[i]===hemi[j]?links:crossLinks).push([i,j]);
+        if(links.length+crossLinks.length >= MAX_LINKS) break outer;
+      }
+    }
+  }
+}
+function makeLineSeg(pairs, color){
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(pairs.length*6),3));
+  const m = new THREE.LineBasicMaterial({color, transparent:true, opacity:0,
+    blending:THREE.AdditiveBlending, depthWrite:false});
+  const l = new THREE.LineSegments(g,m); scene.add(l); return l;
+}
+const linkMesh  = makeLineSeg(links,      BRAND.deep);
+const crossMesh = makeLineSeg(crossLinks, BRAND.primary);
+
+/* =========================================================
+   CANDLESTICKS — widely scattered, all sizes,
+   each flies to its own point on the brain and dissolves.
+========================================================= */
+const candles = [];
+const candleGroup = new THREE.Group();
+{
+  const bullMat = ()=>new THREE.MeshBasicMaterial({color:BRAND.accent, transparent:true, opacity:0});
+  const bearMat = ()=>new THREE.MeshBasicMaterial({color:BRAND.deep,   transparent:true, opacity:0});
+
+  for(let i=0;i<N_CANDLES;i++){
+    const up = Math.random()>.45;
+    const mat = up? bullMat() : bearMat();
+
+    const scl = rand(0.35, 1.6);
+    const bw  = rand(0.09, 0.18)*scl;
+    const bh  = rand(0.22, 0.85)*scl;
+    const wh  = bh + rand(0.25, 0.7)*scl;
+
+    const g = new THREE.Group();
+    g.add(new THREE.Mesh(new THREE.BoxGeometry(bw, bh, bw), mat));
+    g.add(new THREE.Mesh(new THREE.BoxGeometry(bw*0.16, wh, bw*0.16), mat));
+
+    const dir = new THREE.Vector3(rand(-1,1),rand(-1,1),rand(-1,1)).normalize();
+    const dist = rand(2.2, 7.5);
+    const start = new THREE.Vector3(dir.x*dist, dir.y*dist*0.75, dir.z*dist);
+    const target = brainPoint();
+
+    g.position.copy(start);
+    g.rotation.set(rand(-0.5,0.5), rand(0,Math.PI*2), rand(-0.4,0.4));
+
+    candles.push({
+      group:g, mat, start, target,
+      spin:new THREE.Vector3(rand(-0.5,0.5), rand(-0.9,0.9), rand(-0.5,0.5)),
+      delay: rand(0, 0.35)
+    });
+    candleGroup.add(g);
+  }
+  scene.add(candleGroup);
+}
+
+/* ---------- core glow ---------- */
+const core = new THREE.Sprite(new THREE.SpriteMaterial({
+  map:coreTex, color:BRAND.accent, transparent:true, opacity:0,
+  blending:THREE.AdditiveBlending, depthWrite:false
+}));
+core.scale.set(0,0,1);
+scene.add(core);
+const coreHalo = new THREE.Sprite(new THREE.SpriteMaterial({
+  map:coreTex, color:BRAND.deep, transparent:true, opacity:0,
+  blending:THREE.AdditiveBlending, depthWrite:false
+}));
+scene.add(coreHalo);
+
+/* ---------- DOM refs ---------- */
+const welcomeEl = document.getElementById('welcome');
+const fadeEl    = document.getElementById('fadeout');
+const flashEl = document.getElementById('flash');
+const phaseEl = document.getElementById('phase');
+const skipBtn = document.getElementById('skip');
+const replayBtn = document.getElementById('replay') || {classList:{add:()=>{},remove:()=>{}}};
+
+const PHASES = [
+  [0.0,'DATA EMERGENCE'],
+  [1.2,'INTELLIGENCE FORMATION'],
+  [2.4,'NEURAL SHOWCASE'],
+  [4.05,'CORE REVEAL'],
+  [4.95,'WELCOME']
+];
+
+/* ---------- timeline ---------- */
+let t0 = performance.now(), elapsed = 0, finished = false;
+
+function updatePhaseLabel(t){
+  let label = PHASES[0][1];
+  for(const [start,name] of PHASES) if(t>=start) label = name;
+  if(phaseEl.textContent !== label) phaseEl.textContent = label;
+  phaseEl.style.opacity = t>DURATION-0.3 ? 0 : 1;
+}
+
+function frame(now){
+  if(!finished){
+    elapsed = Math.min((now - t0)/1000, DURATION);
+    if(elapsed >= DURATION) finish();
+  }
+  const t = elapsed;
+
+  /* progress values */
+  const appear = phaseT(t, 0.0, 0.6);
+  const morphB = phaseT(t, 0.55, 2.45);   // scatter → brain (profile view)
+  const linkIn = phaseT(t, 1.6, 2.6);
+  const turn   = phaseT(t, 2.35, 4.05);   // brain spins 270° — full 3D showcase
+  const split  = phaseT(t, 4.05, 4.75);   // then hemispheres open (left–right)
+  const coreP  = phaseT(t, 4.15, 4.95);
+  const morphR = phaseT(t, 4.9, 6.1);     // → orbit ring behind the welcome text
+  const coreOut= phaseT(t, 5.05, 5.65);
+
+  const rotY = -(Math.PI*1.5) * turn;     // 270° rotation before the split
+  const cr = Math.cos(rotY), sr = Math.sin(rotY);
+
+  /* --- particles --- */
+  const jt = now*0.001;
+  for(let i=0;i<N_PARTICLES;i++){
+    const i3=i*3;
+    // brain-local position
+    let x = scatterPos[i3]   + (brainPos[i3]  -scatterPos[i3]  )*morphB;
+    let y = scatterPos[i3+1] + (brainPos[i3+1]-scatterPos[i3+1])*morphB;
+    let z = scatterPos[i3+2] + (brainPos[i3+2]-scatterPos[i3+2])*morphB;
+    // hemispheres open along z (local) — appears left–right after the turn
+    z += hemi[i]*split*0.8*(1-morphR);
+    // organic jitter
+    const j = 0.016*morphB*(1-morphR);
+    x += Math.sin(jt*1.7 + jitterPh[i])*j;
+    y += Math.cos(jt*1.3 + jitterPh[i]*1.6)*j;
+    // rotate brain toward camera
+    const wx =  x*cr + z*sr;
+    const wz = -x*sr + z*cr;
+    // → ring
+    livePos[i3]   = wx + (ringPos[i3]  -wx)*morphR;
+    livePos[i3+1] = y  + (ringPos[i3+1]-y )*morphR;
+    livePos[i3+2] = wz + (ringPos[i3+2]-wz)*morphR;
+  }
+  pGeo.attributes.position.needsUpdate = true;
+  pMat.opacity = appear*(1 - morphR*0.55);
+  points.rotation.y = morphR*0.15 + (finished? (now*0.00006)%(Math.PI*2) : 0);
+
+  /* --- links follow particles --- */
+  function refreshLines(mesh, pairs, opacity){
+    const arr = mesh.geometry.attributes.position.array;
+    for(let k=0;k<pairs.length;k++){
+      const [a,b]=pairs[k], k6=k*6;
+      arr[k6]=livePos[a*3];   arr[k6+1]=livePos[a*3+1]; arr[k6+2]=livePos[a*3+2];
+      arr[k6+3]=livePos[b*3]; arr[k6+4]=livePos[b*3+1]; arr[k6+5]=livePos[b*3+2];
+    }
+    mesh.geometry.attributes.position.needsUpdate = true;
+    mesh.material.opacity = opacity;
+  }
+  refreshLines(linkMesh,  links,      linkIn*0.32*(1-morphR));
+  refreshLines(crossMesh, crossLinks, linkIn*0.4*(1-split)*(1-morphR));
+
+  /* --- candles: scattered → fly into the brain --- */
+  for(const c of candles){
+    const cIn   = phaseT(t, 0.05+c.delay*0.6, 0.7+c.delay*0.6);
+    const cMove = phaseT(t, 1.0+c.delay, 2.35+c.delay);
+    const cGone = phaseT(t, 1.9+c.delay, 2.55+c.delay);
+
+    const e = cMove;
+    let px = c.start.x + (c.target.x - c.start.x)*e;
+    let py = c.start.y + (c.target.y - c.start.y)*e + Math.sin(e*Math.PI)*0.25;
+    let pz = c.start.z + (c.target.z - c.start.z)*e;
+    // follow the brain's rotation so landed candles stay glued to it
+    c.group.position.set(px*cr + pz*sr, py, -px*sr + pz*cr);
+
+    const s = (1 - cGone*0.98);
+    c.group.scale.set(s,s,s);
+    c.group.rotation.x += c.spin.x*0.004*(1-cGone);
+    c.group.rotation.y += c.spin.y*0.004*(1-cGone);
+    c.mat.opacity = cIn*0.9*(1-cGone);
+    c.group.visible = c.mat.opacity > 0.01;
+  }
+  candleGroup.visible = t < 3.0;
+
+  /* --- core --- */
+  const pulse = 1 + Math.sin(now*0.012)*0.08;
+  const cs = coreP*(1-coreOut);
+  core.scale.set(cs*1.6*pulse, cs*1.6*pulse, 1);
+  core.material.opacity = cs;
+  coreHalo.scale.set(cs*4.2, cs*4.2, 1);
+  coreHalo.material.opacity = cs*0.35;
+
+  /* --- camera: near side view so the profile reads clearly --- */
+  const camP = easeInOutCubic(clamp(t/DURATION,0,1));
+  const theta = -0.10 + camP*0.20 + (finished? Math.sin(now*0.0002)*0.04 : 0);
+  const dist  = 6.3 - camP*1.7;
+  camera.position.set(Math.sin(theta)*dist, 0.5 - camP*0.3, Math.cos(theta)*dist);
+  camera.lookAt(0,0.05,0);
+
+  updatePhaseLabel(t);
+  renderer.render(scene,camera);
+  requestAnimationFrame(frame);
+}
+
+/* ---------- finish / welcome reveal ---------- */
+let welcomeShown = false;
+function checkWelcome(){
+  if(!welcomeShown && elapsed >= 4.95){
+    welcomeShown = true;
+    welcomeEl.classList.add('show');
+    flashEl.animate([{opacity:0},{opacity:1,offset:.25},{opacity:0}],{duration:900,easing:'ease-out'});
+  }
+  requestAnimationFrame(checkWelcome);
+}
+function goToSite(){
+  fadeEl.classList.add('show');
+  welcomeEl.classList.remove('show');
+  skipBtn.classList.remove('visible');
+  setTimeout(()=>{ window.location.href = LANDING_URL; }, 900);
+}
+function finish(){
+  finished = true;
+  elapsed = DURATION;
+  skipBtn.classList.remove('visible');
+  // خوش‌آمد ۱.۴ ثانیه نشون داده می‌شه، بعد fade و redirect
+  setTimeout(()=>{ if(finished) goToSite(); }, 1400);
+}
+function replay(){
+  finished = false; welcomeShown = false;
+  welcomeEl.classList.remove('show');
+  fadeEl.classList.remove('show');
+  replayBtn.classList.remove('visible');
+  skipBtn.classList.add('visible');
+  for(const c of candles) c.group.rotation.set(rand(-0.5,0.5), rand(0,Math.PI*2), rand(-0.4,0.4));
+  t0 = performance.now(); elapsed = 0;
+}
+skipBtn.addEventListener('click', ()=>{ finished=true; goToSite(); });
+// replayBtn.addEventListener('click', replay); // فقط در development
+
+/* ---------- start ---------- */
+if(REDUCED){
+  elapsed = DURATION; finished = true; welcomeShown = true;
+  welcomeEl.classList.add('show');
+  phaseEl.style.display='none';
+  requestAnimationFrame(frame);
+}else{
+  skipBtn.classList.add('visible');
+  requestAnimationFrame(frame);
+  requestAnimationFrame(checkWelcome);
+}
+
+addEventListener('resize', ()=>{
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>
