@@ -25,11 +25,10 @@ const FOOTER_HREFS = [
   ['/privacy', '/terms'],
 ];
 
-// Not-yet-live redesign preview. Deliberately kept independent of
+// Live homepage (promoted from redesign preview). Kept independent of
 // HomeClient.tsx / app/i18n — a route-level lang prop (matching the
 // ForCoachesPage / BlogIndexPage convention) rather than the live site's
-// header logic or global useLang() context, so this page can evolve without
-// any risk of touching the production homepage or its wiring.
+// header logic or global useLang() context.
 export function RedesignHomePage({ lang }: { lang: Lang }) {
   const [audience, setAudience] = useState<'trader' | 'coach'>('trader');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -78,14 +77,6 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
           @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
           .hairline { height: 1px; background: ${tokens.color.line}; }
         `}</style>
-
-        {/* Non-production preview banner — never shown on the live homepage. */}
-        <div
-          className="text-center text-xs py-2 px-4"
-          style={{ backgroundColor: tokens.color.surface, color: tokens.color.mutedDim, borderBottom: `1px solid ${tokens.color.line}` }}
-        >
-          {t.footer.preview}
-        </div>
 
         {/* ---------------- HEADER ---------------- */}
         <header className="sticky top-0 z-50" style={{ backgroundColor: 'rgba(10,14,23,0.9)', backdropFilter: 'blur(8px)' }}>

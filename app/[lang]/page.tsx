@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import HomeClient from '@/app/HomeClient';
+import { RedesignHomePage } from '@/components/pages/redesign/RedesignHomePage';
 
 const siteTitle = 'مایندلورا — روان‌شناسی معاملاتی، قابل اندازه‌گیری | آنالیتیکس رفتاری فارکس';
 const siteDescription =
@@ -28,5 +28,5 @@ export const metadata: Metadata = {
 };
 
 export default function FaHome() {
-  return <HomeClient initialLang="fa" initialCountry="IR" />;
+  return <RedesignHomePage lang="fa" />;
 }
