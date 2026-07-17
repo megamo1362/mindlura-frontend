@@ -218,3 +218,143 @@
 [data-theme] .rd-ai-psychology .text-emerald-400 { color: var(--profit) !important; }
 [data-theme] .rd-ai-psychology .border-emerald-500\/30 { border-color: var(--profit) !important; }
 [data-theme] .rd-ai-psychology .bg-emerald-500\/15 { background-color: var(--profit-soft) !important; }
+
+/* ─── Analyze page: shared analysis tab components ────────────
+   TradesTable, TimeAnalysis, SymbolAnalysis, ChartTabs (+ EquityChart),
+   SessionAnalysis, ParetoAnalysis, EntryExitQuality, CostAnalysis and
+   TradingStyle (all in components/analysis/*) are reused verbatim from the
+   live dashboard, same reasoning as .rd-ai-psychology above — see
+   RedesignAnalysisPage.tsx, which wraps every tab's content (and the
+   print-only block) in .rd-analyze-legacy instead of duplicating this
+   block per component.
+
+   Left deliberately UNCHANGED: literal chart series colors (the green/red
+   equity line, growth/balance/margin chart colors) and categorical
+   multi-hue differentiators that use Tailwind's blue/purple/teal/indigo
+   palette directly (MFE/spread columns in the trades table, the
+   scalper/day_trader/swing/position trading-style badge, the
+   entry/exit quality gauge's literal hex thresholds where a fixed value
+   isn't reused elsewhere) — collapsing 4+ distinct hues down to this
+   system's single --accent would make adjacent columns/badges impossible
+   to tell apart, which is a worse regression than staying theme-fixed.
+   Card/text/border chrome and anything carrying real profit/loss/warning
+   meaning IS fixed below. */
+[data-theme] .rd-analyze-legacy {
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-disabled: var(--text-muted);
+  --color-border: var(--border-subtle);
+  --color-border-hover: var(--border-subtle);
+  --color-border-active: var(--accent);
+  --color-surface: var(--bg-surface);
+  --color-elevated: var(--bg-surface-2);
+  --color-void: var(--bg-base);
+  --color-bg: var(--bg-base);
+  --shadow-card: var(--card-shadow);
+  --color-purple: var(--accent);
+  --color-cyan: var(--accent);
+  --color-cyan-dim: var(--accent-soft);
+  --color-blue: var(--accent);
+  --color-teal: var(--accent);
+  --color-orange: var(--warning);
+  --color-yellow: var(--warning);
+  --color-green: var(--profit);
+  --color-red: var(--loss);
+}
+
+/* Semantic named-palette utilities (profit/loss/warning only — blue,
+   purple, teal, indigo intentionally excluded, see note above). */
+[data-theme] .rd-analyze-legacy [class*="text-emerald-"],
+[data-theme] .rd-analyze-legacy [class*="text-green-"] { color: var(--profit) !important; }
+[data-theme] .rd-analyze-legacy [class*="text-red-"],
+[data-theme] .rd-analyze-legacy [class*="text-rose-"] { color: var(--loss) !important; }
+[data-theme] .rd-analyze-legacy [class*="text-amber-"],
+[data-theme] .rd-analyze-legacy [class*="text-yellow-"],
+[data-theme] .rd-analyze-legacy [class*="text-orange-"] { color: var(--warning) !important; }
+
+[data-theme] .rd-analyze-legacy [class*="bg-emerald-400"] { background-color: var(--profit) !important; }
+[data-theme] .rd-analyze-legacy [class*="bg-emerald-500/"] { background-color: var(--profit-soft) !important; }
+[data-theme] .rd-analyze-legacy [class*="bg-red-400"] { background-color: var(--loss) !important; }
+[data-theme] .rd-analyze-legacy [class*="bg-red-500/"] { background-color: var(--loss-soft) !important; }
+[data-theme] .rd-analyze-legacy [class*="bg-amber-"] { background-color: var(--warning) !important; }
+
+[data-theme] .rd-analyze-legacy [class*="border-emerald-"] { border-color: var(--profit) !important; }
+[data-theme] .rd-analyze-legacy [class*="border-red-"] { border-color: var(--loss) !important; }
+
+/* Arbitrary-value rgba() classes: profit/loss-tinted panels (session and
+   pareto analysis "best/worst" cards) and the yellow tag chips in the
+   trades-table journal modal. Substring match so any opacity suffix on the
+   same rgb triplet is caught. */
+[data-theme] .rd-analyze-legacy [class*="bg-[rgba(34,197,94"] { background-color: var(--profit-soft) !important; }
+[data-theme] .rd-analyze-legacy [class*="border-[rgba(34,197,94"] { border-color: var(--profit) !important; }
+[data-theme] .rd-analyze-legacy [class*="bg-[rgba(239,68,68"] { background-color: var(--loss-soft) !important; }
+[data-theme] .rd-analyze-legacy [class*="border-[rgba(239,68,68"] { border-color: var(--loss) !important; }
+[data-theme] .rd-analyze-legacy [class*="bg-[rgba(234,179,8"] { background-color: var(--warning-soft) !important; }
+[data-theme] .rd-analyze-legacy [class*="border-[rgba(234,179,8"] { border-color: var(--warning) !important; }
+[data-theme] .rd-analyze-legacy [class*="border-[rgba(0,212,255"] { border-color: var(--accent) !important; }
+
+/* Generic "subtle white/black overlay" tracks and card backgrounds — these
+   were tuned to sit slightly lighter than a dark surface, so on light theme
+   a literal white/black tint reads as wrong (near-invisible or muddy)
+   instead of "slightly elevated neutral surface". */
+[data-theme] .rd-analyze-legacy [class*="bg-[rgba(255,255,255,0."] { background-color: var(--bg-surface-2) !important; }
+[data-theme] .rd-analyze-legacy [class*="bg-[rgba(0,0,0,0."] { background-color: var(--bg-surface-2) !important; }
+
+/* ChartTabs + EquityChart hand-rolled SVG chart chrome (grid lines, axis
+   labels, crosshair, tooltip panel). Real CSS rules — even without
+   !important — take precedence over SVG presentation attributes
+   (fill="...", stroke="..."), so these work without touching the shared
+   component; the Legend/Tooltip inline `style` props need !important since
+   inline styles otherwise outrank stylesheet rules. Series/data colors
+   (the actual chart lines, bars, dots) are left untouched — see note
+   above. */
+[data-theme] .rd-analyze-legacy [stroke="rgba(255,255,255,0.04)"],
+[data-theme] .rd-analyze-legacy [stroke="rgba(255,255,255,0.14)"] { stroke: var(--border-subtle); }
+[data-theme] .rd-analyze-legacy [fill="rgba(255,255,255,0.22)"],
+[data-theme] .rd-analyze-legacy [fill="#4a6a80"] { fill: var(--text-muted); }
+[data-theme] .rd-analyze-legacy [stroke="rgba(0,212,255,0.18)"],
+[data-theme] .rd-analyze-legacy [stroke="rgba(0,212,255,0.25)"],
+[data-theme] .rd-analyze-legacy [stroke="rgba(0,212,255,0.35)"],
+[data-theme] .rd-analyze-legacy [fill="#00d4ff"] { stroke: var(--accent); fill: var(--accent); }
+[data-theme] .rd-analyze-legacy [style*="rgba(255,255,255,0.45)"],
+[data-theme] .rd-analyze-legacy [style*="rgba(255,255,255,0.3)"] { color: var(--text-muted) !important; }
+[data-theme] .rd-analyze-legacy [style*="rgba(8,18,28"] { background: var(--bg-surface) !important; }
+[data-theme] .rd-analyze-legacy [style*="rgba(0,212,255,0.14)"] { border-color: var(--border-subtle) !important; }
+
+/* Entry/exit quality gauges: color is computed in JS from a fixed 3-value
+   palette (good/medium/poor) and applied via inline style + SVG stroke, so
+   — like the chart chrome above — only exact-value overrides can reach it
+   without touching the component. The "poor" threshold (#f87171) is
+   deliberately NOT overridden here: it's the exact same hex ChartTabs uses
+   for its MAE series line, and both can be mounted at once in the
+   print-only block, so a value-based override can't tell them apart —
+   left as a native Tailwind red, same as the other left-alone chart
+   colors above. */
+[data-theme] .rd-analyze-legacy [stroke="#34d399"],
+[data-theme] .rd-analyze-legacy [style*="#34d399"] { stroke: var(--profit); color: var(--profit) !important; }
+[data-theme] .rd-analyze-legacy [stroke="#60a5fa"],
+[data-theme] .rd-analyze-legacy [style*="#60a5fa"] { stroke: var(--accent); color: var(--accent) !important; }
+
+/* ─── Coach client journal: JournalAnalysisView override ───────
+   app/dashboard/journal/JournalAnalysisView.tsx is shared verbatim between
+   the live journal pages and the redesigned coach client journal page
+   (components/redesign/coach/RedesignCoachClientJournal.tsx), same
+   reasoning as the two blocks above. --color-status-error isn't actually
+   defined anywhere in globals.css (a pre-existing live bug — the text
+   using it currently renders uncolored), so redefining it here also
+   happens to fix that, harmlessly, only inside this scope.
+   The per-emotion bar chart colors (EMOTION_COLORS, 7 distinct hues) are
+   left untouched — same "don't collapse a categorical palette down to one
+   token" reasoning as the analyze-page chart series colors. */
+[data-theme] .rd-journal-legacy {
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-border: var(--border-subtle);
+  --color-elevated: var(--bg-surface-2);
+  --color-glass: var(--bg-surface);
+  --color-cyan: var(--accent);
+  --color-success: var(--profit);
+  --color-status-error: var(--loss);
+}

@@ -72,7 +72,9 @@ export function RedesignCoachClientJournal({ clientId }: { clientId: string }) {
       )}
 
       {!forbidden && (accountsLoading || accounts.length > 0) && (
-        <JournalAnalysisView data={data ?? null} loading={loading || accountsLoading} />
+        <div className="rd-journal-legacy">
+          <JournalAnalysisView data={data ?? null} loading={loading || accountsLoading} />
+        </div>
       )}
     </div>
   );

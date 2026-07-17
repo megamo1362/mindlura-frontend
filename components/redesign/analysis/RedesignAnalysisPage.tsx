@@ -175,7 +175,7 @@ export function RedesignAnalysisPage({ id }: { id: string }) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
-                  className="space-y-5"
+                  className="rd-analyze-legacy space-y-5"
                 >
                   {uiTab === 'summary' && (
                     <OverviewTab
@@ -223,7 +223,7 @@ export function RedesignAnalysisPage({ id }: { id: string }) {
                 output — the always-shown sections plus whichever of the 5
                 original picker sections the user checked. */}
             {data.analysis.has_data && (
-              <div className="hidden space-y-5 print:block">
+              <div className="rd-analyze-legacy hidden space-y-5 print:block">
                 {data.analysis.session_analysis && <SessionAnalysis data={data.analysis.session_analysis} />}
                 {data.analysis.pareto_analysis && <ParetoAnalysis data={data.analysis.pareto_analysis} />}
                 {data.analysis.entry_exit_quality && <EntryExitQuality data={data.analysis.entry_exit_quality} />}
