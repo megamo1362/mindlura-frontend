@@ -5,23 +5,26 @@ import Link from 'next/link';
 import { MotionConfig } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { tokens } from '@/lib/design-tokens';
-import { chromeCopy, heroCopy, aiDemoCopy, painCopy, howCopy, psychologyInsightsCopy, aiCoachCopy, coachPlatformCopy, trustCopy, testimonialsCopy, finalCtaCopy, type Lang } from './copy';
+import { chromeCopy, heroCopy, aiDemoCopy, painCopy, howCopy, psychologyInsightsCopy, aiCoachCopy, coachPlatformCopy, trustCopy, testimonialsCopy, finalCtaCopy, statsCopy, pricingTeaserCopy, blogPreviewCopy, type Lang } from './copy';
 import type { SectionChrome } from './types';
 import { Hero } from './sections/Hero';
 import { AIDemoSection } from './sections/AIDemoSection';
+import { Stats } from './sections/Stats';
 import { PainSection } from './sections/PainSection';
 import { HowItWorks } from './sections/HowItWorks';
 import { PsychologyInsights } from './sections/PsychologyInsights';
 import { AICoachSection } from './sections/AICoachSection';
 import { CoachPlatformSection } from './sections/CoachPlatformSection';
+import { BlogPreview } from './sections/BlogPreview';
 import { TrustSecurity } from './sections/TrustSecurity';
 import { Testimonials } from './sections/Testimonials';
+import { PricingTeaser } from './sections/PricingTeaser';
 import { FinalCTA } from './sections/FinalCTA';
 
 // Matches the order of footer cols in chromeCopy (Product | Company | Legal)
 const FOOTER_HREFS = [
-  ['#ai-demo', '#how', '#security'],
-  ['/about', '/blog'],
+  ['#ai-demo', '#how', '/pricing', '/for-coaches', '#security'],
+  ['/about', '/blog', '/faq'],
   ['/privacy', '/terms'],
 ];
 
@@ -58,10 +61,16 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
   const chrome: SectionChrome = { lang, isFa, accent, displayFont, bodyFont, localizeHref };
 
   const navLinks = [
-    { label: t.nav.demo, href: '#ai-demo' },
-    { label: t.nav.how, href: '#how' },
-    { label: t.nav.coaches, href: '#coaches' },
-    { label: t.nav.security, href: '#security' },
+    { label: t.nav.demo, href: '#ai-demo', anchor: true },
+    { label: t.nav.how, href: '#how', anchor: true },
+    { label: t.nav.pricing, href: localizeHref('/pricing'), anchor: false },
+    { label: t.nav.coaches, href: '#coaches', anchor: true },
+    { label: t.nav.blog, href: localizeHref('/blog'), anchor: false },
+    { label: t.nav.sentiment, href: localizeHref('/sentiment'), anchor: false },
+    { label: t.nav.news, href: localizeHref('/news'), anchor: false },
+    { label: t.nav.faq, href: localizeHref('/faq'), anchor: false },
+    { label: t.nav.about, href: localizeHref('/about'), anchor: false },
+    { label: t.nav.security, href: '#security', anchor: true },
   ];
 
   return (
@@ -89,7 +98,11 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
 
             <nav className="hidden md:flex items-center gap-9 text-sm" style={{ color: tokens.color.muted }}>
               {navLinks.map((link) => (
-                <a key={link.href} href={link.href} className="hover:text-[#E9ECF3] transition-colors">{link.label}</a>
+                link.anchor ? (
+                  <a key={link.href} href={link.href} className="hover:text-[#E9ECF3] transition-colors">{link.label}</a>
+                ) : (
+                  <Link key={link.href} href={link.href} className="hover:text-[#E9ECF3] transition-colors">{link.label}</Link>
+                )
               ))}
             </nav>
 
@@ -140,7 +153,11 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
           {menuOpen && (
             <div id="redesign-mobile-menu" className="md:hidden px-6 pb-5 flex flex-col gap-1 text-sm" style={{ color: '#C7CBE0' }}>
               {navLinks.map((link) => (
-                <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="py-2.5">{link.label}</a>
+                link.anchor ? (
+                  <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="py-2.5">{link.label}</a>
+                ) : (
+                  <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="py-2.5">{link.label}</Link>
+                )
               ))}
               <div className="hairline my-1" />
               <Link href="/login" onClick={() => setMenuOpen(false)} className="py-2.5">{t.nav.login}</Link>
@@ -162,13 +179,16 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
         {/* ---------------- SECTIONS (show, don't tell — AI demo right after hero) ---------------- */}
         <Hero copy={heroCopy[lang][audience]} chrome={chrome} accent={heroAccent} />
         <AIDemoSection copy={aiDemoCopy[lang]} chrome={chrome} />
+        <Stats copy={statsCopy[lang]} chrome={chrome} />
         <PainSection copy={painCopy[lang]} chrome={chrome} />
         <HowItWorks copy={howCopy[lang]} chrome={chrome} />
         <PsychologyInsights copy={psychologyInsightsCopy[lang]} chrome={chrome} />
         <AICoachSection copy={aiCoachCopy[lang]} chrome={chrome} />
         <CoachPlatformSection copy={coachPlatformCopy[lang]} chrome={chrome} />
+        <BlogPreview copy={blogPreviewCopy[lang]} chrome={chrome} />
         <TrustSecurity copy={trustCopy[lang]} chrome={chrome} />
         <Testimonials copy={testimonialsCopy[lang]} chrome={chrome} />
+        <PricingTeaser copy={pricingTeaserCopy[lang]} chrome={chrome} />
         <FinalCTA copy={finalCtaCopy[lang]} chrome={chrome} />
 
         {/* ---------------- FOOTER ---------------- */}

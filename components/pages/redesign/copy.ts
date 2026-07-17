@@ -9,7 +9,13 @@ export const chromeCopy = {
     nav: {
       demo: 'AI Demo',
       how: 'How It Works',
+      pricing: 'Pricing',
       coaches: 'For Coaches',
+      blog: 'Blog',
+      sentiment: 'Sentiment',
+      news: 'News',
+      faq: 'FAQ',
+      about: 'About',
       security: 'Security',
       login: 'Log in',
       start: 'Get Started',
@@ -18,8 +24,8 @@ export const chromeCopy = {
     footer: {
       tagline: 'Trading psychology, made visible.',
       cols: [
-        { h: 'Product', items: ['AI Demo', 'How It Works', 'Security'] },
-        { h: 'Company', items: ['About', 'Blog'] },
+        { h: 'Product', items: ['AI Demo', 'How It Works', 'Pricing', 'For Coaches', 'Security'] },
+        { h: 'Company', items: ['About', 'Blog', 'FAQ'] },
         { h: 'Legal', items: ['Privacy', 'Terms'] },
       ],
       rights: 'All rights reserved.',
@@ -31,7 +37,13 @@ export const chromeCopy = {
     nav: {
       demo: 'دموی هوش مصنوعی',
       how: 'روند کار',
+      pricing: 'قیمت‌ها',
       coaches: 'برای کوچ‌ها',
+      blog: 'بلاگ',
+      sentiment: 'سنتیمنت',
+      news: 'اخبار',
+      faq: 'سوالات متداول',
+      about: 'درباره ما',
       security: 'امنیت',
       login: 'ورود',
       start: 'شروع کنید',
@@ -40,8 +52,8 @@ export const chromeCopy = {
     footer: {
       tagline: 'روان‌شناسی معاملاتی، قابل مشاهده.',
       cols: [
-        { h: 'محصول', items: ['دموی هوش مصنوعی', 'روند کار', 'امنیت'] },
-        { h: 'شرکت', items: ['درباره ما', 'بلاگ'] },
+        { h: 'محصول', items: ['دموی هوش مصنوعی', 'روند کار', 'قیمت‌ها', 'برای کوچ‌ها', 'امنیت'] },
+        { h: 'شرکت', items: ['درباره ما', 'بلاگ', 'سوالات متداول'] },
         { h: 'قوانین', items: ['حریم خصوصی', 'شرایط استفاده'] },
       ],
       rights: 'تمامی حقوق محفوظ است.',
@@ -305,5 +317,96 @@ export const finalCtaCopy = {
     title: 'تاریخچه معاملات شما الگوهایتان را از قبل می‌داند.',
     sub: 'وقتشه شما هم بدانید.',
     button: 'شروع دوره آزمایشی رایگان',
+  },
+};
+
+export const statsCopy = {
+  en: [
+    { n: '6', l: 'Behavioral Signals' },
+    { n: '3', l: 'Coach Hierarchy Tiers' },
+    { n: '0', l: 'Trade Access Required' },
+    { n: 'MT5', l: 'Native Integration' },
+  ],
+  fa: [
+    { n: '۶', l: 'سیگنال رفتاری' },
+    { n: '۳', l: 'سطح سلسله‌مراتب کوچ' },
+    { n: '۰', l: 'دسترسی به معامله' },
+    { n: 'MT5', l: 'اتصال بومی' },
+  ],
+};
+
+export const pricingTeaserCopy = {
+  en: {
+    title: 'Plans that grow with you',
+    cards: [
+      { name: 'Trial', tag: 'Try it free' },
+      { name: 'Basic', tag: 'For independent traders' },
+      { name: 'Pro', tag: 'For serious traders & small teams' },
+      { name: 'Elite', tag: 'White-glove, for coaches & prop teams' },
+    ],
+    cta: 'See full pricing',
+  },
+  fa: {
+    title: 'پلن‌هایی که با شما رشد می‌کنند',
+    cards: [
+      { name: 'Trial', tag: 'رایگان امتحان کنید' },
+      { name: 'Basic', tag: 'برای تریدرهای مستقل' },
+      { name: 'Pro', tag: 'برای تریدرهای حرفه‌ای و تیم‌های کوچک' },
+      { name: 'Elite', tag: 'خدمات ویژه، برای کوچ‌ها و تیم‌های پراپ' },
+    ],
+    cta: 'مشاهده کامل قیمت‌گذاری',
+  },
+};
+
+// Cards mirror the 3 most recent posts in content/blog for each lang
+// (same slugs getPostsByLang('en'|'fa') would surface first).
+export const blogPreviewCopy = {
+  en: {
+    title: 'From the Mindlura Journal',
+    cta: 'Read all articles',
+    cards: [
+      {
+        slug: 'why-more-trades-en',
+        category: 'Trading Psychology',
+        title: 'Why Mindlura Gets More Accurate Over Time',
+        desc: 'One month and 10 trades isn’t enough. Why the more you use Mindlura, the better it understands you.',
+      },
+      {
+        slug: 'revenge-trading-mt5-history',
+        category: 'Behavioral Analysis',
+        title: 'Revenge Trading: What Your MT5 History Shows That You Don’t Remember',
+        desc: 'The pattern is always in the data. Here’s how to find it and stop it.',
+      },
+      {
+        slug: 'complete-guide-forex-trading-psychology',
+        category: 'Psychology',
+        title: 'The Complete Guide to Forex Trading Psychology',
+        desc: 'From identifying destructive behavioral patterns to measuring mental discipline with real data.',
+      },
+    ],
+  },
+  fa: {
+    title: 'از ژورنال مایندلورا',
+    cta: 'مشاهده همه مقالات',
+    cards: [
+      {
+        slug: 'why-more-trades-fa',
+        category: 'روان‌شناسی معامله‌گری',
+        title: 'چرا Mindlura با گذشت زمان دقیق‌تر می‌شود؟',
+        desc: 'یک ماه داده و ۱۰ معامله کافی نیست. بفهمید چرا Mindlura هرچه بیشتر استفاده شود، بهتر شما را می‌شناسد.',
+      },
+      {
+        slug: 'revenge-trading-tarikhe-mt5',
+        category: 'تحلیل رفتاری',
+        title: 'معامله انتقامی: آنچه تاریخچه MT5 نشان می‌دهد که خودتان یادتان نیست',
+        desc: 'الگو همیشه در داده‌ها هست. اینجا نشان می‌دهیم کجا باید در تاریخچه MT5 به دنبال آن بگردید.',
+      },
+      {
+        slug: 'raghnama-ravanshenasi-trade-forex',
+        category: 'روان‌شناسی',
+        title: 'راهنمای روان‌شناسی معامله‌گری در فارکس',
+        desc: 'چرا بین استراتژی معاملاتی شما و نتایج واقعی‌تان فاصله وجود دارد؟ پاسخ تقریباً همیشه در رفتار است.',
+      },
+    ],
   },
 };
