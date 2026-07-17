@@ -1,6 +1,5 @@
-// STAGING NOTE: see app/redesign/coach/events/page.tsx — same pattern.
-import { CoachNotificationsPage } from '@/components/coach/coach-notifications-page';
+import { RedesignCoachNotificationsPage } from '@/components/redesign/coach/RedesignCoachNotificationsPage';
 
 export default function RedesignCoachNotificationsRoute() {
-  return <CoachNotificationsPage />;
+  return <RedesignCoachNotificationsPage />;
 }

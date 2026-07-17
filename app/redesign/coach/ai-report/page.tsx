@@ -1,6 +1,5 @@
-// STAGING NOTE: see app/redesign/coach/events/page.tsx — same pattern.
-import { CoachAIReportPage } from '@/components/coach/coach-ai-report-page';
+import { RedesignCoachAIReportPage } from '@/components/redesign/coach/RedesignCoachAIReportPage';
 
 export default function RedesignCoachAIReportRoute() {
-  return <CoachAIReportPage />;
+  return <RedesignCoachAIReportPage />;
 }

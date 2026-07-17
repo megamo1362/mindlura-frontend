@@ -68,6 +68,9 @@ export const QUERY_KEYS = {
   coachAIReportStatus: ['coach-ai-report-status'] as const,
   coachAIReportLatest: ['coach-ai-report-latest'] as const,
   coachPurchases: ['coach-purchases'] as const,
+  coachClientAccounts: (clientId: number | string) => ['coach-client-accounts', clientId] as const,
+  coachClientJournalAnalysis: (clientId: number | string, accountId: number | string) =>
+    ['coach-client-journal-analysis', clientId, accountId] as const,
   adminStats: ['admin-stats'] as const,
   plans: ['plans'] as const,
 } as const;

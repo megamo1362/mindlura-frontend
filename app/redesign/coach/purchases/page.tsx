@@ -1,6 +1,5 @@
-// STAGING NOTE: see app/redesign/coach/events/page.tsx — same pattern.
-import { CoachPurchasesPage } from '@/components/coach/coach-purchases-page';
+import { RedesignCoachPurchasesPage } from '@/components/redesign/coach/RedesignCoachPurchasesPage';
 
 export default function RedesignCoachPurchasesRoute() {
-  return <CoachPurchasesPage />;
+  return <RedesignCoachPurchasesPage />;
 }

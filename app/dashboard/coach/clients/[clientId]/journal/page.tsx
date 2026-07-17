@@ -1,70 +1,29 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { use } from 'react';
-import { apiFetch, ApiError } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { JournalAnalysisView } from '@/app/dashboard/journal/JournalAnalysisView';
 import { useLang } from '@/app/i18n/LangContext';
-import type { JournalAnalysisData } from '@/types';
-
-interface Account { id: number; login: string; server: string; label?: string | null; }
+import { ApiError } from '@/lib/api';
+import { useCoachClientAccounts, useCoachClientJournalAnalysis } from '@/hooks/use-coach-client-journal';
 
 export default function CoachClientJournalPage({ params }: { params: Promise<{ clientId: string }> }) {
   const { clientId } = use(params);
-  const [accounts, setAccounts] = useState<Account[]>([]);
   const [accountId, setAccountId] = useState('');
-  const [accountsLoading, setAccountsLoading] = useState(true);
-  const [accountsError, setAccountsError] = useState('');
-  const [data, setData] = useState<JournalAnalysisData | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [forbidden, setForbidden] = useState(false);
-  const [error, setError] = useState('');
   const { t } = useLang();
 
-  useEffect(() => {
-    setAccountsLoading(true);
-    setAccountsError('');
-    apiFetch<{ accounts: Account[] }>(`/coach/client/${clientId}/accounts`)
-      .then(d => {
-        console.log('[coach-client-journal] accounts response:', d);
-        const list = d.accounts ?? [];
-        setAccounts(list);
-        if (list.length > 0) setAccountId(String(list[0].id));
-      })
-      .catch(e => {
-        console.error('[coach-client-journal] failed to load accounts:', e);
-        setAccountsError(e instanceof Error ? e.message : t.error_generic);
-      })
-      .finally(() => setAccountsLoading(false));
-  }, [clientId, t.error_generic]);
+  const { data: accounts = [], isLoading: accountsLoading, isError: accountsIsError } = useCoachClientAccounts(clientId);
+  const accountsError = accountsIsError ? t.error_generic : '';
 
-  const load = useCallback(async (id: string) => {
-    if (!id) return;
-    setLoading(true);
-    setError('');
-    setForbidden(false);
-    try {
-      const result = await apiFetch<JournalAnalysisData>(`/journal/analysis/${id}?client_id=${clientId}`);
-      console.log('[coach-client-journal] analysis response:', result);
-      setData(result);
-    } catch (e) {
-      console.error('[coach-client-journal] failed to load analysis:', e);
-      if (e instanceof ApiError && e.status === 403) {
-        setForbidden(true);
-      } else {
-        setError(e instanceof Error ? e.message : t.error_generic);
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [clientId, t.error_generic]);
-
-  // Auto-load analysis as soon as an account is selected, instead of waiting on a manual click.
   useEffect(() => {
-    if (accountId) load(accountId);
-  }, [accountId, load]);
+    if (!accountId && accounts.length > 0) setAccountId(String(accounts[0].id));
+  }, [accounts, accountId]);
+
+  const { data, isFetching: loading, error: queryError, refetch } = useCoachClientJournalAnalysis(clientId, accountId);
+  const forbidden = queryError instanceof ApiError && queryError.status === 403;
+  const error = queryError && !forbidden ? (queryError instanceof Error ? queryError.message : t.error_generic) : '';
 
   return (
     <div>
@@ -84,7 +43,7 @@ export default function CoachClientJournalPage({ params }: { params: Promise<{ c
             ))}
           </SelectContent>
         </Select>
-        <Button onClick={() => load(accountId)} loading={loading} disabled={!accountId}>{t.coach_client_view_analysis}</Button>
+        <Button onClick={() => refetch()} loading={loading} disabled={!accountId}>{t.coach_client_view_analysis}</Button>
       </div>
 
       {!accountsLoading && !accountsError && accounts.length === 0 && (
@@ -103,7 +62,7 @@ export default function CoachClientJournalPage({ params }: { params: Promise<{ c
 
       {error && <p className="text-sm text-[var(--color-status-error)] mb-4">{error}</p>}
 
-      <JournalAnalysisView data={data} loading={loading} />
+      <JournalAnalysisView data={data ?? null} loading={loading} />
     </div>
   );
 }

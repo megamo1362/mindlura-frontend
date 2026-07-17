@@ -455,6 +455,21 @@ export const translations = {
     no_purchases_yet: 'No purchases yet',
     commission_note: 'Commission is calculated on total revenue from your connected clients’ purchases, at your current commission rate.',
 
+    // ── Redesign coach: client detail ───────────────────────
+    coach_view_client: 'View',
+    coach_client_detail_desc: 'Client overview and connected accounts',
+    coach_back_to_clients: 'Back to Clients',
+    coach_connected_accounts: 'Connected Accounts',
+    account_type_demo: 'Demo',
+    account_type_real: 'Real',
+    perm_balance: 'Balance',
+    perm_trades: 'Trades',
+    perm_analysis: 'Analysis',
+    perm_journal: 'Journal',
+    coach_view_journal: 'View Journal',
+    coach_no_client_found: 'Client not found',
+    event_toggle_active: 'Toggle active status',
+
     // ── Client card ────────────────────────────────────────
     client_connected_since: (date: string) => `Connected since ${date}`,
     client_balance: 'Balance',
@@ -1321,6 +1336,21 @@ export const translations = {
     purchase_amount: 'مبلغ',
     no_purchases_yet: 'هنوز خریدی وجود ندارد',
     commission_note: 'کمیسیون بر اساس کل درآمد حاصل از خریدهای کلاینت‌های متصل به شما و با نرخ کمیسیون فعلی شما محاسبه می‌شود.',
+
+    // ── Redesign coach: client detail ───────────────────────
+    coach_view_client: 'مشاهده',
+    coach_client_detail_desc: 'نمای کلی کلاینت و حساب‌های متصل',
+    coach_back_to_clients: 'بازگشت به کلاینت‌ها',
+    coach_connected_accounts: 'حساب‌های متصل',
+    account_type_demo: 'دمو',
+    account_type_real: 'واقعی',
+    perm_balance: 'موجودی',
+    perm_trades: 'معاملات',
+    perm_analysis: 'آنالیز',
+    perm_journal: 'ژورنال',
+    coach_view_journal: 'مشاهده ژورنال',
+    coach_no_client_found: 'کلاینت یافت نشد',
+    event_toggle_active: 'تغییر وضعیت فعال بودن',
 
     // ── Client card ────────────────────────────────────────
     client_connected_since: (date: string) => `متصل از ${date}`,
