@@ -96,22 +96,24 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
               <span className="text-lg" style={{ fontFamily: displayFont, letterSpacing: '0.01em' }}>Mindlura</span>
             </div>
 
-            <nav className="hidden md:flex items-center gap-9 text-sm" style={{ color: tokens.color.muted }}>
-              {navLinks.map((link) => (
-                link.anchor ? (
-                  <a key={link.href} href={link.href} className="hover:text-[#E9ECF3] transition-colors">{link.label}</a>
-                ) : (
-                  <Link key={link.href} href={link.href} className="hover:text-[#E9ECF3] transition-colors">{link.label}</Link>
-                )
-              ))}
-            </nav>
-
             <div className="hidden md:flex items-center gap-6">
+              <nav className="flex items-center gap-5 text-sm whitespace-nowrap" style={{ color: tokens.color.muted }}>
+                {navLinks.map((link) => (
+                  link.anchor ? (
+                    <a key={link.href} href={link.href} className="hover:text-[#E9ECF3] transition-colors">{link.label}</a>
+                  ) : (
+                    <Link key={link.href} href={link.href} className="hover:text-[#E9ECF3] transition-colors">{link.label}</Link>
+                  )
+                ))}
+              </nav>
+
+              <div className="w-px h-5" style={{ backgroundColor: tokens.color.line }} />
+
               <div
                 role="group"
                 aria-label={t.toggle.hint}
                 title={t.toggle.hint}
-                className="flex items-center gap-6 text-sm mr-2"
+                className="flex items-center gap-6 text-sm"
                 style={{ color: tokens.color.mutedDim }}
               >
                 {(['trader', 'coach'] as const).map((a) => (
@@ -131,7 +133,7 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
                   </button>
                 ))}
               </div>
-              <Link href={otherLangHref} className="text-xs italic" style={{ fontFamily: displayFont, color: tokens.color.mutedDim }}>
+              <Link href={otherLangHref} className="text-sm hover:text-[#E9ECF3] transition-colors" style={{ fontFamily: displayFont, color: tokens.color.mutedDim }}>
                 {isFa ? 'English' : 'فارسی'}
               </Link>
               <Link href="/login" className="text-sm" style={{ color: '#C7CBE0' }}>{t.nav.login}</Link>
@@ -169,7 +171,7 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
               >
                 {t.nav.start}
               </Link>
-              <Link href={otherLangHref} className="italic py-2.5" style={{ fontFamily: displayFont }}>
+              <Link href={otherLangHref} className="py-2.5" style={{ fontFamily: displayFont }}>
                 {isFa ? 'English' : 'فارسی'}
               </Link>
             </div>
