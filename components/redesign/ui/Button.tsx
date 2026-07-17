@@ -30,23 +30,35 @@ const SIZE_CLASSES: Record<ButtonSize, string> = {
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = 'secondary', size = 'md', loading, disabled, className, children, asChild, ...props }, ref) => {
-    const Comp = asChild ? Slot : 'button';
+    const classes = cn(
+      'inline-flex items-center justify-center rounded-[var(--radius-sm)] font-semibold',
+      'transition-colors duration-150 ease-out disabled:cursor-not-allowed disabled:opacity-50',
+      VARIANT_CLASSES[variant],
+      SIZE_CLASSES[size],
+      className,
+    );
+
+    if (asChild) {
+      // Radix Slot requires exactly one React element child. Adding the
+      // loading spinner as a sibling here (`{loading && <Loader2/>}{children}`)
+      // used to pass Slot a 2-item children array even when `loading` was
+      // false — the `false` from the `&&` still counts as a child — which
+      // threw "Slot failed to slot onto its children" on every asChild
+      // Button (e.g. <Button asChild><Link>...</Link></Button>). asChild
+      // callers don't use the loading state, so just forward the single
+      // child untouched.
+      return (
+        <Slot ref={ref} className={classes} {...props}>
+          {children}
+        </Slot>
+      );
+    }
+
     return (
-      <Comp
-        ref={ref}
-        disabled={asChild ? undefined : disabled || loading}
-        className={cn(
-          'inline-flex items-center justify-center rounded-[var(--radius-sm)] font-semibold',
-          'transition-colors duration-150 ease-out disabled:cursor-not-allowed disabled:opacity-50',
-          VARIANT_CLASSES[variant],
-          SIZE_CLASSES[size],
-          className,
-        )}
-        {...props}
-      >
+      <button ref={ref} disabled={disabled || loading} className={classes} {...props}>
         {loading && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
         {children}
-      </Comp>
+      </button>
     );
   },
 );
