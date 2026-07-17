@@ -149,9 +149,14 @@ export function OverviewTab({ analysis, warnings, accountId, isCoachMode, aiFrom
 
       {/* AI Psychology — self-contained component with its own surface; reused
           as-is (business logic + its own card chrome), not re-wrapped, to
-          avoid nesting a card inside a card. */}
+          avoid nesting a card inside a card. It still reads the live app's
+          --color-* tokens though (same component is also rendered
+          unmodified on the live dashboard), so `.rd-ai-psychology` retargets
+          those tokens to the redesign tokens — see app/theme.css. */}
       {analysis.has_data && !isCoachMode && (
-        <AIPsychologyCard accountId={accountId} fromDate={aiFromDate} toDate={aiToDate} />
+        <div className="rd-ai-psychology">
+          <AIPsychologyCard accountId={accountId} fromDate={aiFromDate} toDate={aiToDate} />
+        </div>
       )}
     </div>
   );

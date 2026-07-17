@@ -160,3 +160,61 @@
   .rd-fade-up { animation: none; }
   .rd-shell { transition: none; }
 }
+
+/* ─── AI Psychology Analysis override ────────────────────────
+   components/analysis/ai-psychology.tsx is shared verbatim with the live
+   dashboard (components/analysis/analysis-page.tsx), so its logic and
+   classNames are never edited here — see the go-live checklist. It reads
+   the live app's --color-* tokens (app/globals.css) directly, plus a
+   couple via the shared <Button>, so redefining those names on this
+   wrapper class makes every var(--color-*) usage inside it resolve to the
+   redesign tokens instead. The .card-surface chrome and <Button> it
+   renders read the same live tokens, so they're covered too — nothing here
+   reaches outside .rd-ai-psychology, so the live page is unaffected.
+   ───────────────────────────────────────────────────────────── */
+[data-theme] .rd-ai-psychology {
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-border: var(--border-subtle);
+  --color-surface: var(--bg-surface);
+  --shadow-card: var(--card-shadow);
+  --color-purple: var(--accent);
+  --color-cyan: var(--accent);
+  --color-cyan-dim: var(--accent-soft);
+  --color-border-hover: var(--border-subtle);
+}
+
+/* The severity/risk/quota/error indicators use Tailwind's built-in palette
+   utilities directly (bg-red-500, text-emerald-400, ...) rather than a CSS
+   variable, so they can't be fixed by a token redefinition above — each is
+   overridden by selector instead. !important is intentional: these beat a
+   same-specificity Tailwind utility class from outside its own file. */
+[data-theme] .rd-ai-psychology .bg-red-500 { background-color: var(--loss) !important; }
+[data-theme] .rd-ai-psychology .text-red-300,
+[data-theme] .rd-ai-psychology .text-red-400 { color: var(--loss) !important; }
+[data-theme] .rd-ai-psychology .border-red-500\/20,
+[data-theme] .rd-ai-psychology .border-red-500\/25,
+[data-theme] .rd-ai-psychology .border-red-500\/30 { border-color: var(--loss) !important; }
+[data-theme] .rd-ai-psychology .bg-red-500\/5,
+[data-theme] .rd-ai-psychology .bg-red-500\/6,
+[data-theme] .rd-ai-psychology .bg-red-500\/15 { background-color: var(--loss-soft) !important; }
+
+[data-theme] .rd-ai-psychology .bg-orange-500 { background-color: var(--warning) !important; }
+[data-theme] .rd-ai-psychology .text-orange-300,
+[data-theme] .rd-ai-psychology .text-orange-400,
+[data-theme] .rd-ai-psychology .text-orange-400\/70 { color: var(--warning) !important; }
+[data-theme] .rd-ai-psychology .border-orange-500\/20,
+[data-theme] .rd-ai-psychology .border-orange-500\/30 { border-color: var(--warning) !important; }
+[data-theme] .rd-ai-psychology .bg-orange-500\/5,
+[data-theme] .rd-ai-psychology .bg-orange-500\/15 { background-color: var(--warning-soft) !important; }
+
+[data-theme] .rd-ai-psychology .bg-yellow-400 { background-color: var(--warning) !important; }
+[data-theme] .rd-ai-psychology .text-yellow-200 { color: var(--warning) !important; }
+[data-theme] .rd-ai-psychology .border-yellow-500\/20 { border-color: var(--warning) !important; }
+[data-theme] .rd-ai-psychology .bg-yellow-500\/5 { background-color: var(--warning-soft) !important; }
+
+[data-theme] .rd-ai-psychology .text-emerald-300,
+[data-theme] .rd-ai-psychology .text-emerald-400 { color: var(--profit) !important; }
+[data-theme] .rd-ai-psychology .border-emerald-500\/30 { border-color: var(--profit) !important; }
+[data-theme] .rd-ai-psychology .bg-emerald-500\/15 { background-color: var(--profit-soft) !important; }
