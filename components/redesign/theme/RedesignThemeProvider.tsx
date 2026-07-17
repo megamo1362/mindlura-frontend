@@ -67,6 +67,11 @@ export function RedesignThemeProvider({ children, initialTheme }: RedesignThemeP
   // .rd-shell wrapper below and would otherwise keep the live dashboard's
   // hardcoded dark background (see `body` in app/globals.css). Cleaned up
   // on unmount so leaving /redesign can't leak theme.css onto live pages.
+  //
+  // <html> is the ONLY element that carries data-theme: custom properties
+  // cascade from the nearest ancestor that (re)defines them, so if the
+  // .rd-shell div below also declared it, its value would shadow <html>'s
+  // for every component inside — .rd-shell just inherits the tokens.
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     return () => {
@@ -76,7 +81,7 @@ export function RedesignThemeProvider({ children, initialTheme }: RedesignThemeP
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, toggle }}>
-      <div data-theme={theme} className="rd-shell">
+      <div className="rd-shell">
         {children}
       </div>
     </ThemeContext.Provider>

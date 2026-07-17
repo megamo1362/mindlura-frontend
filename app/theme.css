@@ -76,16 +76,13 @@
   --card-border: 1px solid var(--border-subtle);
 }
 
-/* html gets [data-theme] too (mirrored from .rd-shell by
-   RedesignThemeProvider) so the real page background follows the theme —
-   per the CSS background propagation rules, html's background-color wins
-   over body's (which is hardcoded dark in app/globals.css for the live
-   dashboard) once html declares one. */
-html[data-theme] {
-  background-color: var(--bg-base);
-}
-
 /* ─── Shared (theme-independent) tokens ─────────────────────── */
+/* <html> is now the only element carrying data-theme (RedesignThemeProvider
+   no longer sets it on the .rd-shell div — see that file), so this rule's
+   background-color/color apply to html directly. Per CSS background
+   propagation rules, html's background-color wins over body's (hardcoded
+   dark in app/globals.css for the live dashboard), which is what makes the
+   real page background follow the theme. */
 [data-theme] {
   --radius-sm: 8px;
   --radius-md: 12px;
