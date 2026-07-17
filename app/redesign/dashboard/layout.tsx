@@ -4,8 +4,9 @@ import { AuthGuard } from '@/components/layouts/auth-guard';
 import { RedesignThemeProvider } from '@/components/redesign/theme/RedesignThemeProvider';
 import { Shell } from '@/components/redesign/layout/Shell';
 // Global CSS import — scoped in practice because every rule in theme.css
-// lives under a [data-theme] selector (set on the .rd-shell wrapper below,
-// not on <html>), so it cannot affect the live dashboard's styling.
+// lives under a [data-theme] selector. RedesignThemeProvider mirrors that
+// attribute onto <html> (so the page background follows the theme) and
+// removes it on unmount, so it still cannot leak into the live dashboard.
 import '@/app/theme.css';
 
 export const metadata: Metadata = {

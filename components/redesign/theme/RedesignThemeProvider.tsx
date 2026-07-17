@@ -62,6 +62,18 @@ export function RedesignThemeProvider({ children, initialTheme }: RedesignThemeP
     });
   }, []);
 
+  // Mirror the theme onto <html> so [data-theme] tokens (in particular
+  // --bg-base) reach the real page background — body/html sit outside the
+  // .rd-shell wrapper below and would otherwise keep the live dashboard's
+  // hardcoded dark background (see `body` in app/globals.css). Cleaned up
+  // on unmount so leaving /redesign can't leak theme.css onto live pages.
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    return () => {
+      document.documentElement.removeAttribute('data-theme');
+    };
+  }, [theme]);
+
   return (
     <ThemeContext.Provider value={{ theme, setTheme, toggle }}>
       <div data-theme={theme} className="rd-shell">
