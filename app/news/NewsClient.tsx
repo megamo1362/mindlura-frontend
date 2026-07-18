@@ -11,6 +11,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { apiFetch } from '@/lib/api';
 import { dateKeyOf, formatDateHeader } from './dateFormat';
 import AnalysisPanel from './AnalysisPanel';
+import LiveNewsTab from './LiveNewsTab';
 import type { CalendarEvent, EventAnalysis } from './types';
 
 const displayFont = "'Fraunces', serif";
@@ -35,6 +36,9 @@ const COPY = {
     noAnalysis: 'AI analysis not available for this event yet.',
     footer: 'Source: Forex Factory | For educational purposes only',
     inTime: (label: string) => `in ${label}`,
+    tabCalendar: '📅 Calendar',
+    tabNews: '📰 Live News',
+    newsFooter: 'News: Finnhub | For educational purposes only',
   },
   fa: {
     dir: 'rtl' as const,
@@ -55,6 +59,9 @@ const COPY = {
     noAnalysis: 'تحلیل هوش مصنوعی هنوز برای این رویداد موجود نیست.',
     footer: 'منبع: Forex Factory | صرفاً جهت آموزش',
     inTime: (label: string) => `${label} دیگر`,
+    tabCalendar: '📅 تقویم',
+    tabNews: '📰 اخبار لحظه‌ای',
+    newsFooter: 'منبع اخبار: Finnhub | صرفاً جهت آموزش',
   },
 };
 
@@ -136,6 +143,7 @@ export default function NewsClient({
     router.push(getCounterpartPath(pathname));
   };
 
+  const [activeTab, setActiveTab] = useState<'calendar' | 'news'>('calendar');
   const [impactFilter, setImpactFilter] = useState<string | null>(null);
   const [now, setNow] = useState<number | null>(null);
   const [analysisData, setAnalysisData] = useState<EventAnalysis[] | null>(null);
@@ -225,7 +233,44 @@ export default function NewsClient({
           </div>
         </header>
 
-        <section className="max-w-screen-xl mx-auto px-6 pt-16 pb-8">
+        <section className="max-w-screen-xl mx-auto px-6 pt-16 pb-2 flex gap-2">
+          <button
+            onClick={() => setActiveTab('calendar')}
+            className="px-4 py-2 rounded-lg border text-sm font-medium"
+            style={{
+              borderColor: activeTab === 'calendar' ? 'var(--color-cyan)' : 'var(--color-border)',
+              color: activeTab === 'calendar' ? 'var(--color-cyan)' : 'var(--color-text-secondary)',
+              backgroundColor: activeTab === 'calendar' ? 'var(--color-cyan-dim)' : 'transparent',
+            }}
+          >
+            {t.tabCalendar}
+          </button>
+          <button
+            onClick={() => setActiveTab('news')}
+            className="px-4 py-2 rounded-lg border text-sm font-medium"
+            style={{
+              borderColor: activeTab === 'news' ? 'var(--color-cyan)' : 'var(--color-border)',
+              color: activeTab === 'news' ? 'var(--color-cyan)' : 'var(--color-text-secondary)',
+              backgroundColor: activeTab === 'news' ? 'var(--color-cyan-dim)' : 'transparent',
+            }}
+          >
+            {t.tabNews}
+          </button>
+        </section>
+
+        {activeTab === 'news' ? (
+          <>
+            <section className="max-w-screen-xl mx-auto px-6 pb-20 pt-6">
+              <LiveNewsTab lang={lang} />
+            </section>
+            <div className="max-w-screen-xl mx-auto px-6"><div style={{ height: 1, background: 'var(--color-border)' }} /></div>
+            <section className="max-w-screen-xl mx-auto px-6 py-10 text-center">
+              <p className="text-xs" style={{ color: 'var(--color-text-disabled)' }}>{t.newsFooter}</p>
+            </section>
+          </>
+        ) : (
+        <>
+        <section className="max-w-screen-xl mx-auto px-6 pt-6 pb-8">
           <p className="text-sm italic mb-4" style={{ color: 'var(--color-cyan)', fontFamily: displayFont }}>{t.eyebrow}</p>
           <h1 className="text-3xl md:text-4xl mb-4 max-w-2xl" style={{ fontFamily: displayFont, fontWeight: 500 }}>{t.title}</h1>
           <p className="text-sm leading-relaxed max-w-xl" style={{ color: 'var(--color-text-muted)' }}>{t.sub}</p>
@@ -400,6 +445,8 @@ export default function NewsClient({
         <section className="max-w-screen-xl mx-auto px-6 py-10 text-center">
           <p className="text-xs" style={{ color: 'var(--color-text-disabled)' }}>{t.footer}</p>
         </section>
+        </>
+        )}
       </div>
     </div>
   );
