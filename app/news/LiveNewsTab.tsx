@@ -21,14 +21,23 @@ const COPY = {
   },
 };
 
-export default function LiveNewsTab({ lang }: { lang: Lang }) {
+export default function LiveNewsTab({
+  lang,
+  initialNews,
+}: {
+  lang: Lang;
+  /** SSR-prefetched news (from /news/live's page.tsx) — skips the redundant client fetch on mount. */
+  initialNews?: ForexNewsItem[];
+}) {
   const t = COPY[lang];
-  const [news, setNews] = useState<ForexNewsItem[] | null>(null);
+  const [news, setNews] = useState<ForexNewsItem[] | null>(initialNews ?? null);
   // Lazy-loaded on first render of this tab, not on page mount — guards
   // against React StrictMode's dev-mode double-invoke the same way the
   // AI-analysis fetch does (see NewsClient.tsx). Keyed by lang (not a plain
   // boolean) so a genuine lang change still re-fetches with the right query param.
-  const lastFetchedLang = useRef<Lang | null>(null);
+  // Seeded to the current lang when initialNews is provided, so the effect below
+  // skips its fetch entirely on mount instead of duplicating the SSR fetch.
+  const lastFetchedLang = useRef<Lang | null>(initialNews ? lang : null);
 
   useEffect(() => {
     if (lastFetchedLang.current === lang) return;

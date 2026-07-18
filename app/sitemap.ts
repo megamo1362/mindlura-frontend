@@ -44,7 +44,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const bilingualPages: { path: string; changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency']; priority: number }[] = [
     { path: '',            changeFrequency: 'weekly',  priority: 1.0 },
     { path: '/sentiment',  changeFrequency: 'hourly', priority: 0.9 },
-    { path: '/news',       changeFrequency: 'hourly', priority: 0.8 },
+    { path: '/news/calendar', changeFrequency: 'hourly', priority: 0.8 },
+    { path: '/news/live',  changeFrequency: 'hourly', priority: 0.8 },
     { path: '/blog',       changeFrequency: 'weekly',  priority: 0.8 },
     { path: '/for-coaches',changeFrequency: 'monthly', priority: 0.7 },
     { path: '/about',      changeFrequency: 'monthly', priority: 0.6 },
