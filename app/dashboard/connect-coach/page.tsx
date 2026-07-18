@@ -1,8 +1,6 @@
-import type { Metadata } from 'next';
+// STAGING NOTE: see app/redesign/dashboard/journal/page.tsx — same pattern.
 import { ConnectCoachPage } from '@/components/coach';
 
-export const metadata: Metadata = { title: 'Connect Coach' };
-
-export default function ConnectCoachRoute() {
+export default function RedesignConnectCoachPage() {
   return <ConnectCoachPage />;
 }
