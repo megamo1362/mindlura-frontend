@@ -45,4 +45,6 @@ export interface ForexNewsItem {
   url: string;
   datetime: string;
   image: string;
+  headline_fa?: string;
+  summary_fa?: string;
 }
