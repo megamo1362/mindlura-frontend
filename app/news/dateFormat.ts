@@ -38,3 +38,26 @@ export function formatEventDateTime(datetimeUtc: string, lang: Lang): string {
   const monthLong = d.toLocaleDateString('en-US', { month: 'long', timeZone: 'UTC' });
   return `${weekdayShort} ${monthLong} ${d.getUTCDate()}, ${hh}:${mm} UTC`;
 }
+
+/** Relative time for news items, e.g. "2 hours ago" / "۲ ساعت پیش". */
+export function formatTimeAgo(isoString: string, lang: Lang): string {
+  const then = new Date(isoString).getTime();
+  if (Number.isNaN(then)) return '';
+  const diffSec = Math.max(0, Math.floor((Date.now() - then) / 1000));
+
+  const units: [number, string, string][] = [
+    [86400, 'day', 'روز'],
+    [3600, 'hour', 'ساعت'],
+    [60, 'minute', 'دقیقه'],
+  ];
+
+  for (const [secs, enUnit, faUnit] of units) {
+    const value = Math.floor(diffSec / secs);
+    if (value >= 1) {
+      return lang === 'fa'
+        ? `${toFaDigits(value)} ${faUnit} پیش`
+        : `${value} ${enUnit}${value > 1 ? 's' : ''} ago`;
+    }
+  }
+  return lang === 'fa' ? 'همین الان' : 'just now';
+}

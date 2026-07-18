@@ -36,3 +36,13 @@ export interface EventAnalysis {
     fa: EventAnalysisContent;
   };
 }
+
+export interface ForexNewsItem {
+  id: string;
+  headline: string;
+  summary: string;
+  source: string;
+  url: string;
+  datetime: string;
+  image: string;
+}
