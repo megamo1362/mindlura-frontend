@@ -16,8 +16,10 @@ export function useLogin() {
       storage.setItem(AUTH_TOKEN_KEY, data.access_token);
       if (data.role === 'admin') {
         router.push(ROUTES.admin.root);
+      } else if (data.role === 'coach') {
+        router.push(ROUTES.redesignCoachClients);
       } else {
-        router.push(ROUTES.dashboard);
+        router.push(ROUTES.redesignDashboard);
       }
     },
   });
@@ -30,7 +32,13 @@ export function useRegister() {
       apiFetch<AuthResponse>('/auth/register', { method: 'POST', body: data }),
     onSuccess: (data) => {
       localStorage.setItem(AUTH_TOKEN_KEY, data.access_token);
-      router.push(ROUTES.dashboard);
+      if (data.role === 'admin') {
+        router.push(ROUTES.admin.root);
+      } else if (data.role === 'coach') {
+        router.push(ROUTES.redesignCoachClients);
+      } else {
+        router.push(ROUTES.redesignDashboard);
+      }
     },
   });
 }

@@ -8,7 +8,7 @@ import { cn, getInitials } from '@/lib/utils';
 import { useLang } from '@/app/i18n/LangContext';
 import { useTheme } from '../theme/RedesignThemeProvider';
 import { AUTH_TOKEN_KEY, ROUTES } from '@/lib/constants';
-import { CLIENT_NAV, COACH_NAV, type ShellVariant } from './nav-config';
+import { REDESIGN_NAV, type ShellVariant } from './nav-config';
 import type { User } from '@/types';
 
 interface SidebarProps {
@@ -22,8 +22,11 @@ export function Sidebar({ user, variant, onNavClick, className }: SidebarProps) 
   const { t } = useLang();
   const { theme } = useTheme();
   const pathname = usePathname();
-  const items = variant === 'coach' ? COACH_NAV : CLIENT_NAV;
+  // Admins preview by section (`variant`); everyone else is filtered by their real role.
+  const effectiveRole = user.role === 'admin' ? variant : user.role;
+  const items = REDESIGN_NAV.filter((item) => !item.roles || item.roles.includes(effectiveRole));
   const displayName = user.full_name || user.email;
+  const roleLabel = user.role === 'admin' ? t.role_admin : user.role === 'coach' ? t.role_coach : t.role_client;
 
   const handleLogout = () => {
     localStorage.removeItem(AUTH_TOKEN_KEY);
@@ -83,7 +86,7 @@ export function Sidebar({ user, variant, onNavClick, className }: SidebarProps) 
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium text-[var(--text-primary)]">{displayName}</p>
-            <p className="truncate text-xs text-[var(--text-muted)]">{t.role_admin}</p>
+            <p className="truncate text-xs text-[var(--text-muted)]">{roleLabel}</p>
           </div>
         </div>
         <button

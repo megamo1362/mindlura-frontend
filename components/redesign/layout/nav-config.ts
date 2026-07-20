@@ -13,6 +13,7 @@ import {
   ShoppingBag,
 } from 'lucide-react';
 import type { useLang } from '@/app/i18n/LangContext';
+import type { User } from '@/types';
 
 export type ShellVariant = 'client' | 'coach';
 
@@ -21,50 +22,38 @@ export interface RedesignNavEntry {
   labelKey: keyof ReturnType<typeof useLang>['t'];
   icon: LucideIcon;
   exact?: boolean;
+  roles?: Array<User['role']>;
 }
 
 /*
- * Preview-only note: unlike the live Sidebar/BottomNav (components/layouts/),
- * which filter nav items by the logged-in user's real `role`, these lists are
- * keyed by `variant` because every /redesign visitor is an admin (see the
- * admin-only AuthGuard in app/redesign/*\/layout.tsx) previewing either the
- * client or coach experience. At go-live, when these pages move to their
- * live routes, swap back to role-based filtering like the current
- * components/layouts/sidebar.tsx does.
+ * Role-aware nav, mirroring components/layouts/sidebar.tsx: entries are
+ * tagged with `roles` and filtered against the logged-in user's real role.
+ * An admin previewing either experience sees every entry for the section
+ * they're currently in — Sidebar/BottomNav substitute `variant` for role
+ * when user.role === 'admin', so the preview still works.
  */
-export const CLIENT_NAV: RedesignNavEntry[] = [
-  { href: '/redesign/dashboard', labelKey: 'nav_accounts', icon: BarChart2, exact: true },
-  { href: '/redesign/dashboard/journal', labelKey: 'nav_journal', icon: BookOpen },
-  { href: '/redesign/dashboard/journal/analysis', labelKey: 'nav_journal_analysis', icon: TrendingUp },
-  { href: '/redesign/dashboard/settings/journal-permissions', labelKey: 'nav_coach_access', icon: Shield },
+export const REDESIGN_NAV: RedesignNavEntry[] = [
+  { href: '/redesign/dashboard', labelKey: 'nav_accounts', icon: BarChart2, exact: true, roles: ['client'] },
+  { href: '/redesign/dashboard/journal', labelKey: 'nav_journal', icon: BookOpen, roles: ['client'] },
+  { href: '/redesign/dashboard/journal/analysis', labelKey: 'nav_journal_analysis', icon: TrendingUp, roles: ['client'] },
+  { href: '/redesign/dashboard/settings/journal-permissions', labelKey: 'nav_coach_access', icon: Shield, roles: ['client'] },
+  { href: '/redesign/coach/clients', labelKey: 'nav_my_clients', icon: Users, exact: true, roles: ['coach'] },
+  { href: '/redesign/coach/events', labelKey: 'nav_coach_events', icon: Calendar, roles: ['coach'] },
+  { href: '/redesign/coach/analytics', labelKey: 'nav_coach_analytics', icon: BarChart2, roles: ['coach'] },
+  { href: '/redesign/coach/notifications', labelKey: 'nav_coach_notifications', icon: Bell, roles: ['coach'] },
+  { href: '/redesign/coach/ai-report', labelKey: 'nav_coach_ai_report', icon: Sparkles, roles: ['coach'] },
+  { href: '/redesign/coach/purchases', labelKey: 'nav_coach_purchases', icon: ShoppingBag, roles: ['coach'] },
   { href: '/redesign/dashboard/settings', labelKey: 'nav_settings', icon: Settings, exact: true },
   { href: '/redesign/dashboard/profile', labelKey: 'nav_profile', icon: UserCircle },
 ];
 
-export const COACH_NAV: RedesignNavEntry[] = [
-  { href: '/redesign/coach/clients', labelKey: 'nav_my_clients', icon: Users, exact: true },
-  { href: '/redesign/coach/events', labelKey: 'nav_coach_events', icon: Calendar },
-  { href: '/redesign/coach/analytics', labelKey: 'nav_coach_analytics', icon: BarChart2 },
-  { href: '/redesign/coach/notifications', labelKey: 'nav_coach_notifications', icon: Bell },
-  { href: '/redesign/coach/ai-report', labelKey: 'nav_coach_ai_report', icon: Sparkles },
-  { href: '/redesign/coach/purchases', labelKey: 'nav_coach_purchases', icon: ShoppingBag },
-  { href: '/redesign/dashboard/settings', labelKey: 'nav_settings', icon: Settings, exact: true },
+export const REDESIGN_BOTTOM_NAV: RedesignNavEntry[] = [
+  { href: '/redesign/dashboard', labelKey: 'nav_accounts', icon: BarChart2, exact: true, roles: ['client'] },
+  { href: '/redesign/dashboard/journal/analysis', labelKey: 'nav_analysis', icon: TrendingUp, roles: ['client'] },
+  { href: '/redesign/dashboard/journal', labelKey: 'nav_journal', icon: BookOpen, roles: ['client'] },
+  { href: '/redesign/coach/clients', labelKey: 'nav_my_clients', icon: Users, exact: true, roles: ['coach'] },
+  { href: '/redesign/coach/analytics', labelKey: 'nav_coach_analytics', icon: BarChart2, roles: ['coach'] },
+  { href: '/redesign/coach/notifications', labelKey: 'nav_coach_notifications', icon: Bell, roles: ['coach'] },
+  { href: '/redesign/dashboard/settings', labelKey: 'nav_settings', icon: Settings },
   { href: '/redesign/dashboard/profile', labelKey: 'nav_profile', icon: UserCircle },
 ];
-
-export const BOTTOM_NAV: Record<ShellVariant, RedesignNavEntry[]> = {
-  client: [
-    { href: '/redesign/dashboard', labelKey: 'nav_accounts', icon: BarChart2, exact: true },
-    { href: '/redesign/dashboard/journal/analysis', labelKey: 'nav_analysis', icon: TrendingUp },
-    { href: '/redesign/dashboard/journal', labelKey: 'nav_journal', icon: BookOpen },
-    { href: '/redesign/dashboard/settings', labelKey: 'nav_settings', icon: Settings },
-    { href: '/redesign/dashboard/profile', labelKey: 'nav_profile', icon: UserCircle },
-  ],
-  coach: [
-    { href: '/redesign/coach/clients', labelKey: 'nav_my_clients', icon: Users, exact: true },
-    { href: '/redesign/coach/analytics', labelKey: 'nav_coach_analytics', icon: BarChart2 },
-    { href: '/redesign/coach/notifications', labelKey: 'nav_coach_notifications', icon: Bell },
-    { href: '/redesign/dashboard/settings', labelKey: 'nav_settings', icon: Settings },
-    { href: '/redesign/dashboard/profile', labelKey: 'nav_profile', icon: UserCircle },
-  ],
-};

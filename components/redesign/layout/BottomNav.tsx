@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useLang } from '@/app/i18n/LangContext';
-import { BOTTOM_NAV, type ShellVariant } from './nav-config';
+import { useCurrentUser } from '@/components/layouts/auth-guard';
+import { REDESIGN_BOTTOM_NAV, type ShellVariant } from './nav-config';
 
 interface BottomNavProps {
   variant: ShellVariant;
@@ -12,7 +13,10 @@ interface BottomNavProps {
 export function BottomNav({ variant }: BottomNavProps) {
   const pathname = usePathname();
   const { t } = useLang();
-  const items = BOTTOM_NAV[variant];
+  const { user } = useCurrentUser();
+  // Admins preview by section (`variant`); everyone else is filtered by their real role.
+  const effectiveRole = user.role === 'admin' ? variant : user.role;
+  const items = REDESIGN_BOTTOM_NAV.filter((item) => !item.roles || item.roles.includes(effectiveRole));
 
   const matches = items.filter((item) =>
     item.exact ? pathname === item.href : pathname === item.href || pathname?.startsWith(item.href + '/'),

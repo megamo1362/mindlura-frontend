@@ -10,11 +10,12 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false, nocache: true },
 };
 
-// STAGING NOTE: same open (auth-required, not admin-only) gate as
-// app/redesign/dashboard/layout.tsx — see that file for details. The live
-// coach pages this mirrors actually live under app/dashboard/coach/**
-// (there is no separate app/coach/** today); the go-live checklist
-// documents the real move.
+// Role-aware: coaches land here after login and see the coach nav; clients
+// are bounced to /redesign/dashboard by page.tsx. Same open (auth-required,
+// not admin-only) gate as app/redesign/dashboard/layout.tsx, so admins can
+// still preview this tree. The live coach pages this mirrors actually live
+// under app/dashboard/coach/** (there is no separate app/coach/** today);
+// the go-live checklist documents the real move.
 export default async function RedesignCoachLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
   const initialTheme = cookieStore.get('rd-theme')?.value === 'light' ? 'light' : 'dark';
