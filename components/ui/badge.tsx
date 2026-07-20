@@ -7,14 +7,14 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        cyan:    'bg-[rgba(0,212,255,0.12)]    text-[var(--color-cyan)]         border-[rgba(0,212,255,0.25)]',
-        blue:    'bg-[rgba(59,130,246,0.12)]   text-[#60a5fa]                   border-[rgba(59,130,246,0.25)]',
-        purple:  'bg-[rgba(124,58,237,0.15)]   text-[#a78bfa]                   border-[rgba(124,58,237,0.3)]',
-        teal:    'bg-[rgba(20,184,166,0.12)]   text-[#2dd4bf]                   border-[rgba(20,184,166,0.25)]',
-        green:   'bg-[rgba(34,197,94,0.12)]    text-[var(--color-success)]      border-[rgba(34,197,94,0.25)]',
-        yellow:  'bg-[rgba(245,158,11,0.12)]   text-[var(--color-warning)]      border-[rgba(245,158,11,0.25)]',
-        red:     'bg-[rgba(239,68,68,0.12)]    text-[var(--color-danger)]       border-[rgba(239,68,68,0.25)]',
-        gray:    'bg-[rgba(255,255,255,0.06)]  text-[var(--color-text-muted)]   border-[var(--color-border)]',
+        cyan:    'bg-[var(--color-cyan-dim)]    text-[var(--color-cyan)]         border-[var(--color-cyan-glow)]',
+        blue:    'bg-[var(--color-blue-dim)]    text-[var(--color-blue-light)]   border-[var(--color-blue-light)]',
+        purple:  'bg-[var(--color-purple-dim)]  text-[var(--color-purple-light)] border-[var(--color-purple-light)]',
+        teal:    'bg-[var(--color-teal-dim)]    text-[var(--color-teal-light)]   border-[var(--color-teal-light)]',
+        green:   'bg-[var(--color-success-dim)] text-[var(--color-success)]      border-[var(--color-success-glow)]',
+        yellow:  'bg-[var(--color-warning-dim)] text-[var(--color-warning)]      border-[var(--color-warning-glow)]',
+        red:     'bg-[var(--color-danger-dim)]  text-[var(--color-danger)]       border-[var(--color-danger-glow)]',
+        gray:    'bg-[var(--color-elevated)]    text-[var(--color-text-muted)]   border-[var(--color-border)]',
         outline: 'bg-transparent              text-[var(--color-text-secondary)] border-[var(--color-border)]',
       },
     },

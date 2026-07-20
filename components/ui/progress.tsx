@@ -46,7 +46,7 @@ const Progress = React.forwardRef<
       ref={ref}
       className={cn(
         'relative w-full overflow-hidden rounded-full',
-        'bg-[rgba(255,255,255,0.06)]',
+        'bg-[var(--color-elevated)]',
         sizeMap[size],
         className,
       )}

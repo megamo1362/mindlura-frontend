@@ -17,7 +17,7 @@ const SelectTrigger = React.forwardRef<
     ref={ref}
     className={cn(
       'flex h-10 w-full items-center justify-between gap-2 rounded-[var(--radius-md)]',
-      'bg-[rgba(6,13,28,0.6)] border border-[var(--color-border)] px-4 text-sm',
+      'bg-[var(--color-glass)] border border-[var(--color-border)] px-4 text-sm',
       'text-[var(--color-text-primary)] outline-none',
       'hover:border-[var(--color-border-hover)]',
       'focus:border-[var(--color-border-active)] focus:shadow-[var(--shadow-focus)]',

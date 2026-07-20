@@ -115,7 +115,7 @@ function EditPanel({
                   className="rounded-xl border transition-all overflow-hidden"
                   style={{
                     background: selected ? 'var(--color-cyan-dim)' : 'var(--color-elevated)',
-                    borderColor: selected ? 'rgba(0,212,255,0.25)' : 'var(--color-border)',
+                    borderColor: selected ? 'var(--color-cyan-glow)' : 'var(--color-border)',
                   }}
                 >
                   <label className="flex items-center gap-3 px-3 py-2.5 cursor-pointer">
@@ -129,7 +129,7 @@ function EditPanel({
                   </label>
 
                   {selected && (
-                    <div className="px-3 pb-3 flex flex-wrap gap-2 border-t border-[rgba(0,212,255,0.15)]" style={{ paddingTop: 8 }}>
+                    <div className="px-3 pb-3 flex flex-wrap gap-2 border-t border-[var(--color-cyan-dim)]" style={{ paddingTop: 8 }}>
                       {PERMISSION_KEYS.map((key) => (
                         <button
                           key={key}
@@ -137,8 +137,8 @@ function EditPanel({
                           onClick={() => togglePerm(acc.id, key)}
                           className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all border"
                           style={{
-                            background: p[key] ? 'rgba(0,212,255,0.15)' : 'rgba(255,255,255,0.04)',
-                            borderColor: p[key] ? 'rgba(0,212,255,0.35)' : 'var(--color-border)',
+                            background: p[key] ? 'var(--color-cyan-dim)' : 'var(--color-elevated)',
+                            borderColor: p[key] ? 'var(--color-cyan-glow)' : 'var(--color-border)',
                             color: p[key] ? 'var(--color-cyan)' : 'var(--color-text-muted)',
                           }}
                         >
@@ -219,7 +219,7 @@ function MyCoachesList() {
                 size="sm"
                 onClick={() => disconnect(c.coach_id)}
                 loading={disconnecting && disconnectingId === c.coach_id}
-                className="text-[var(--color-status-error)] hover:bg-[rgba(239,68,68,0.08)]"
+                className="text-[var(--color-status-error)] hover:bg-[var(--color-danger-dim)]"
               >
                 {t.connect_disconnect}
               </Button>

@@ -167,7 +167,7 @@ export default function JournalPage() {
                 onClick={() => setDatePreset(preset)}
                 className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
                   datePreset === preset
-                    ? 'bg-[var(--color-cyan-dim)] text-[var(--color-cyan)] border border-[rgba(0,212,255,0.3)]'
+                    ? 'bg-[var(--color-cyan-dim)] text-[var(--color-cyan)] border border-[var(--color-cyan-glow)]'
                     : 'text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] border border-transparent hover:border-[var(--color-border)]'
                 }`}
               >
@@ -183,14 +183,14 @@ export default function JournalPage() {
               type="date"
               value={customFrom}
               onChange={e => setCustomFrom(e.target.value)}
-              className="px-2.5 py-1 rounded-lg text-xs bg-[rgba(255,255,255,0.05)] border border-[var(--color-border)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-cyan)]"
+              className="px-2.5 py-1 rounded-lg text-xs bg-[var(--color-elevated)] border border-[var(--color-border)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-cyan)]"
             />
             <span className="text-xs text-[var(--color-text-muted)]">—</span>
             <input
               type="date"
               value={customTo}
               onChange={e => setCustomTo(e.target.value)}
-              className="px-2.5 py-1 rounded-lg text-xs bg-[rgba(255,255,255,0.05)] border border-[var(--color-border)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-cyan)]"
+              className="px-2.5 py-1 rounded-lg text-xs bg-[var(--color-elevated)] border border-[var(--color-border)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-cyan)]"
             />
           </div>
         )}

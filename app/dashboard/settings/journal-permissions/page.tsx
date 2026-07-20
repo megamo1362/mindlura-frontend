@@ -121,8 +121,8 @@ export default function JournalPermissionsPage() {
                                 onClick={() => toggle(coach.coach_id, ap.account_id, key)}
                                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all border"
                                 style={{
-                                  background: cur[key] ? 'rgba(0,212,255,0.15)' : 'rgba(255,255,255,0.04)',
-                                  borderColor: cur[key] ? 'rgba(0,212,255,0.35)' : 'var(--color-border)',
+                                  background: cur[key] ? 'var(--color-cyan-dim)' : 'var(--color-elevated)',
+                                  borderColor: cur[key] ? 'var(--color-cyan-glow)' : 'var(--color-border)',
                                   color: cur[key] ? 'var(--color-cyan)' : 'var(--color-text-muted)',
                                 }}
                               >

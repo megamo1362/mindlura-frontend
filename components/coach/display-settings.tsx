@@ -35,7 +35,7 @@ export function DisplaySettings({ mode, label, onModeChange, onLabelChange }: Di
             className={cn(
               'rounded-xl px-3 py-2 text-xs font-medium border transition-all text-center',
               mode === opt.value
-                ? 'bg-[var(--color-cyan-dim)] border-[rgba(0,212,255,0.3)] text-[var(--color-cyan)]'
+                ? 'bg-[var(--color-cyan-dim)] border-[var(--color-cyan-glow)] text-[var(--color-cyan)]'
                 : 'bg-[var(--color-elevated)] border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-cyan)]/20',
             )}
           >

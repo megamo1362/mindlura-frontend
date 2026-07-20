@@ -24,7 +24,7 @@ export function Spinner({ size = 'md', className, 'aria-label': ariaLabel = 'Loa
       aria-label={ariaLabel}
       className={cn(
         'inline-block rounded-full animate-spin',
-        'border-[rgba(0,212,255,0.15)] border-t-[var(--color-cyan)]',
+        'border-[var(--color-cyan-dim)] border-t-[var(--color-cyan)]',
         sizes[size],
         className,
       )}

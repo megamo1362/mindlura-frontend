@@ -14,7 +14,7 @@ const TabsList = React.forwardRef<
 >(({ className, variant = 'pills', ...props }, ref) => {
   const variantClass = {
     pills:
-      'inline-flex items-center gap-1 p-1 rounded-xl bg-[rgba(0,0,0,0.3)] border border-[var(--color-border)]',
+      'inline-flex items-center gap-1 p-1 rounded-xl bg-[var(--color-elevated)] border border-[var(--color-border)]',
     underline:
       'inline-flex items-center gap-0 border-b border-[var(--color-border)]',
     segment:
@@ -49,7 +49,7 @@ const TabsTrigger = React.forwardRef<
       // active state
       'data-[state=active]:text-[#020510]',
       'data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00d4ff] data-[state=active]:to-[#0066ff]',
-      'data-[state=active]:shadow-[0_0_12px_rgba(0,212,255,0.3)]',
+      'data-[state=active]:shadow-[0_0_12px_var(--color-cyan-glow)]',
       'disabled:pointer-events-none disabled:opacity-40',
       className,
     )}
