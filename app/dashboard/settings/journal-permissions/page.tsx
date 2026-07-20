@@ -5,16 +5,21 @@ import { ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { InlineLoader } from '@/components/shared';
 import { useMyCoaches, useConnectCoach } from '@/hooks/use-coach';
+import { useLang } from '@/app/i18n/LangContext';
 import type { AccountPermissions } from '@/types';
 
-const PERM_KEYS: Array<{ key: keyof Omit<AccountPermissions, 'account_id'>; label: string }> = [
-  { key: 'allow_balance',  label: 'موجودی'   },
-  { key: 'allow_trades',   label: 'معاملات'  },
-  { key: 'allow_analysis', label: 'آنالیز'   },
-  { key: 'allow_journal',  label: 'ژورنال'   },
+const PERM_KEYS: Array<{
+  key: keyof Omit<AccountPermissions, 'account_id'>;
+  labelKey: 'perm_balance' | 'perm_trades' | 'perm_analysis' | 'perm_journal';
+}> = [
+  { key: 'allow_balance',  labelKey: 'perm_balance'  },
+  { key: 'allow_trades',   labelKey: 'perm_trades'   },
+  { key: 'allow_analysis', labelKey: 'perm_analysis' },
+  { key: 'allow_journal',  labelKey: 'perm_journal'  },
 ];
 
 export default function JournalPermissionsPage() {
+  const { t } = useLang();
   const { data: coaches = [], isLoading } = useMyCoaches();
   const { mutate: connectCoach, isPending } = useConnectCoach();
 
@@ -68,18 +73,18 @@ export default function JournalPermissionsPage() {
   if (isLoading) return <InlineLoader />;
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="rd-legacy-page space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">دسترسی کوچ‌ها</h1>
+        <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">{t.coach_access_title}</h1>
         <p className="text-sm text-[var(--color-text-muted)] mt-1">
-          مشخص کنید هر کوچ از کدام حساب چه اطلاعاتی را می‌تواند ببیند.
+          {t.coach_access_desc}
         </p>
       </div>
 
       {coaches.length === 0 ? (
         <div className="card-surface rounded-2xl p-12 text-center">
           <ShieldCheck className="h-10 w-10 text-[var(--color-text-muted)] mx-auto mb-3" />
-          <p className="text-[var(--color-text-muted)]">هیچ کوچی متصل نیست.</p>
+          <p className="text-[var(--color-text-muted)]">{t.coach_access_empty}</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -98,12 +103,12 @@ export default function JournalPermissionsPage() {
                     loading={isPending}
                     onClick={() => save(coach.coach_id)}
                   >
-                    {saved === coach.coach_id ? '✓ ذخیره شد' : 'ذخیره'}
+                    {saved === coach.coach_id ? `✓ ${t.coach_access_saved}` : t.save}
                   </Button>
                 </div>
 
                 {coach.shared_account_ids.length === 0 ? (
-                  <div className="px-5 py-4 text-sm text-[var(--color-text-muted)]">حسابی اشتراک‌گذاری نشده.</div>
+                  <div className="px-5 py-4 text-sm text-[var(--color-text-muted)]">{t.coach_access_no_accounts}</div>
                 ) : (
                   <div className="divide-y divide-[var(--color-border)]">
                     {coach.account_permissions.map((ap) => {
@@ -111,10 +116,10 @@ export default function JournalPermissionsPage() {
                       return (
                         <div key={ap.account_id} className="px-5 py-3">
                           <p className="text-xs font-mono font-bold text-[var(--color-text-secondary)] mb-2">
-                            حساب #{ap.account_id}
+                            {t.account_label(ap.account_id)}
                           </p>
                           <div className="flex flex-wrap gap-2">
-                            {PERM_KEYS.map(({ key, label }) => (
+                            {PERM_KEYS.map(({ key, labelKey }) => (
                               <button
                                 key={key}
                                 type="button"
@@ -127,7 +132,7 @@ export default function JournalPermissionsPage() {
                                 }}
                               >
                                 <span>{cur[key] ? '✓' : '✗'}</span>
-                                {label}
+                                {t[labelKey]}
                               </button>
                             ))}
                           </div>

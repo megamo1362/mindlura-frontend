@@ -502,6 +502,14 @@ export const translations = {
     journal_perms_no_access: 'No access',
     journal_perms_saved: 'Settings saved',
 
+    // ── Coach access (permissions) ──────────────────────────
+    coach_access_title: 'Coach Access',
+    coach_access_desc: 'Specify what information each coach can see for each account.',
+    coach_access_empty: 'No coach connected.',
+    coach_access_no_accounts: 'No account shared.',
+    coach_access_saved: 'Saved',
+    account_label: (id: number | string) => `Account #${id}`,
+
     // ── Admin dashboard ────────────────────────────────────
     admin_dashboard_title: 'Admin Dashboard',
     admin_system_summary: 'System Summary',
@@ -1383,6 +1391,14 @@ export const translations = {
     journal_perms_can_view: 'می‌تواند ژورنال شما را ببیند',
     journal_perms_no_access: 'دسترسی ندارد',
     journal_perms_saved: 'تنظیمات ذخیره شد',
+
+    // ── Coach access (permissions) ──────────────────────────
+    coach_access_title: 'دسترسی کوچ‌ها',
+    coach_access_desc: 'مشخص کنید هر کوچ از کدام حساب چه اطلاعاتی را می‌تواند ببیند.',
+    coach_access_empty: 'هیچ کوچی متصل نیست.',
+    coach_access_no_accounts: 'حسابی اشتراک‌گذاری نشده.',
+    coach_access_saved: 'ذخیره شد',
+    account_label: (id: number | string) => `حساب #${id}`,
 
     // ── Admin dashboard ────────────────────────────────────
     admin_dashboard_title: 'پنل مدیریت',

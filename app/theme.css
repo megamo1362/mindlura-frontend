@@ -445,11 +445,13 @@
   --color-teal-light: var(--plan-teal);
   --color-teal-dim: var(--plan-teal-soft);
   --color-void: var(--bg-base);
+  --color-surface: var(--bg-surface);
   --color-elevated: var(--bg-surface-2);
   --color-glass: var(--bg-surface);
   --color-status-error: var(--loss);
   --shadow-focus: 0 0 0 3px var(--accent-soft);
   --shadow-glow-cyan-sm: 0 0 8px var(--accent-soft);
+  --shadow-card: var(--card-shadow);
   --shadow-elevated: var(--card-shadow);
 }
 
