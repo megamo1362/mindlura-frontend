@@ -96,7 +96,7 @@ export default function CalendarAlertsSection() {
   if (isLoading) return null;
 
   return (
-    <section className="glass rounded-2xl p-5 border border-[var(--color-border)] space-y-5">
+    <section className="rounded-[var(--radius-lg)] bg-[var(--color-glass)] p-5 border border-[var(--color-border)] space-y-5">
       <div className="flex items-center gap-2">
         <Bell className="w-4 h-4 text-[var(--color-cyan)]" />
         <h2 className="text-sm font-semibold text-[var(--color-text-primary)] uppercase tracking-wider">

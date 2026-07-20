@@ -358,3 +358,58 @@
   --color-success: var(--profit);
   --color-status-error: var(--loss);
 }
+
+/* ─── Dashboard settings/profile/journal pages: shared old UI-kit ──
+   app/dashboard/{settings,profile,journal}/page.tsx (plus their local
+   CalendarAlertsSection and JournalModal helpers) still render through the
+   old components/ui/{button,input,badge,otp-input,switch,select,dialog}.tsx
+   kit, which is also used by not-yet-redesigned pages elsewhere in the live
+   dashboard — so, same reasoning as the blocks above, that kit isn't
+   touched directly. Instead this redefines the --color-* names it reads so
+   every var(--color-*) it uses resolves to theme.css tokens.
+
+   Declared on [data-theme] itself (not scoped to a wrapper class like the
+   .rd-*-legacy blocks above) because Select/Dialog render their content
+   through a React Portal appended to <body> — outside the DOM subtree of
+   any wrapper div the triggering page renders, so a class-scoped override
+   would never reach them. <body> is still a descendant of <html
+   data-theme="...">, so putting the redefinition there reaches portaled
+   content too. This only takes effect while the redesign shell has
+   data-theme set, so the still-linked-to old /dashboard/* routes (rendered
+   without RedesignThemeProvider) are unaffected.
+
+   --color-border-hover/-active collapse to a solid --accent (dropping the
+   old translucent-cyan tint) since theme.css has no pre-mixed opacity
+   variant to match losslessly. */
+[data-theme] {
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-disabled: var(--text-muted);
+  --color-border: var(--border-subtle);
+  --color-border-hover: var(--accent);
+  --color-border-active: var(--accent);
+  --color-border-subtle: var(--border-subtle);
+  --color-cyan: var(--accent);
+  --color-cyan-dim: var(--accent-soft);
+  --color-cyan-glow: var(--accent-soft);
+  --color-success: var(--profit);
+  --color-success-dim: var(--profit-soft);
+  --color-danger: var(--loss);
+  --color-danger-dim: var(--loss-soft);
+  --color-void: var(--bg-base);
+  --color-elevated: var(--bg-surface-2);
+  --color-glass: var(--bg-surface);
+  --color-status-error: var(--loss);
+  --shadow-focus: 0 0 0 3px var(--accent-soft);
+  --shadow-glow-cyan-sm: 0 0 8px var(--accent-soft);
+  --shadow-elevated: var(--card-shadow);
+}
+
+/* .glass-elevated (used by DialogContent, e.g. the journal entry modal)
+   hardcodes its background as a literal rgba() in globals.css instead of
+   reading --color-glass, so the custom-property redefinition above can't
+   reach it — overridden directly here. */
+[data-theme] .glass-elevated {
+  background: var(--bg-surface-2);
+}

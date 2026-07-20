@@ -11,6 +11,8 @@ import { AUTH_TOKEN_KEY, ROUTES } from '@/lib/constants';
 import { REDESIGN_NAV, type ShellVariant } from './nav-config';
 import type { User } from '@/types';
 
+const APP_VERSION = '1.2.3';
+
 interface SidebarProps {
   user: User;
   variant: ShellVariant;
@@ -96,6 +98,7 @@ export function Sidebar({ user, variant, onNavClick, className }: SidebarProps) 
           <LogOut className="h-4 w-4 flex-shrink-0" />
           <span>{t.user_logout}</span>
         </button>
+        <p className="px-3 text-[10px] text-[var(--text-muted)]">v{APP_VERSION}</p>
       </div>
     </aside>
   );

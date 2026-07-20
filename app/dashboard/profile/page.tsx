@@ -263,7 +263,7 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="max-w-lg space-y-4">
+      <div className="rd-legacy-page grid grid-cols-1 gap-6 lg:grid-cols-2">
         {[...Array(3)].map((_, i) => <div key={i} className="skeleton h-48 rounded-2xl" />)}
       </div>
     );
@@ -276,13 +276,14 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="max-w-lg space-y-6">
+    <div className="rd-legacy-page space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">{t.profile_title}</h1>
       </div>
 
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
       {/* ── Card 1: Personal Information ─────────────────── */}
-      <section className="glass rounded-2xl p-5 border border-[var(--color-border)] space-y-5">
+      <section className="rounded-[var(--radius-lg)] bg-[var(--color-glass)] p-5 border border-[var(--color-border)] space-y-5 lg:col-span-2 h-fit">
         <div className="flex items-center gap-2">
           <UserCircle className="w-4 h-4 text-[var(--color-cyan)]" />
           <h2 className="text-sm font-semibold text-[var(--color-text-primary)] uppercase tracking-wider">
@@ -478,8 +479,9 @@ export default function ProfilePage() {
         </div>
       </section>
 
+      <div className="space-y-6">
       {/* ── Card 2: Telegram ─────────────────────────────── */}
-      <section className="glass rounded-2xl p-5 border border-[var(--color-border)] space-y-4">
+      <section className="rounded-[var(--radius-lg)] bg-[var(--color-glass)] p-5 border border-[var(--color-border)] space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Send className="w-4 h-4 text-[var(--color-cyan)]" />
@@ -599,7 +601,7 @@ export default function ProfilePage() {
       </section>
 
       {/* ── Card 3: Account Information ──────────────────── */}
-      <section className="glass rounded-2xl p-5 border border-[var(--color-border)] space-y-4">
+      <section className="rounded-[var(--radius-lg)] bg-[var(--color-glass)] p-5 border border-[var(--color-border)] space-y-4">
         <h2 className="text-sm font-semibold text-[var(--color-text-primary)] uppercase tracking-wider">
           {t.profile_account_info}
         </h2>
@@ -627,6 +629,8 @@ export default function ProfilePage() {
           </div>
         </div>
       </section>
+      </div>
+      </div>
     </div>
   );
 }

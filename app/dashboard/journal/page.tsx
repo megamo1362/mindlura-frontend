@@ -135,7 +135,7 @@ export default function JournalPage() {
   }, [trades, datePreset, customFrom, customTo]);
 
   return (
-    <div>
+    <div className="rd-legacy-page">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">{t.journal_title}</h1>
@@ -199,7 +199,7 @@ export default function JournalPage() {
       {loading ? (
         <div className="space-y-3">{[...Array(6)].map((_, i) => <div key={i} className="skeleton h-16 rounded-2xl" />)}</div>
       ) : realTrades.length === 0 ? (
-        <div className="glass rounded-2xl p-12 text-center border border-[var(--color-border)]">
+        <div className="rounded-[var(--radius-lg)] bg-[var(--color-glass)] p-12 text-center border border-[var(--color-border)]">
           <p className="text-[var(--color-text-muted)] text-sm">
             {datePreset !== 'all'
               ? (l === 'fa' ? 'معامله‌ای در این بازه زمانی یافت نشد' : 'No trades found in this date range')
@@ -218,7 +218,7 @@ export default function JournalPage() {
             return (
               <div
                 key={trade.ticket}
-                className="glass rounded-2xl px-5 py-3 border border-[var(--color-border)] hover:border-[var(--color-border-hover)] transition-colors flex items-center gap-4"
+                className="rounded-[var(--radius-lg)] bg-[var(--color-glass)] px-5 py-3 border border-[var(--color-border)] hover:border-[var(--color-border-hover)] transition-colors flex items-center gap-4"
               >
                 <div className="flex-1 min-w-0 flex items-center gap-3 flex-wrap">
                   <span className="font-mono font-bold text-[var(--color-cyan)] text-sm">{trade.symbol}</span>
