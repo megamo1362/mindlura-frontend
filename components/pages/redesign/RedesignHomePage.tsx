@@ -56,7 +56,7 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
   const localizeHref = (href: string) =>
     isFa && !href.startsWith('#') && !NO_PREFIX_PATHS.includes(href) ? `/fa${href}` : href;
 
-  const otherLangHref = isFa ? '/redesign' : '/fa/redesign';
+  const otherLangHref = isFa ? '/' : '/fa';
 
   const chrome: SectionChrome = { lang, isFa, accent, displayFont, bodyFont, localizeHref };
 
@@ -64,7 +64,7 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
     { label: t.nav.demo, href: '#ai-demo', anchor: true },
     { label: t.nav.how, href: '#how', anchor: true },
     { label: t.nav.pricing, href: localizeHref('/pricing'), anchor: false },
-    { label: t.nav.coaches, href: '#coaches', anchor: true },
+    { label: t.nav.coaches, href: localizeHref('/for-coaches'), anchor: false },
     { label: t.nav.blog, href: localizeHref('/blog'), anchor: false },
     { label: t.nav.sentiment, href: localizeHref('/sentiment'), anchor: false },
     { label: t.nav.news, href: localizeHref('/news'), anchor: false },
