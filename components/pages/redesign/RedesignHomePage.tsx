@@ -61,7 +61,7 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
   const navLinks = [
     { label: t.nav.demo, href: '#ai-demo' },
     { label: t.nav.how, href: '#how' },
-    { label: t.nav.coaches, href: '#coaches' },
+    { label: t.nav.coaches, href: '/for-coaches' },
     { label: t.nav.security, href: '#security' },
   ];
 
@@ -97,9 +97,13 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
             </div>
 
             <nav className="hidden md:flex items-center gap-9 text-sm" style={{ color: tokens.color.muted }}>
-              {navLinks.map((link) => (
-                <a key={link.href} href={link.href} className="hover:text-[#E9ECF3] transition-colors">{link.label}</a>
-              ))}
+            {navLinks.map((link) => (
+  link.href.startsWith('#') ? (
+    <a key={link.href} href={link.href} className="hover:text-[#E9ECF3] transition-colors">{link.label}</a>
+  ) : (
+    <Link key={link.href} href={localizeHref(link.href)} className="hover:text-[#E9ECF3] transition-colors">{link.label}</Link>
+  )
+))}
             </nav>
 
             <div className="hidden md:flex items-center gap-6">
@@ -148,9 +152,13 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
           </div>
           {menuOpen && (
             <div id="redesign-mobile-menu" className="md:hidden px-6 pb-5 flex flex-col gap-1 text-sm" style={{ color: '#C7CBE0' }}>
-              {navLinks.map((link) => (
-                <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="py-2.5">{link.label}</a>
-              ))}
+           {navLinks.map((link) => (
+  link.href.startsWith('#') ? (
+    <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="py-2.5">{link.label}</a>
+  ) : (
+    <Link key={link.href} href={localizeHref(link.href)} onClick={() => setMenuOpen(false)} className="py-2.5">{link.label}</Link>
+  )
+))}
               <div className="hairline my-1" />
               <Link href="/login" onClick={() => setMenuOpen(false)} className="py-2.5">{t.nav.login}</Link>
               <Link
