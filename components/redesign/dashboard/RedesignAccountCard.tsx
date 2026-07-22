@@ -69,7 +69,7 @@ export function RedesignAccountCard({ account }: { account: MT5Account }) {
 
         <div className="flex items-center gap-2 border-t border-[var(--border-subtle)] pt-3">
           <Button variant="primary" size="sm" className="flex-1" asChild>
-            <Link href={`/redesign/dashboard/analyze/${account.id}`}>
+            <Link href={`/dashboard/analyze/${account.id}`}>
               <TrendingUp className="h-3.5 w-3.5" />
               {t.account_analyze}
             </Link>

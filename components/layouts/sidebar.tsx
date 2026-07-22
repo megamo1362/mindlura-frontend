@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import type { LucideIcon } from 'lucide-react';
-import { BarChart2, Users, LayoutDashboard, UserCheck, KeyRound, CreditCard, BookOpen, TrendingUp, Shield, Settings, UserCircle, BotMessageSquare, Bot, Calendar, Bell, Sparkles, ShoppingBag, HelpCircle } from 'lucide-react';
+import { Users, LayoutDashboard, UserCheck, KeyRound, CreditCard, BotMessageSquare, Bot, HelpCircle } from 'lucide-react';
 import { NavItem } from './nav-item';
 import { UserMenu } from './user-menu';
 import { cn } from '@/lib/utils';
@@ -18,21 +18,6 @@ interface NavEntry {
   roles?: Array<User['role']>;
 }
 
-const DASHBOARD_NAV: NavEntry[] = [
-  { href: '/dashboard', labelKey: 'nav_accounts', icon: BarChart2, exact: true },
-  { href: '/dashboard/journal', labelKey: 'nav_journal', icon: BookOpen },
-  { href: '/dashboard/journal/analysis', labelKey: 'nav_journal_analysis', icon: TrendingUp, roles: ['client'] },
-  { href: '/dashboard/settings/journal-permissions', labelKey: 'nav_coach_access', icon: Shield, roles: ['client'] },
-  { href: '/dashboard/coach/clients', labelKey: 'nav_my_clients', icon: Users, roles: ['coach'] },
-  { href: '/dashboard/coach/events', labelKey: 'nav_coach_events', icon: Calendar, roles: ['coach'] },
-  { href: '/dashboard/coach/analytics', labelKey: 'nav_coach_analytics', icon: BarChart2, roles: ['coach'] },
-  { href: '/dashboard/coach/notifications', labelKey: 'nav_coach_notifications', icon: Bell, roles: ['coach'] },
-  { href: '/dashboard/coach/ai-report', labelKey: 'nav_coach_ai_report', icon: Sparkles, roles: ['coach'] },
-  { href: '/dashboard/coach/purchases', labelKey: 'nav_coach_purchases', icon: ShoppingBag, roles: ['coach'] },
-  { href: '/dashboard/settings', labelKey: 'nav_settings', icon: Settings, exact: true },
-  { href: '/dashboard/profile', labelKey: 'nav_profile', icon: UserCircle },
-];
-
 const ADMIN_NAV: NavEntry[] = [
   { href: '/admin', labelKey: 'nav_admin_dashboard', icon: LayoutDashboard, exact: true },
   { href: '/admin/users', labelKey: 'nav_admin_users', icon: Users },
@@ -46,15 +31,13 @@ const ADMIN_NAV: NavEntry[] = [
 
 interface SidebarProps {
   user: User;
-  variant?: 'dashboard' | 'admin';
   onNavClick?: () => void;
   className?: string;
 }
 
-export function Sidebar({ user, variant = 'dashboard', onNavClick, className }: SidebarProps) {
+export function Sidebar({ user, onNavClick, className }: SidebarProps) {
   const { t, isRTL } = useLang();
-  const navItems = variant === 'admin' ? ADMIN_NAV : DASHBOARD_NAV;
-  const visibleItems = navItems.filter((item) =>
+  const visibleItems = ADMIN_NAV.filter((item) =>
     !item.roles || item.roles.includes(user.role),
   );
 
@@ -68,7 +51,7 @@ export function Sidebar({ user, variant = 'dashboard', onNavClick, className }: 
     >
       {/* Logo */}
       <div className="flex-shrink-0 px-5 py-4 border-b border-[var(--color-border)]">
-        <Link href={variant === 'admin' ? '/admin' : '/dashboard'} className="flex items-center gap-2 group">
+        <Link href="/admin" className="flex items-center gap-2 group">
           <Image src="/logo-dashboard-dark.png" alt="MINDLURA" width={140} height={42} className="h-14 w-auto object-contain dark:block hidden" priority />
           <Image src="/logo-dashboard-light.png" alt="MINDLURA" width={140} height={42} className="h-14 w-auto object-contain dark:hidden block" priority />
         </Link>

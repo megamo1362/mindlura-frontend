@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import { CoachClientsPage } from '@/components/coach';
+import { RedesignCoachClientsPage } from '@/components/redesign/coach/RedesignCoachClientsPage';
 
 export const metadata: Metadata = { title: 'Coach Panel' };
 
 export default function CoachClientsRoute() {
-  return <CoachClientsPage />;
+  return <RedesignCoachClientsPage />;
 }

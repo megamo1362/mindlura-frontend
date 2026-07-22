@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import { CoachAnalyticsPage } from '@/components/coach';
+import { RedesignCoachAnalyticsPage } from '@/components/redesign/coach/RedesignCoachAnalyticsPage';
 
 export const metadata: Metadata = { title: 'Roster Analytics' };
 
 export default function CoachAnalyticsRoute() {
-  return <CoachAnalyticsPage />;
+  return <RedesignCoachAnalyticsPage />;
 }

@@ -1,16 +1,22 @@
 import type { Metadata } from 'next';
-import { LoginBackgroundClient } from '@/components/effects/login-bg-client';
+import { cookies } from 'next/headers';
+import { RedesignThemeProvider } from '@/components/redesign/theme/RedesignThemeProvider';
+import '@/app/theme.css';
 
 export const metadata: Metadata = {
   title: 'Login | Mindlura',
   description: 'Sign in to Mindlura',
 };
 
-export default function AuthLayout({ children }: { children: React.ReactNode }) {
+export default async function AuthLayout({ children }: { children: React.ReactNode }) {
+  const cookieStore = await cookies();
+  const initialTheme = cookieStore.get('rd-theme')?.value === 'light' ? 'light' : 'dark';
+
   return (
-    <div className="relative overflow-hidden min-h-screen grid-bg flex items-center justify-center p-4">
-      <LoginBackgroundClient />
-      {children}
-    </div>
+    <RedesignThemeProvider initialTheme={initialTheme}>
+      <div className="relative flex min-h-screen items-center justify-center p-4">
+        {children}
+      </div>
+    </RedesignThemeProvider>
   );
 }

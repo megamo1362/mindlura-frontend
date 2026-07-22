@@ -19,10 +19,10 @@ function ShellInner({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen flex bg-[var(--color-void)]">
       {/* Desktop sidebar — direction-aware */}
       <div className={`hidden lg:block fixed top-0 ${isRTL ? 'right-0' : 'left-0'} bottom-0 w-[280px] z-20`}>
-        <Sidebar user={user} variant="admin" className="h-full" />
+        <Sidebar user={user} className="h-full" />
       </div>
 
-      <MobileNav user={user} variant="admin" />
+      <MobileNav user={user} />
 
       {/* Main content — direction-aware offset */}
       <div className={`flex flex-col flex-1 min-w-0 ${isRTL ? 'lg:mr-[280px]' : 'lg:ml-[280px]'}`}>
@@ -32,7 +32,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
         </main>
       </div>
 
-      <BottomNav user={user} variant="admin" />
+      <BottomNav user={user} />
     </div>
   );
 }

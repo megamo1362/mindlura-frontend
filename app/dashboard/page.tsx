@@ -1,5 +1,5 @@
-import { AccountsGrid } from '@/components/dashboard';
+import { RedesignAccountsOverview } from '@/components/redesign/dashboard/RedesignAccountsOverview';
 
 export default function DashboardPage() {
-  return <AccountsGrid />;
+  return <RedesignAccountsOverview />;
 }

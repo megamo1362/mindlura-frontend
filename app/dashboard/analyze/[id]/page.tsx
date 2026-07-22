@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { AnalysisPage } from '@/components/analysis';
+import { RedesignAnalysisPage } from '@/components/redesign/analysis/RedesignAnalysisPage';
 
 export const metadata: Metadata = { title: 'Account Analysis' };
 
@@ -9,5 +9,5 @@ interface Props {
 
 export default async function AnalyzeRoute({ params }: Props) {
   const { id } = await params;
-  return <AnalysisPage id={id} />;
+  return <RedesignAnalysisPage id={id} />;
 }

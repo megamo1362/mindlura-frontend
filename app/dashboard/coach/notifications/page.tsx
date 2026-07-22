@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import { CoachNotificationsPage } from '@/components/coach';
+import { RedesignCoachNotificationsPage } from '@/components/redesign/coach/RedesignCoachNotificationsPage';
 
 export const metadata: Metadata = { title: 'Coach Notifications' };
 
 export default function CoachNotificationsRoute() {
-  return <CoachNotificationsPage />;
+  return <RedesignCoachNotificationsPage />;
 }

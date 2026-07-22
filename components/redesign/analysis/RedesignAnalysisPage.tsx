@@ -91,7 +91,7 @@ export function RedesignAnalysisPage({ id }: { id: string }) {
       <div className="space-y-5">
         <PageHeader
           breadcrumb={
-            <Link href="/redesign/dashboard" className="inline-flex items-center gap-1 hover:text-[var(--text-secondary)]">
+            <Link href="/dashboard" className="inline-flex items-center gap-1 hover:text-[var(--text-secondary)]">
               <ArrowRight className="h-3 w-3 rtl:rotate-180" />
               {t.nav_accounts}
             </Link>

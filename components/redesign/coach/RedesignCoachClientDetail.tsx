@@ -52,7 +52,7 @@ export function RedesignCoachClientDetail({ clientId }: { clientId: string }) {
         title={t.coach_no_client_found}
         action={
           <Button variant="secondary" size="sm" asChild>
-            <Link href="/redesign/coach/clients">{t.coach_back_to_clients}</Link>
+            <Link href="/dashboard/coach/clients">{t.coach_back_to_clients}</Link>
           </Button>
         }
       />
@@ -65,7 +65,7 @@ export function RedesignCoachClientDetail({ clientId }: { clientId: string }) {
     <div className="space-y-6">
       <PageHeader
         breadcrumb={
-          <Link href="/redesign/coach/clients" className="inline-flex items-center gap-1 hover:text-[var(--text-secondary)]">
+          <Link href="/dashboard/coach/clients" className="inline-flex items-center gap-1 hover:text-[var(--text-secondary)]">
             <ArrowRight className="h-3 w-3 rtl:rotate-180" />
             {t.coach_back_to_clients}
           </Link>
@@ -99,7 +99,7 @@ export function RedesignCoachClientDetail({ clientId }: { clientId: string }) {
 
       <Card title={t.coach_connected_accounts} padded={false} footer={
         <Button variant="secondary" size="sm" asChild>
-          <Link href={`/redesign/coach/clients/${clientId}/journal`}>
+          <Link href={`/dashboard/coach/clients/${clientId}/journal`}>
             <BookOpen className="h-3.5 w-3.5" />
             {t.coach_view_journal}
           </Link>
@@ -146,7 +146,7 @@ export function RedesignCoachClientDetail({ clientId }: { clientId: string }) {
                   )}
 
                   <Button variant="secondary" size="sm" asChild>
-                    <Link href={`/redesign/dashboard/analyze/${acc.id}?coach=true`}>
+                    <Link href={`/dashboard/analyze/${acc.id}?coach=true`}>
                       <BarChart2 className="h-3.5 w-3.5" />
                       {t.client_analyze}
                     </Link>

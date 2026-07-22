@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import { CoachEventsPage } from '@/components/coach';
+import { RedesignCoachEventsPage } from '@/components/redesign/coach/RedesignCoachEventsPage';
 
 export const metadata: Metadata = { title: 'Coach Events' };
 
 export default function CoachEventsRoute() {
-  return <CoachEventsPage />;
+  return <RedesignCoachEventsPage />;
 }

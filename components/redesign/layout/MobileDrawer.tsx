@@ -4,15 +4,13 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useUiStore } from '@/store/ui';
 import { useLang } from '@/app/i18n/LangContext';
 import { Sidebar } from './Sidebar';
-import type { ShellVariant } from './nav-config';
 import type { User } from '@/types';
 
 interface MobileDrawerProps {
   user: User;
-  variant: ShellVariant;
 }
 
-export function MobileDrawer({ user, variant }: MobileDrawerProps) {
+export function MobileDrawer({ user }: MobileDrawerProps) {
   const { mobileSidebarOpen, closeMobileSidebar } = useUiStore();
   const { isRTL } = useLang();
   const offscreenX = isRTL ? '100%' : '-100%';
@@ -35,7 +33,7 @@ export function MobileDrawer({ user, variant }: MobileDrawerProps) {
             transition={{ type: 'tween', duration: 0.2, ease: [0, 0, 0.2, 1] }}
             className="fixed inset-y-0 start-0 z-50 lg:hidden"
           >
-            <Sidebar user={user} variant={variant} onNavClick={closeMobileSidebar} />
+            <Sidebar user={user} onNavClick={closeMobileSidebar} />
           </motion.div>
         </>
       )}

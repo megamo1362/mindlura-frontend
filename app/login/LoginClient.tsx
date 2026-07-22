@@ -11,10 +11,12 @@ import { LangToggle } from '@/app/i18n/LangToggle';
 import { useGeoLang, type Lang } from '@/lib/useGeoLang';
 import { API_URL, AUTH_TOKEN_KEY, ROUTES } from '@/lib/constants';
 import { LoadingScreen } from '@/components/shared';
+import { useTheme } from '@/components/redesign/theme/RedesignThemeProvider';
 import type { User } from '@/types';
 
 export default function LoginClient({ initialLang, initialCountry }: { initialLang: Lang; initialCountry: string }) {
   const { t, lang, setLang } = useLang();
+  const { theme } = useTheme();
   const { lang: geoLang, country, resolved } = useGeoLang(initialLang, initialCountry);
   const router = useRouter();
   const [checkingAuth, setCheckingAuth] = useState(true);
@@ -77,36 +79,43 @@ export default function LoginClient({ initialLang, initialCountry }: { initialLa
             ]}}
             transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
           >
-            <Image src="/logo-login-dark.png" alt="MINDLURA" width={260} height={260} className="object-contain w-36 sm:w-48 lg:w-64" priority />
+            <Image
+              src={theme === 'dark' ? '/logo-login-dark.png' : '/logo-dashboard-light.png'}
+              alt="MINDLURA"
+              width={260}
+              height={260}
+              className="object-contain w-36 sm:w-48 lg:w-64"
+              priority
+            />
           </motion.div>
         </div>
 
         {/* Heading */}
         <div className="mb-6" style={{ textAlign: isFa ? 'right' : 'left' }}>
-          <p style={{ fontSize: '11px', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#7C8296', marginBottom: '8px', fontFamily: "'Inter', sans-serif" }}>
+          <p style={{ fontSize: '11px', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '8px', fontFamily: "'Inter', sans-serif" }}>
             {isFa ? 'روانشناسی معاملات' : 'Trading Psychology'}
           </p>
-          <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(1.6rem, 4vw, 2rem)', fontWeight: 500, color: '#E9ECF3', lineHeight: 1.2, margin: 0 }}>
+          <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(1.6rem, 4vw, 2rem)', fontWeight: 500, color: 'var(--text-primary)', lineHeight: 1.2, margin: 0 }}>
             {isFa ? '«خوش آمدید»' : 'Welcome back.'}
           </h1>
         </div>
 
         {/* Card */}
-        <div className="glass-elevated rounded-2xl p-6 border border-[var(--color-border)]">
+        <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6 shadow-[var(--card-shadow)]">
           <LoginForm />
         </div>
 
       {/* Switch to register */}
-      <p className="text-center text-sm text-[var(--color-text-muted)] mt-5">
+      <p className="text-center text-sm text-[var(--text-muted)] mt-5">
         {t.auth_no_account}{' '}
-        <Link href="/register" className="text-[var(--color-primary)] hover:underline font-medium">
+        <Link href="/register" className="text-[var(--accent)] hover:underline font-medium">
           {t.auth_register_tab}
         </Link>
       </p>
 
       {/* Footer */}
       <div className="flex items-center justify-between mt-6">
-        <p className="text-xs text-[var(--color-text-muted)]">
+        <p className="text-xs text-[var(--text-muted)]">
           MINDLURA · AI Fintech Trading &amp; Psychology
         </p>
         {showLangToggle && <LangToggle />}

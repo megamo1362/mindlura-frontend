@@ -8,16 +8,14 @@ import { useLang } from '@/app/i18n/LangContext';
 import { NotificationPanel } from '@/components/layouts/notification-panel';
 import { ThemeToggle } from '../theme/ThemeToggle';
 import type { User } from '@/types';
-import type { ShellVariant } from './nav-config';
 
 interface TopbarProps {
   user: User;
-  variant: ShellVariant;
   title?: string;
   className?: string;
 }
 
-export function Topbar({ user, variant, title, className }: TopbarProps) {
+export function Topbar({ user, title, className }: TopbarProps) {
   const { openMobileSidebar } = useUiStore();
   const { t } = useLang();
   const displayName = user.full_name || user.email;
@@ -43,9 +41,9 @@ export function Topbar({ user, variant, title, className }: TopbarProps) {
 
       <div className="flex flex-shrink-0 items-center gap-1.5">
         <ThemeToggle />
-        <NotificationPanel role={variant === 'coach' ? 'coach' : user.role} />
+        <NotificationPanel role={user.role} />
         <Link
-          href={variant === 'coach' ? '/redesign/dashboard/profile' : '/redesign/dashboard/profile'}
+          href="/dashboard/profile"
           className="flex items-center gap-2.5 ps-2.5 ms-1 border-s border-[var(--border-subtle)] transition-opacity hover:opacity-80"
         >
           <div className="hidden text-end sm:block">

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Lock, AlertCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/redesign/ui/Button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useLogin } from '@/hooks/use-auth-api';
@@ -33,7 +33,7 @@ export function LoginForm() {
       transition={{ duration: 0.3 }}
     >
       <div className="space-y-2">
-        <Label htmlFor="login-email">{t.email}</Label>
+        <Label htmlFor="login-email" className="text-[var(--text-muted)]">{t.email}</Label>
         <Input
           id="login-email"
           type="email"
@@ -45,11 +45,12 @@ export function LoginForm() {
           autoComplete="email"
           inputSize="lg"
           dir="ltr"
+          className="bg-[var(--bg-surface-2)] border-[var(--border-subtle)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] hover:border-[var(--text-muted)] focus:border-[var(--accent)] focus:shadow-none"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="login-password">{t.password}</Label>
+        <Label htmlFor="login-password" className="text-[var(--text-muted)]">{t.password}</Label>
         <Input
           id="login-password"
           type="password"
@@ -60,6 +61,7 @@ export function LoginForm() {
           required
           autoComplete="current-password"
           inputSize="lg"
+          className="bg-[var(--bg-surface-2)] border-[var(--border-subtle)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] hover:border-[var(--text-muted)] focus:border-[var(--accent)] focus:shadow-none"
         />
       </div>
 
@@ -68,14 +70,14 @@ export function LoginForm() {
           type="checkbox"
           checked={rememberMe}
           onChange={(e) => setRememberMe(e.target.checked)}
-          className="h-4 w-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+          className="h-4 w-4 rounded border-[var(--border-subtle)] text-[var(--accent)] focus:ring-[var(--accent)]"
         />
-        <span className="text-sm text-[var(--color-text-muted)]">{t.auth_remember_me}</span>
+        <span className="text-sm text-[var(--text-muted)]">{t.auth_remember_me}</span>
       </label>
 
       {errorMessage && (
         <motion.div
-          className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm bg-[rgba(239,68,68,0.08)] border border-[rgba(239,68,68,0.2)] text-[var(--color-status-error)]"
+          className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm bg-[var(--loss-soft)] border border-[var(--loss)]/30 text-[var(--loss)]"
           initial={{ opacity: 0, y: -4 }}
           animate={{ opacity: 1, y: 0 }}
         >
@@ -87,8 +89,7 @@ export function LoginForm() {
       <Button
         type="submit"
         variant="primary"
-        size="lg"
-        className="w-full"
+        className="h-12 w-full text-base"
         loading={isPending}
         disabled={isPending}
       >

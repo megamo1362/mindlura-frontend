@@ -10,10 +10,9 @@ import type { User } from '@/types';
 
 interface MobileNavProps {
   user: User;
-  variant?: 'dashboard' | 'admin';
 }
 
-export function MobileNav({ user, variant = 'dashboard' }: MobileNavProps) {
+export function MobileNav({ user }: MobileNavProps) {
   const { mobileSidebarOpen, closeMobileSidebar } = useUiStore();
   const { isRTL } = useLang();
 
@@ -71,7 +70,6 @@ export function MobileNav({ user, variant = 'dashboard' }: MobileNavProps) {
 
               <Sidebar
                 user={user}
-                variant={variant}
                 onNavClick={closeMobileSidebar}
                 className="h-full shadow-2xl"
               />

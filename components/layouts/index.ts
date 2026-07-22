@@ -5,6 +5,5 @@ export * from './bottom-nav';
 export * from './topbar';
 export * from './user-menu';
 export * from './nav-item';
-export * from './dashboard-shell';
 export * from './admin-shell';
 export * from './page-transition';

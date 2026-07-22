@@ -8,21 +8,20 @@ import { cn, getInitials } from '@/lib/utils';
 import { useLang } from '@/app/i18n/LangContext';
 import { useTheme } from '../theme/RedesignThemeProvider';
 import { AUTH_TOKEN_KEY, ROUTES } from '@/lib/constants';
-import { CLIENT_NAV, COACH_NAV, type ShellVariant } from './nav-config';
+import { DASHBOARD_NAV, filterNavByRole } from './nav-config';
 import type { User } from '@/types';
 
 interface SidebarProps {
   user: User;
-  variant: ShellVariant;
   onNavClick?: () => void;
   className?: string;
 }
 
-export function Sidebar({ user, variant, onNavClick, className }: SidebarProps) {
+export function Sidebar({ user, onNavClick, className }: SidebarProps) {
   const { t } = useLang();
   const { theme } = useTheme();
   const pathname = usePathname();
-  const items = variant === 'coach' ? COACH_NAV : CLIENT_NAV;
+  const items = filterNavByRole(DASHBOARD_NAV, user.role);
   const displayName = user.full_name || user.email;
 
   const handleLogout = () => {
@@ -40,7 +39,7 @@ export function Sidebar({ user, variant, onNavClick, className }: SidebarProps) 
       )}
     >
       <div className="flex-shrink-0 border-b border-[var(--border-subtle)] px-5 py-4">
-        <Link href={variant === 'coach' ? '/redesign/coach/clients' : '/redesign/dashboard'} className="flex items-center">
+        <Link href={user.role === 'coach' ? '/dashboard/coach/clients' : '/dashboard'} className="flex items-center">
           <Image
             src={theme === 'dark' ? '/logo-dashboard-dark.png' : '/logo-dashboard-light.png'}
             alt="MINDLURA"
@@ -83,7 +82,7 @@ export function Sidebar({ user, variant, onNavClick, className }: SidebarProps) 
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium text-[var(--text-primary)]">{displayName}</p>
-            <p className="truncate text-xs text-[var(--text-muted)]">{t.role_admin}</p>
+            <p className="truncate text-xs text-[var(--text-muted)]">{t[`role_${user.role}`]}</p>
           </div>
         </div>
         <button

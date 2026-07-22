@@ -146,7 +146,7 @@ export function RedesignCoachClientsPage() {
       header: '',
       render: (c) => (
         <Button variant="secondary" size="sm" asChild>
-          <Link href={`/redesign/coach/clients/${c.client_id}`}>{t.coach_view_client}</Link>
+          <Link href={`/dashboard/coach/clients/${c.client_id}`}>{t.coach_view_client}</Link>
         </Button>
       ),
     },

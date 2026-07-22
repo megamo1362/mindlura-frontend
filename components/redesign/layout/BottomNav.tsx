@@ -3,16 +3,17 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useLang } from '@/app/i18n/LangContext';
-import { BOTTOM_NAV, type ShellVariant } from './nav-config';
+import { BOTTOM_NAV, filterNavByRole } from './nav-config';
+import type { User } from '@/types';
 
 interface BottomNavProps {
-  variant: ShellVariant;
+  user: User;
 }
 
-export function BottomNav({ variant }: BottomNavProps) {
+export function BottomNav({ user }: BottomNavProps) {
   const pathname = usePathname();
   const { t } = useLang();
-  const items = BOTTOM_NAV[variant];
+  const items = filterNavByRole(BOTTOM_NAV, user.role);
 
   const matches = items.filter((item) =>
     item.exact ? pathname === item.href : pathname === item.href || pathname?.startsWith(item.href + '/'),

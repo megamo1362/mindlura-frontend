@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import { CoachAIReportPage } from '@/components/coach';
+import { RedesignCoachAIReportPage } from '@/components/redesign/coach/RedesignCoachAIReportPage';
 
 export const metadata: Metadata = { title: 'AI Daily Report' };
 
 export default function CoachAIReportRoute() {
-  return <CoachAIReportPage />;
+  return <RedesignCoachAIReportPage />;
 }

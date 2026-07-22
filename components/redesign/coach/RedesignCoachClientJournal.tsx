@@ -28,7 +28,7 @@ export function RedesignCoachClientJournal({ clientId }: { clientId: string }) {
     <div className="space-y-6">
       <PageHeader
         breadcrumb={
-          <Link href={`/redesign/coach/clients/${clientId}`} className="inline-flex items-center gap-1 hover:text-[var(--text-secondary)]">
+          <Link href={`/dashboard/coach/clients/${clientId}`} className="inline-flex items-center gap-1 hover:text-[var(--text-secondary)]">
             <ArrowRight className="h-3 w-3 rtl:rotate-180" />
             {t.coach_back_to_clients}
           </Link>
