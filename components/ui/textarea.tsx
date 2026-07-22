@@ -32,12 +32,12 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           value={value}
           onChange={onChange}
           className={cn(
-            'w-full bg-[rgba(6,13,28,0.6)] rounded-[var(--radius-md)]',
+            'w-full bg-[var(--color-glass)] rounded-[var(--radius-md)]',
             'border text-sm px-4 py-3 min-h-[100px] resize-y',
             'text-[var(--color-text-primary)] placeholder:text-[var(--color-text-disabled)]',
             'outline-none transition-all duration-200',
             error
-              ? 'border-[rgba(239,68,68,0.5)] focus:border-[var(--color-danger)] focus:shadow-[0_0_0_3px_rgba(239,68,68,0.1)]'
+              ? 'border-[var(--color-danger)] focus:border-[var(--color-danger)] focus:shadow-[0_0_0_3px_var(--color-danger-dim)]'
               : 'border-[var(--color-border)] hover:border-[var(--color-border-hover)] focus:border-[var(--color-border-active)] focus:shadow-[var(--shadow-focus)]',
             'disabled:opacity-50 disabled:cursor-not-allowed',
             className,

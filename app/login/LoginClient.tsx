@@ -41,7 +41,13 @@ export default function LoginClient({ initialLang, initialCountry }: { initialLa
     })
       .then((r) => (r.ok ? r.json() : Promise.reject()))
       .then((user: User) => {
-        router.replace(user.role === 'admin' ? ROUTES.admin.root : ROUTES.dashboard);
+        if (user.role === 'admin') {
+          router.replace(ROUTES.admin.root);
+        } else if (user.role === 'coach') {
+          router.replace(ROUTES.redesignCoachClients);
+        } else {
+          router.replace(ROUTES.redesignDashboard);
+        }
       })
       .catch(() => {
         localStorage.removeItem(AUTH_TOKEN_KEY);

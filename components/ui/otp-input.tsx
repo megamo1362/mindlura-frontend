@@ -58,11 +58,11 @@ export function OtpInput({ onComplete, disabled, error }: OtpInputProps) {
 
   const boxClass = cn(
     'w-10 h-12 text-center text-lg font-bold rounded-xl border transition-all',
-    'bg-[rgba(6,13,28,0.6)] text-[var(--color-text-primary)] outline-none',
+    'bg-[var(--color-glass)] text-[var(--color-text-primary)] outline-none',
     'focus:border-[var(--color-cyan)] focus:shadow-[var(--shadow-focus)]',
     disabled && 'opacity-50 cursor-not-allowed',
     error
-      ? 'border-[rgba(239,68,68,0.5)]'
+      ? 'border-[var(--color-danger)]'
       : 'border-[var(--color-border)] hover:border-[var(--color-border-hover)]',
   );
 

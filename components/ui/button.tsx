@@ -37,25 +37,25 @@ const buttonVariants = cva(
         ghost: [
           'bg-transparent border-0',
           'text-[var(--color-text-muted)]',
-          'hover:text-[var(--color-text-primary)] hover:bg-white/[0.04]',
+          'hover:text-[var(--color-text-primary)] hover:bg-[var(--color-elevated)]',
         ].join(' '),
 
         danger: [
-          'bg-[var(--color-danger-dim)] border border-[rgba(239,68,68,0.3)]',
+          'bg-[var(--color-danger-dim)] border border-[var(--color-danger-glow)]',
           'text-[var(--color-danger)]',
-          'hover:bg-[rgba(239,68,68,0.2)] hover:border-[rgba(239,68,68,0.5)]',
+          'hover:bg-[var(--color-danger-dim)] hover:border-[var(--color-danger)]',
         ].join(' '),
 
         outline: [
-          'bg-transparent border border-[rgba(0,212,255,0.25)]',
+          'bg-transparent border border-[var(--color-cyan-glow)]',
           'text-[var(--color-cyan)]',
           'hover:bg-[var(--color-cyan-dim)] hover:border-[var(--color-border-hover)]',
         ].join(' '),
 
         success: [
-          'bg-[rgba(34,197,94,0.12)] border border-[rgba(34,197,94,0.3)]',
+          'bg-[var(--color-success-dim)] border border-[var(--color-success-glow)]',
           'text-[var(--color-success)]',
-          'hover:bg-[rgba(34,197,94,0.2)] hover:border-[rgba(34,197,94,0.5)]',
+          'hover:bg-[var(--color-success-dim)] hover:border-[var(--color-success)]',
         ].join(' '),
 
         link: 'bg-transparent border-0 p-0 h-auto text-[var(--color-cyan)] underline-offset-4 hover:underline',

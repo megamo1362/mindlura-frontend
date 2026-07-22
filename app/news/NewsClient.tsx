@@ -11,7 +11,6 @@ import { Spinner } from '@/components/ui/spinner';
 import { apiFetch } from '@/lib/api';
 import { dateKeyOf, formatDateHeader } from './dateFormat';
 import AnalysisPanel from './AnalysisPanel';
-import LiveNewsTab from './LiveNewsTab';
 import type { CalendarEvent, EventAnalysis } from './types';
 
 const displayFont = "'Fraunces', serif";
@@ -36,9 +35,8 @@ const COPY = {
     noAnalysis: 'AI analysis not available for this event yet.',
     footer: 'Source: Forex Factory | For educational purposes only',
     inTime: (label: string) => `in ${label}`,
-    tabCalendar: '📅 Calendar',
-    tabNews: '📰 Live News',
-    newsFooter: 'News: Finnhub | For educational purposes only',
+    navCalendar: '📅 Calendar',
+    navLive: '📰 Live News',
   },
   fa: {
     dir: 'rtl' as const,
@@ -59,9 +57,8 @@ const COPY = {
     noAnalysis: 'تحلیل هوش مصنوعی هنوز برای این رویداد موجود نیست.',
     footer: 'منبع: Forex Factory | صرفاً جهت آموزش',
     inTime: (label: string) => `${label} دیگر`,
-    tabCalendar: '📅 تقویم',
-    tabNews: '📰 اخبار لحظه‌ای',
-    newsFooter: 'منبع اخبار: Finnhub | صرفاً جهت آموزش',
+    navCalendar: '📅 تقویم',
+    navLive: '📰 اخبار لحظه‌ای',
   },
 };
 
@@ -143,7 +140,9 @@ export default function NewsClient({
     router.push(getCounterpartPath(pathname));
   };
 
-  const [activeTab, setActiveTab] = useState<'calendar' | 'news'>('calendar');
+  const calendarHref = isFa ? '/fa/news/calendar' : '/news/calendar';
+  const liveHref = isFa ? '/fa/news/live' : '/news/live';
+
   const [impactFilter, setImpactFilter] = useState<string | null>(null);
   const [now, setNow] = useState<number | null>(null);
   const [analysisData, setAnalysisData] = useState<EventAnalysis[] | null>(null);
@@ -234,42 +233,22 @@ export default function NewsClient({
         </header>
 
         <section className="max-w-screen-xl mx-auto px-6 pt-16 pb-2 flex gap-2">
-          <button
-            onClick={() => setActiveTab('calendar')}
+          <Link
+            href={calendarHref}
             className="px-4 py-2 rounded-lg border text-sm font-medium"
-            style={{
-              borderColor: activeTab === 'calendar' ? 'var(--color-cyan)' : 'var(--color-border)',
-              color: activeTab === 'calendar' ? 'var(--color-cyan)' : 'var(--color-text-secondary)',
-              backgroundColor: activeTab === 'calendar' ? 'var(--color-cyan-dim)' : 'transparent',
-            }}
+            style={{ borderColor: 'var(--color-cyan)', color: 'var(--color-cyan)', backgroundColor: 'var(--color-cyan-dim)' }}
           >
-            {t.tabCalendar}
-          </button>
-          <button
-            onClick={() => setActiveTab('news')}
+            {t.navCalendar}
+          </Link>
+          <Link
+            href={liveHref}
             className="px-4 py-2 rounded-lg border text-sm font-medium"
-            style={{
-              borderColor: activeTab === 'news' ? 'var(--color-cyan)' : 'var(--color-border)',
-              color: activeTab === 'news' ? 'var(--color-cyan)' : 'var(--color-text-secondary)',
-              backgroundColor: activeTab === 'news' ? 'var(--color-cyan-dim)' : 'transparent',
-            }}
+            style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-secondary)', backgroundColor: 'transparent' }}
           >
-            {t.tabNews}
-          </button>
+            {t.navLive}
+          </Link>
         </section>
 
-        {activeTab === 'news' ? (
-          <>
-            <section className="max-w-screen-xl mx-auto px-6 pb-20 pt-6">
-              <LiveNewsTab lang={lang} />
-            </section>
-            <div className="max-w-screen-xl mx-auto px-6"><div style={{ height: 1, background: 'var(--color-border)' }} /></div>
-            <section className="max-w-screen-xl mx-auto px-6 py-10 text-center">
-              <p className="text-xs" style={{ color: 'var(--color-text-disabled)' }}>{t.newsFooter}</p>
-            </section>
-          </>
-        ) : (
-        <>
         <section className="max-w-screen-xl mx-auto px-6 pt-6 pb-8">
           <p className="text-sm italic mb-4" style={{ color: 'var(--color-cyan)', fontFamily: displayFont }}>{t.eyebrow}</p>
           <h1 className="text-3xl md:text-4xl mb-4 max-w-2xl" style={{ fontFamily: displayFont, fontWeight: 500 }}>{t.title}</h1>
@@ -445,8 +424,6 @@ export default function NewsClient({
         <section className="max-w-screen-xl mx-auto px-6 py-10 text-center">
           <p className="text-xs" style={{ color: 'var(--color-text-disabled)' }}>{t.footer}</p>
         </section>
-        </>
-        )}
       </div>
     </div>
   );

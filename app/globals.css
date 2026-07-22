@@ -55,6 +55,7 @@
   /* Primary accent — MINDLURA cyan (circuit glow) */
   --color-cyan: #00d4ff;
   --color-cyan-dim: rgba(0, 212, 255, 0.12);
+  --color-cyan-dim-weak: rgba(0, 212, 255, 0.04);
   --color-cyan-glow: rgba(0, 212, 255, 0.28);
 
   /* Secondary accents */
@@ -93,10 +94,14 @@
   /* Status */
   --color-success: #22c55e;
   --color-success-dim: rgba(34, 197, 94, 0.12);
+  --color-success-dim-weak: rgba(34, 197, 94, 0.06);
+  --color-success-glow: rgba(34, 197, 94, 0.25);
   --color-warning: #f59e0b;
   --color-warning-dim: rgba(245, 158, 11, 0.12);
+  --color-warning-glow: rgba(245, 158, 11, 0.3);
   --color-danger: #ef4444;
   --color-danger-dim: rgba(239, 68, 68, 0.12);
+  --color-danger-glow: rgba(239, 68, 68, 0.3);
   --color-info: #3b82f6;
   --color-info-dim: rgba(59, 130, 246, 0.12);
 
@@ -179,6 +184,7 @@ html.light {
 
   /* Dims — more visible on light bg */
   --color-cyan-dim: rgba(0, 180, 220, 0.1);
+  --color-cyan-dim-weak: rgba(0, 180, 220, 0.05);
   --color-cyan-glow: rgba(0, 180, 220, 0.2);
   --color-blue-dim: rgba(26, 92, 255, 0.09);
   --color-purple-dim: rgba(124, 58, 237, 0.1);
@@ -186,8 +192,12 @@ html.light {
   --color-teal-dim: rgba(20, 184, 166, 0.1);
   --color-emerald-dim: rgba(0, 160, 110, 0.1);
   --color-success-dim: rgba(22, 163, 74, 0.1);
+  --color-success-dim-weak: rgba(22, 163, 74, 0.05);
+  --color-success-glow: rgba(22, 163, 74, 0.25);
   --color-warning-dim: rgba(217, 119, 6, 0.1);
+  --color-warning-glow: rgba(217, 119, 6, 0.3);
   --color-danger-dim: rgba(220, 38, 38, 0.1);
+  --color-danger-glow: rgba(220, 38, 38, 0.3);
   --color-info-dim: rgba(37, 99, 235, 0.1);
 
   /* Shadows */

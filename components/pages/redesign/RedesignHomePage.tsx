@@ -5,31 +5,33 @@ import Link from 'next/link';
 import { MotionConfig } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { tokens } from '@/lib/design-tokens';
-import { chromeCopy, heroCopy, aiDemoCopy, painCopy, howCopy, psychologyInsightsCopy, aiCoachCopy, coachPlatformCopy, trustCopy, testimonialsCopy, finalCtaCopy, type Lang } from './copy';
+import { chromeCopy, heroCopy, aiDemoCopy, painCopy, howCopy, psychologyInsightsCopy, aiCoachCopy, coachPlatformCopy, trustCopy, testimonialsCopy, finalCtaCopy, statsCopy, pricingTeaserCopy, blogPreviewCopy, type Lang } from './copy';
 import type { SectionChrome } from './types';
 import { Hero } from './sections/Hero';
 import { AIDemoSection } from './sections/AIDemoSection';
+import { Stats } from './sections/Stats';
 import { PainSection } from './sections/PainSection';
 import { HowItWorks } from './sections/HowItWorks';
 import { PsychologyInsights } from './sections/PsychologyInsights';
 import { AICoachSection } from './sections/AICoachSection';
 import { CoachPlatformSection } from './sections/CoachPlatformSection';
+import { BlogPreview } from './sections/BlogPreview';
 import { TrustSecurity } from './sections/TrustSecurity';
 import { Testimonials } from './sections/Testimonials';
+import { PricingTeaser } from './sections/PricingTeaser';
 import { FinalCTA } from './sections/FinalCTA';
 
 // Matches the order of footer cols in chromeCopy (Product | Company | Legal)
 const FOOTER_HREFS = [
-  ['#ai-demo', '#how', '#security'],
-  ['/about', '/blog'],
+  ['#ai-demo', '#how', '/pricing', '/for-coaches', '#security'],
+  ['/about', '/blog', '/faq'],
   ['/privacy', '/terms'],
 ];
 
-// Not-yet-live redesign preview. Deliberately kept independent of
+// Live homepage (promoted from redesign preview). Kept independent of
 // HomeClient.tsx / app/i18n — a route-level lang prop (matching the
 // ForCoachesPage / BlogIndexPage convention) rather than the live site's
-// header logic or global useLang() context, so this page can evolve without
-// any risk of touching the production homepage or its wiring.
+// header logic or global useLang() context.
 export function RedesignHomePage({ lang }: { lang: Lang }) {
   const [audience, setAudience] = useState<'trader' | 'coach'>('trader');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -59,10 +61,16 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
   const chrome: SectionChrome = { lang, isFa, accent, displayFont, bodyFont, localizeHref };
 
   const navLinks = [
-    { label: t.nav.demo, href: '#ai-demo' },
-    { label: t.nav.how, href: '#how' },
-    { label: t.nav.coaches, href: '/for-coaches' },
-    { label: t.nav.security, href: '#security' },
+    { label: t.nav.demo, href: '#ai-demo', anchor: true },
+    { label: t.nav.how, href: '#how', anchor: true },
+    { label: t.nav.pricing, href: localizeHref('/pricing'), anchor: false },
+    { label: t.nav.coaches, href: '#coaches', anchor: true },
+    { label: t.nav.blog, href: localizeHref('/blog'), anchor: false },
+    { label: t.nav.sentiment, href: localizeHref('/sentiment'), anchor: false },
+    { label: t.nav.news, href: localizeHref('/news'), anchor: false },
+    { label: t.nav.faq, href: localizeHref('/faq'), anchor: false },
+    { label: t.nav.about, href: localizeHref('/about'), anchor: false },
+    { label: t.nav.security, href: '#security', anchor: true },
   ];
 
   return (
@@ -79,14 +87,6 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
           .hairline { height: 1px; background: ${tokens.color.line}; }
         `}</style>
 
-        {/* Non-production preview banner — never shown on the live homepage. */}
-        <div
-          className="text-center text-xs py-2 px-4"
-          style={{ backgroundColor: tokens.color.surface, color: tokens.color.mutedDim, borderBottom: `1px solid ${tokens.color.line}` }}
-        >
-          {t.footer.preview}
-        </div>
-
         {/* ---------------- HEADER ---------------- */}
         <header className="sticky top-0 z-50" style={{ backgroundColor: 'rgba(10,14,23,0.9)', backdropFilter: 'blur(8px)' }}>
           <div className="hairline" />
@@ -96,22 +96,24 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
               <span className="text-lg" style={{ fontFamily: displayFont, letterSpacing: '0.01em' }}>Mindlura</span>
             </div>
 
-            <nav className="hidden md:flex items-center gap-9 text-sm" style={{ color: tokens.color.muted }}>
-            {navLinks.map((link) => (
-  link.href.startsWith('#') ? (
-    <a key={link.href} href={link.href} className="hover:text-[#E9ECF3] transition-colors">{link.label}</a>
-  ) : (
-    <Link key={link.href} href={localizeHref(link.href)} className="hover:text-[#E9ECF3] transition-colors">{link.label}</Link>
-  )
-))}
-            </nav>
-
             <div className="hidden md:flex items-center gap-6">
+              <nav className="flex items-center gap-5 text-sm whitespace-nowrap" style={{ color: tokens.color.muted }}>
+                {navLinks.map((link) => (
+                  link.anchor ? (
+                    <a key={link.href} href={link.href} className="hover:text-[#E9ECF3] transition-colors">{link.label}</a>
+                  ) : (
+                    <Link key={link.href} href={link.href} className="hover:text-[#E9ECF3] transition-colors">{link.label}</Link>
+                  )
+                ))}
+              </nav>
+
+              <div className="w-px h-5" style={{ backgroundColor: tokens.color.line }} />
+
               <div
                 role="group"
                 aria-label={t.toggle.hint}
                 title={t.toggle.hint}
-                className="flex items-center gap-6 text-sm mr-2"
+                className="flex items-center gap-6 text-sm"
                 style={{ color: tokens.color.mutedDim }}
               >
                 {(['trader', 'coach'] as const).map((a) => (
@@ -131,7 +133,7 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
                   </button>
                 ))}
               </div>
-              <Link href={otherLangHref} className="text-xs italic" style={{ fontFamily: displayFont, color: tokens.color.mutedDim }}>
+              <Link href={otherLangHref} className="text-sm hover:text-[#E9ECF3] transition-colors" style={{ fontFamily: displayFont, color: tokens.color.mutedDim }}>
                 {isFa ? 'English' : 'فارسی'}
               </Link>
               <Link href="/login" className="text-sm" style={{ color: '#C7CBE0' }}>{t.nav.login}</Link>
@@ -152,13 +154,13 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
           </div>
           {menuOpen && (
             <div id="redesign-mobile-menu" className="md:hidden px-6 pb-5 flex flex-col gap-1 text-sm" style={{ color: '#C7CBE0' }}>
-           {navLinks.map((link) => (
-  link.href.startsWith('#') ? (
-    <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="py-2.5">{link.label}</a>
-  ) : (
-    <Link key={link.href} href={localizeHref(link.href)} onClick={() => setMenuOpen(false)} className="py-2.5">{link.label}</Link>
-  )
-))}
+              {navLinks.map((link) => (
+                link.anchor ? (
+                  <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="py-2.5">{link.label}</a>
+                ) : (
+                  <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="py-2.5">{link.label}</Link>
+                )
+              ))}
               <div className="hairline my-1" />
               <Link href="/login" onClick={() => setMenuOpen(false)} className="py-2.5">{t.nav.login}</Link>
               <Link
@@ -169,7 +171,7 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
               >
                 {t.nav.start}
               </Link>
-              <Link href={otherLangHref} className="italic py-2.5" style={{ fontFamily: displayFont }}>
+              <Link href={otherLangHref} className="py-2.5" style={{ fontFamily: displayFont }}>
                 {isFa ? 'English' : 'فارسی'}
               </Link>
             </div>
@@ -179,13 +181,16 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
         {/* ---------------- SECTIONS (show, don't tell — AI demo right after hero) ---------------- */}
         <Hero copy={heroCopy[lang][audience]} chrome={chrome} accent={heroAccent} />
         <AIDemoSection copy={aiDemoCopy[lang]} chrome={chrome} />
+        <Stats copy={statsCopy[lang]} chrome={chrome} />
         <PainSection copy={painCopy[lang]} chrome={chrome} />
         <HowItWorks copy={howCopy[lang]} chrome={chrome} />
         <PsychologyInsights copy={psychologyInsightsCopy[lang]} chrome={chrome} />
         <AICoachSection copy={aiCoachCopy[lang]} chrome={chrome} />
         <CoachPlatformSection copy={coachPlatformCopy[lang]} chrome={chrome} />
+        <BlogPreview copy={blogPreviewCopy[lang]} chrome={chrome} />
         <TrustSecurity copy={trustCopy[lang]} chrome={chrome} />
         <Testimonials copy={testimonialsCopy[lang]} chrome={chrome} />
+        <PricingTeaser copy={pricingTeaserCopy[lang]} chrome={chrome} />
         <FinalCTA copy={finalCtaCopy[lang]} chrome={chrome} />
 
         {/* ---------------- FOOTER ---------------- */}

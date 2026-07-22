@@ -68,7 +68,7 @@ const DialogContent = React.forwardRef<
             'absolute top-4 left-4 w-8 h-8 rounded-lg',
             'flex items-center justify-center',
             'text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]',
-            'hover:bg-white/[0.06] transition-colors',
+            'hover:bg-[var(--color-elevated)] transition-colors',
           )}
         >
           <X className="w-4 h-4" />

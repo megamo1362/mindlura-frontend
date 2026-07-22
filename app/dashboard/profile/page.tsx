@@ -263,7 +263,7 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="max-w-lg space-y-4">
+      <div className="rd-legacy-page grid grid-cols-1 gap-6 lg:grid-cols-2">
         {[...Array(3)].map((_, i) => <div key={i} className="skeleton h-48 rounded-2xl" />)}
       </div>
     );
@@ -276,13 +276,14 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="max-w-lg space-y-6">
+    <div className="rd-legacy-page space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">{t.profile_title}</h1>
       </div>
 
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
       {/* ── Card 1: Personal Information ─────────────────── */}
-      <section className="glass rounded-2xl p-5 border border-[var(--color-border)] space-y-5">
+      <section className="rounded-[var(--radius-lg)] bg-[var(--color-glass)] p-5 border border-[var(--color-border)] space-y-5 lg:col-span-2 h-fit">
         <div className="flex items-center gap-2">
           <UserCircle className="w-4 h-4 text-[var(--color-cyan)]" />
           <h2 className="text-sm font-semibold text-[var(--color-text-primary)] uppercase tracking-wider">
@@ -313,7 +314,7 @@ export default function ProfilePage() {
             type="date"
             value={dob}
             onChange={e => setDob(e.target.value)}
-            className="w-full h-10 text-sm px-4 rounded-[var(--radius-md)] bg-[rgba(6,13,28,0.6)] border border-[var(--color-border)] text-[var(--color-text-primary)] hover:border-[var(--color-border-hover)] focus:border-[var(--color-border-active)] focus:shadow-[var(--shadow-focus)] outline-none transition-all duration-200"
+            className="w-full h-10 text-sm px-4 rounded-[var(--radius-md)] bg-[var(--color-glass)] border border-[var(--color-border)] text-[var(--color-text-primary)] hover:border-[var(--color-border-hover)] focus:border-[var(--color-border-active)] focus:shadow-[var(--shadow-focus)] outline-none transition-all duration-200"
           />
         </div>
 
@@ -367,7 +368,7 @@ export default function ProfilePage() {
 
           {/* Email OTP input */}
           {emailOtpVisible && !profile?.is_email_verified && (
-            <div className="rounded-xl border border-[var(--color-border)] bg-[rgba(0,212,255,0.04)] p-4 space-y-3">
+            <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-cyan-dim-weak)] p-4 space-y-3">
               {emailOtpSentMsg && (
                 <p className="text-xs text-[var(--color-cyan)]">{t.profile_email_otp_sent}</p>
               )}
@@ -433,7 +434,7 @@ export default function ProfilePage() {
 
           {/* Phone OTP input */}
           {phoneOtpVisible && !profile?.is_phone_verified && (
-            <div className="rounded-xl border border-[var(--color-border)] bg-[rgba(0,212,255,0.04)] p-4 space-y-3">
+            <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-cyan-dim-weak)] p-4 space-y-3">
               {phoneOtpSentMsg && (
                 <p className="text-xs text-[var(--color-cyan)]">{t.profile_phone_otp_sent}</p>
               )}
@@ -478,8 +479,9 @@ export default function ProfilePage() {
         </div>
       </section>
 
+      <div className="space-y-6">
       {/* ── Card 2: Telegram ─────────────────────────────── */}
-      <section className="glass rounded-2xl p-5 border border-[var(--color-border)] space-y-4">
+      <section className="rounded-[var(--radius-lg)] bg-[var(--color-glass)] p-5 border border-[var(--color-border)] space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Send className="w-4 h-4 text-[var(--color-cyan)]" />
@@ -504,7 +506,7 @@ export default function ProfilePage() {
         {profile?.is_telegram_verified ? (
           /* Connected state */
           <div className="space-y-3">
-            <div className="rounded-xl bg-[rgba(34,197,94,0.06)] border border-[rgba(34,197,94,0.2)] px-4 py-3">
+            <div className="rounded-xl bg-[var(--color-success-dim-weak)] border border-[var(--color-success-glow)] px-4 py-3">
               <p className="text-sm text-[var(--color-text-primary)] font-mono">
                 {profile.telegram_id || profile.telegram_username}
               </p>
@@ -526,10 +528,10 @@ export default function ProfilePage() {
           </div>
         ) : telegramStep === 'waiting_start' ? (
           /* Step 1-2: Show code + open bot + get OTP */
-          <div className="rounded-xl border border-[var(--color-border)] bg-[rgba(0,212,255,0.04)] p-4 space-y-4">
+          <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-cyan-dim-weak)] p-4 space-y-4">
 
             {/* Code display */}
-            <div className="rounded-xl bg-[rgba(0,212,255,0.08)] border border-[rgba(0,212,255,0.25)] px-4 py-3 text-center">
+            <div className="rounded-xl bg-[var(--color-cyan-dim)] border border-[var(--color-cyan-glow)] px-4 py-3 text-center">
               <p className="text-[10px] text-[var(--color-text-muted)] mb-1">
                 {lang === 'fa' ? 'این کد را برای ربات بفرستید' : 'Send this code to the bot'}
               </p>
@@ -539,7 +541,7 @@ export default function ProfilePage() {
             <ol className="space-y-2.5">
               {[t.profile_telegram_step_open, t.profile_telegram_step_start].map((step, i) => (
                 <li key={i} className="flex items-start gap-2.5 text-xs text-[var(--color-text-muted)]">
-                  <span className={`w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5 ${i === 0 ? 'bg-[var(--color-cyan)] text-black' : 'bg-[rgba(0,212,255,0.2)] text-[var(--color-cyan)]'}`}>
+                  <span className={`w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5 ${i === 0 ? 'bg-[var(--color-cyan)] text-black' : 'bg-[var(--color-cyan-glow)] text-[var(--color-cyan)]'}`}>
                     {i + 1}
                   </span>
                   {step}
@@ -552,7 +554,7 @@ export default function ProfilePage() {
                 href={telegramBotUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[rgba(0,136,204,0.12)] border border-[rgba(0,136,204,0.3)] text-xs font-medium text-[var(--color-cyan)] hover:bg-[rgba(0,136,204,0.22)] transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--color-blue-dim)] border border-[var(--color-blue-light)] text-xs font-medium text-[var(--color-cyan)] hover:bg-[var(--color-cyan-dim)] transition-colors"
               >
                 <Send className="w-3 h-3" />
                 {t.profile_telegram_open_bot}
@@ -577,7 +579,7 @@ export default function ProfilePage() {
           </div>
         ) : (
           /* Step 3: Enter OTP from Telegram */
-          <div className="rounded-xl border border-[var(--color-border)] bg-[rgba(0,212,255,0.04)] p-4 space-y-3">
+          <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-cyan-dim-weak)] p-4 space-y-3">
             <p className="text-xs text-[var(--color-cyan)]">{t.profile_telegram_otp_sent_tg}</p>
             <OtpInput
               onComplete={verifyTelegramOtp}
@@ -599,7 +601,7 @@ export default function ProfilePage() {
       </section>
 
       {/* ── Card 3: Account Information ──────────────────── */}
-      <section className="glass rounded-2xl p-5 border border-[var(--color-border)] space-y-4">
+      <section className="rounded-[var(--radius-lg)] bg-[var(--color-glass)] p-5 border border-[var(--color-border)] space-y-4">
         <h2 className="text-sm font-semibold text-[var(--color-text-primary)] uppercase tracking-wider">
           {t.profile_account_info}
         </h2>
@@ -627,6 +629,8 @@ export default function ProfilePage() {
           </div>
         </div>
       </section>
+      </div>
+      </div>
     </div>
   );
 }
