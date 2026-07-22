@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { MotionConfig } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { tokens } from '@/lib/design-tokens';
+import { setLocaleCookie } from '@/lib/localePath';
 import { chromeCopy, heroCopy, aiDemoCopy, painCopy, howCopy, psychologyInsightsCopy, aiCoachCopy, coachPlatformCopy, trustCopy, testimonialsCopy, finalCtaCopy, statsCopy, pricingTeaserCopy, blogPreviewCopy, type Lang } from './copy';
 import type { SectionChrome } from './types';
 import { Hero } from './sections/Hero';
@@ -57,6 +58,7 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
     isFa && !href.startsWith('#') && !NO_PREFIX_PATHS.includes(href) ? `/fa${href}` : href;
 
   const otherLangHref = isFa ? '/' : '/fa';
+  const switchLang = () => setLocaleCookie(isFa ? 'en' : 'fa');
 
   const chrome: SectionChrome = { lang, isFa, accent, displayFont, bodyFont, localizeHref };
 
@@ -133,7 +135,7 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
                   </button>
                 ))}
               </div>
-              <Link href={otherLangHref} className="text-sm hover:text-[#E9ECF3] transition-colors" style={{ fontFamily: displayFont, color: tokens.color.mutedDim }}>
+              <Link href={otherLangHref} onClick={switchLang} className="text-sm hover:text-[#E9ECF3] transition-colors" style={{ fontFamily: displayFont, color: tokens.color.mutedDim }}>
                 {isFa ? 'English' : 'فارسی'}
               </Link>
               <Link href="/login" className="text-sm" style={{ color: '#C7CBE0' }}>{t.nav.login}</Link>
@@ -171,7 +173,7 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
               >
                 {t.nav.start}
               </Link>
-              <Link href={otherLangHref} className="py-2.5" style={{ fontFamily: displayFont }}>
+              <Link href={otherLangHref} onClick={switchLang} className="py-2.5" style={{ fontFamily: displayFont }}>
                 {isFa ? 'English' : 'فارسی'}
               </Link>
             </div>
