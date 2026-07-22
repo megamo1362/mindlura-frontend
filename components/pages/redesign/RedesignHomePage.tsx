@@ -33,7 +33,7 @@ const FOOTER_HREFS = [
 // HomeClient.tsx / app/i18n — a route-level lang prop (matching the
 // ForCoachesPage / BlogIndexPage convention) rather than the live site's
 // header logic or global useLang() context.
-export function RedesignHomePage({ lang }: { lang: Lang }) {
+export function RedesignHomePage({ lang, country }: { lang: Lang; country: string }) {
   const [audience, setAudience] = useState<'trader' | 'coach'>('trader');
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -59,6 +59,8 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
 
   const otherLangHref = isFa ? '/' : '/fa';
   const switchLang = () => setLocaleCookie(isFa ? 'en' : 'fa');
+  // Only Iranian visitors get a Persian option — everyone else stays English-only.
+  const showLangToggle = country === 'IR';
 
   const chrome: SectionChrome = { lang, isFa, accent, displayFont, bodyFont, localizeHref };
 
@@ -135,9 +137,11 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
                   </button>
                 ))}
               </div>
-              <Link href={otherLangHref} onClick={switchLang} className="text-sm hover:text-[#E9ECF3] transition-colors" style={{ fontFamily: displayFont, color: tokens.color.mutedDim }}>
-                {isFa ? 'English' : 'فارسی'}
-              </Link>
+              {showLangToggle && (
+                <Link href={otherLangHref} onClick={switchLang} className="text-sm hover:text-[#E9ECF3] transition-colors" style={{ fontFamily: displayFont, color: tokens.color.mutedDim }}>
+                  {isFa ? 'English' : 'فارسی'}
+                </Link>
+              )}
               <Link href="/login" className="text-sm" style={{ color: '#C7CBE0' }}>{t.nav.login}</Link>
               <Link href={localizeHref('/register')} className="text-sm px-5 py-2" style={{ border: `1px solid ${heroAccent}`, color: tokens.color.text }}>
                 {t.nav.start}
@@ -173,9 +177,11 @@ export function RedesignHomePage({ lang }: { lang: Lang }) {
               >
                 {t.nav.start}
               </Link>
-              <Link href={otherLangHref} onClick={switchLang} className="py-2.5" style={{ fontFamily: displayFont }}>
-                {isFa ? 'English' : 'فارسی'}
-              </Link>
+              {showLangToggle && (
+                <Link href={otherLangHref} onClick={switchLang} className="py-2.5" style={{ fontFamily: displayFont }}>
+                  {isFa ? 'English' : 'فارسی'}
+                </Link>
+              )}
             </div>
           )}
         </header>
