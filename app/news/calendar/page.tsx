@@ -20,27 +20,27 @@ const CALENDAR_SCHEMA = {
   },
 };
 
-export async function generateMetadata(): Promise<Metadata> {
-  const headersList = await headers();
-  const country = resolveCountry((name) => headersList.get(name));
-  const isFa = country === 'IR';
-
-  const title = isFa
-    ? 'تقویم اقتصادی فارکس | ۷ روز آینده | مایندلورا'
-    : 'Forex Economic Calendar | Next 7 Days | Mindlura';
-  const description = isFa
-    ? 'تقویم اقتصادی فارکس رایگان با رتبه‌بندی تأثیر برای ۷ روز آینده'
-    : 'Free forex economic calendar with real-time impact ratings for the next 7 days';
-
-  return {
-    title: { absolute: title },
-    description,
-    keywords: ['economic calendar', 'forex calendar', 'تقویم اقتصادی'],
-    alternates: { canonical: 'https://mindlura.com/news/calendar' },
-    openGraph: { title, description, url: 'https://mindlura.com/news/calendar', siteName: 'Mindlura', type: 'website' },
-    twitter: { card: 'summary', title, description },
-  };
-}
+export const metadata: Metadata = {
+  title: { absolute: 'Forex Economic Calendar | Next 7 Days | Mindlura' },
+  description: 'Free forex economic calendar with real-time impact ratings for the next 7 days',
+  keywords: ['economic calendar', 'forex calendar', 'تقویم اقتصادی'],
+  alternates: {
+    canonical: 'https://mindlura.com/news/calendar',
+    languages: { en: 'https://mindlura.com/news/calendar', fa: 'https://mindlura.com/fa/news/calendar', 'x-default': 'https://mindlura.com/news/calendar' },
+  },
+  openGraph: {
+    title: 'Forex Economic Calendar | Next 7 Days | Mindlura',
+    description: 'Free forex economic calendar with real-time impact ratings for the next 7 days',
+    url: 'https://mindlura.com/news/calendar',
+    siteName: 'Mindlura',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Forex Economic Calendar | Next 7 Days | Mindlura',
+    description: 'Free forex economic calendar with real-time impact ratings for the next 7 days',
+  },
+};
 
 async function fetchCalendarEvents(): Promise<{ events: CalendarEvent[]; fetchedAt: string | null }> {
   try {
@@ -58,7 +58,6 @@ async function fetchCalendarEvents(): Promise<{ events: CalendarEvent[]; fetched
 export default async function NewsCalendarPage() {
   const [headersList, { events, fetchedAt }] = await Promise.all([headers(), fetchCalendarEvents()]);
   const country = resolveCountry((name) => headersList.get(name));
-  const lang = country === 'IR' ? 'fa' : 'en';
 
   return (
     <>
@@ -66,7 +65,7 @@ export default async function NewsCalendarPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(CALENDAR_SCHEMA) }}
       />
-      <NewsClient initialEvents={events} initialLang={lang} initialCountry={country} fetchedAt={fetchedAt} />
+      <NewsClient initialEvents={events} initialLang="en" initialCountry={country} fetchedAt={fetchedAt} />
     </>
   );
 }

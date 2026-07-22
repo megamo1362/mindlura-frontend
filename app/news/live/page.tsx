@@ -20,27 +20,27 @@ const LIVE_NEWS_SCHEMA = {
   },
 };
 
-export async function generateMetadata(): Promise<Metadata> {
-  const headersList = await headers();
-  const country = resolveCountry((name) => headersList.get(name));
-  const isFa = country === 'IR';
-
-  const title = isFa
-    ? 'اخبار لحظه‌ای فارکس | آپدیت‌های بازار | مایندلورا'
-    : 'Live Forex News | Real-Time Market Updates | Mindlura';
-  const description = isFa
-    ? 'آخرین اخبار فارکس و آپدیت‌های لحظه‌ای بازار از منابع معتبر مالی'
-    : 'Latest forex news and real-time market updates from top financial sources';
-
-  return {
-    title: { absolute: title },
-    description,
-    keywords: ['forex news', 'live market news', 'اخبار فارکس'],
-    alternates: { canonical: 'https://mindlura.com/news/live' },
-    openGraph: { title, description, url: 'https://mindlura.com/news/live', siteName: 'Mindlura', type: 'website' },
-    twitter: { card: 'summary', title, description },
-  };
-}
+export const metadata: Metadata = {
+  title: { absolute: 'Live Forex News | Real-Time Market Updates | Mindlura' },
+  description: 'Latest forex news and real-time market updates from top financial sources',
+  keywords: ['forex news', 'live market news', 'اخبار فارکس'],
+  alternates: {
+    canonical: 'https://mindlura.com/news/live',
+    languages: { en: 'https://mindlura.com/news/live', fa: 'https://mindlura.com/fa/news/live', 'x-default': 'https://mindlura.com/news/live' },
+  },
+  openGraph: {
+    title: 'Live Forex News | Real-Time Market Updates | Mindlura',
+    description: 'Latest forex news and real-time market updates from top financial sources',
+    url: 'https://mindlura.com/news/live',
+    siteName: 'Mindlura',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Live Forex News | Real-Time Market Updates | Mindlura',
+    description: 'Latest forex news and real-time market updates from top financial sources',
+  },
+};
 
 async function fetchLiveNews(lang: 'en' | 'fa'): Promise<ForexNewsItem[]> {
   try {
@@ -59,8 +59,7 @@ async function fetchLiveNews(lang: 'en' | 'fa'): Promise<ForexNewsItem[]> {
 export default async function NewsLivePage() {
   const headersList = await headers();
   const country = resolveCountry((name) => headersList.get(name));
-  const lang = country === 'IR' ? 'fa' : 'en';
-  const news = await fetchLiveNews(lang);
+  const news = await fetchLiveNews('en');
 
   return (
     <>
@@ -68,7 +67,7 @@ export default async function NewsLivePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(LIVE_NEWS_SCHEMA) }}
       />
-      <LiveNewsClient initialNews={news} initialLang={lang} initialCountry={country} />
+      <LiveNewsClient initialNews={news} initialLang="en" initialCountry={country} />
     </>
   );
 }
