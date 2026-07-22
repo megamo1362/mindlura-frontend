@@ -10,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function FaRedesignPage() {
-  return <RedesignHomePage lang="fa" />;
+  return <RedesignHomePage lang="fa" country="IR" />;
 }

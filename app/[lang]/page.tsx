@@ -28,5 +28,5 @@ export const metadata: Metadata = {
 };
 
 export default function FaHome() {
-  return <RedesignHomePage lang="fa" />;
+  return <RedesignHomePage lang="fa" country="IR" />;
 }
