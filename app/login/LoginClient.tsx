@@ -44,9 +44,9 @@ export default function LoginClient({ initialLang, initialCountry }: { initialLa
         if (user.role === 'admin') {
           router.replace(ROUTES.admin.root);
         } else if (user.role === 'coach') {
-          router.replace(ROUTES.redesignCoachClients);
+          router.replace(ROUTES.coachClients);
         } else {
-          router.replace(ROUTES.redesignDashboard);
+          router.replace(ROUTES.dashboard);
         }
       })
       .catch(() => {

@@ -17,9 +17,9 @@ export function useLogin() {
       if (data.role === 'admin') {
         router.push(ROUTES.admin.root);
       } else if (data.role === 'coach') {
-        router.push(ROUTES.redesignCoachClients);
+        router.push(ROUTES.coachClients);
       } else {
-        router.push(ROUTES.redesignDashboard);
+        router.push(ROUTES.dashboard);
       }
     },
   });
@@ -35,9 +35,9 @@ export function useRegister() {
       if (data.role === 'admin') {
         router.push(ROUTES.admin.root);
       } else if (data.role === 'coach') {
-        router.push(ROUTES.redesignCoachClients);
+        router.push(ROUTES.coachClients);
       } else {
-        router.push(ROUTES.redesignDashboard);
+        router.push(ROUTES.dashboard);
       }
     },
   });

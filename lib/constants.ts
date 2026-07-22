@@ -9,8 +9,6 @@ export const DEFAULT_SESSION_DAYS = 1;
 export const ROUTES = {
   login: '/login',
   dashboard: '/dashboard',
-  redesignDashboard: '/redesign/dashboard',
-  redesignCoachClients: '/redesign/coach/clients',
   analyze: (id: number | string) => `/dashboard/analyze/${id}`,
   connectCoach: '/dashboard/connect-coach',
   coachClients: '/dashboard/coach/clients',
