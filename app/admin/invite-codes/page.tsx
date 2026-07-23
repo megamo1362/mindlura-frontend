@@ -13,7 +13,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
 import { useLang } from '@/app/i18n/LangContext';
-import type { InviteCode } from '@/types';
+import type { InviteCode, AdminCoach } from '@/types';
 
 export default function AdminInviteCodesPage() {
   const [codes, setCodes] = useState<InviteCode[]>([]);
@@ -24,10 +24,13 @@ export default function AdminInviteCodesPage() {
   const { t, lang } = useLang();
 
   const [showCreate, setShowCreate] = useState(false);
-  const [form, setForm] = useState({ code_type: 'client', count: 1, plan_slug: '', expires_days: '', label: '', plan_duration_days: '' });
+  const [form, setForm] = useState({ code_type: 'client', count: 1, plan_slug: '', expires_days: '', label: '', plan_duration_days: '', max_uses: 1, coach_id: '' });
   const [creating, setCreating] = useState(false);
   const [newCodes, setNewCodes] = useState<string[]>([]);
   const [copiedLink, setCopiedLink] = useState('');
+  const [coaches, setCoaches] = useState<AdminCoach[]>([]);
+  const [deleteTarget, setDeleteTarget] = useState<InviteCode | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchCodes = (used = '') => {
     setLoading(true);
@@ -37,6 +40,9 @@ export default function AdminInviteCodesPage() {
   };
 
   useEffect(() => { fetchCodes(filterUsed); }, [filterUsed]);
+  useEffect(() => {
+    apiFetch<{ coaches: AdminCoach[] }>('/admin/coaches').then(d => setCoaches(d.coaches ?? []));
+  }, []);
 
   const createCodes = async () => {
     setCreating(true);
@@ -46,11 +52,25 @@ export default function AdminInviteCodesPage() {
       if (form.expires_days) body.expires_days = parseInt(form.expires_days);
       if (form.label) body.label = form.label;
       if (form.plan_duration_days) body.plan_duration_days = parseInt(form.plan_duration_days);
+      if (form.max_uses) body.max_uses = form.max_uses;
+      if (form.coach_id) body.coach_id = parseInt(form.coach_id);
       const data = await apiFetch<{ codes: string[] }>('/admin/invite-codes', { method: 'POST', body });
       setNewCodes(data.codes ?? []);
       fetchCodes(filterUsed);
     } finally {
       setCreating(false);
+    }
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      await apiFetch(`/admin/invite-codes/${deleteTarget.id}`, { method: 'DELETE' });
+      setDeleteTarget(null);
+      fetchCodes(filterUsed);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -108,6 +128,7 @@ export default function AdminInviteCodesPage() {
                 <th className="px-4 py-3 text-center">{t.admin_codes_col_status}</th>
                 <th className="px-4 py-3 text-center">{t.admin_codes_col_expiry}</th>
                 <th className="px-4 py-3 text-center">{t.admin_codes_col_copy}</th>
+                <th className="px-4 py-3 text-center">{t.admin_codes_col_actions}</th>
               </tr>
             </thead>
             <tbody>
@@ -152,6 +173,9 @@ export default function AdminInviteCodesPage() {
                       </Button>
                     </div>
                   </td>
+                  <td className="px-4 py-3 text-center">
+                    <Button variant="danger" size="sm" onClick={() => setDeleteTarget(c)}>{t.delete}</Button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -195,6 +219,20 @@ export default function AdminInviteCodesPage() {
               </div>
               <Input label={t.admin_codes_count_label} type="number" min={1} max={50} value={form.count}
                 onChange={e => setForm({ ...form, count: parseInt(e.target.value) || 1 })} />
+              <Input label={t.admin_codes_max_uses_label} hint={t.admin_codes_max_uses_hint} type="number" min={1}
+                value={form.max_uses} onChange={e => setForm({ ...form, max_uses: parseInt(e.target.value) || 1 })} />
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-[var(--color-text-muted)]">{t.admin_codes_coach_label}</label>
+                <Select value={form.coach_id} onValueChange={v => setForm({ ...form, coach_id: v })}>
+                  <SelectTrigger><SelectValue placeholder={t.admin_codes_no_coach} /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">{t.admin_codes_no_coach}</SelectItem>
+                    {coaches.map(coach => (
+                      <SelectItem key={coach.id} value={String(coach.id)}>{coach.full_name || coach.email}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="space-y-1.5">
                 <label className="text-xs font-medium text-[var(--color-text-muted)]">{t.admin_codes_plan_label}</label>
                 <Select value={form.plan_slug} onValueChange={v => setForm({ ...form, plan_slug: v })}>
@@ -220,6 +258,18 @@ export default function AdminInviteCodesPage() {
               </DialogFooter>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirm Modal */}
+      <Dialog open={!!deleteTarget} onOpenChange={open => { if (!open) setDeleteTarget(null); }}>
+        <DialogContent size="sm">
+          <DialogHeader><DialogTitle>{t.admin_codes_delete_confirm_title}</DialogTitle></DialogHeader>
+          <p className="text-sm text-[var(--color-text-secondary)]">{t.admin_codes_delete_confirm_body}</p>
+          <DialogFooter>
+            <Button variant="secondary" onClick={() => setDeleteTarget(null)}>{t.cancel}</Button>
+            <Button variant="danger" onClick={confirmDelete} loading={deleting}>{t.delete}</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
