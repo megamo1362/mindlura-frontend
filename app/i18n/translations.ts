@@ -78,6 +78,7 @@ export const translations = {
     auth_no_account: "Don't have an account?",
     auth_have_account: 'Already have an account?',
     auth_forgot_password: 'Forgot password?',
+    auth_password_persian_keyboard_warning: 'Your keyboard language is Persian. Please switch to English to type your password.',
 
     // ── Forgot / reset password ─────────────────────────────
     forgot_password_title: 'Forgot Password',
@@ -1003,6 +1004,7 @@ export const translations = {
     auth_no_account: 'حساب ندارید؟',
     auth_have_account: 'حساب دارید؟',
     auth_forgot_password: 'رمز عبور را فراموش کرده‌اید؟',
+    auth_password_persian_keyboard_warning: 'زبان صفحه‌کلید شما فارسی است. لطفاً برای تایپ رمز عبور، زبان را به انگلیسی تغییر دهید.',
 
     // ── Forgot / reset password ─────────────────────────────
     forgot_password_title: 'فراموشی رمز عبور',
