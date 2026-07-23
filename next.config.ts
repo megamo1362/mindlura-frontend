@@ -8,6 +8,10 @@ const bundleAnalyzer = withBundleAnalyzer({
 const nextConfig: NextConfig = {
   output: 'standalone',
   poweredByHeader: false,
+  // Without this, Next.js's default trailing-slash normalization (trailingSlash: false)
+  // redirects requests like /api/tickets/ -> /api/tickets before the rewrites() fallback
+  // below ever runs, breaking the proxy to FastAPI routes that require a trailing slash.
+  skipTrailingSlashRedirect: true,
 
   experimental: {
     optimizePackageImports: ['framer-motion', 'lucide-react', 'gsap', 'three'],
