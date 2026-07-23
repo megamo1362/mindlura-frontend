@@ -6,6 +6,12 @@ const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const introSeen = request.cookies.get('introSeen')?.value;
+   if ((pathname === '/' || pathname === '/fa') && !introSeen) {
+     const url = request.nextUrl.clone();
+     url.pathname = '/intro.html';
+     return NextResponse.redirect(url);
+   }
   const cookieLocale = request.cookies.get(LOCALE_COOKIE)?.value;
   const isFaPath = pathname === '/fa' || pathname.startsWith('/fa/');
 
