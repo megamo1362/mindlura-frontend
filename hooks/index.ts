@@ -5,6 +5,7 @@ export * from './use-in-view';
 export * from './use-gsap';
 export * from './use-animated-number';
 export * from './use-accounts';
+export * from './use-profile-completion';
 export * from './use-auth-api';
 export * from './use-coach';
 export * from './use-analysis';
