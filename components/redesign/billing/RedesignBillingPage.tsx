@@ -56,7 +56,12 @@ export function RedesignBillingPage({ plans, isIran }: { plans: PricingPlan[]; i
     queryFn: () => apiFetch<ProfileResponse>('/profile/me'),
   });
 
-  const { data: paymentPlans = [] } = usePaymentPlans();
+  const {
+    data: paymentPlans = [],
+    isLoading: paymentPlansLoading,
+    isError: paymentPlansIsError,
+    refetch: refetchPaymentPlans,
+  } = usePaymentPlans();
   const initiate = useInitiatePayment();
   const verify = useVerifyPayment();
 
@@ -203,40 +208,59 @@ export function RedesignBillingPage({ plans, isIran }: { plans: PricingPlan[]; i
       )}
 
       {/* Section 3 — Payment Flow */}
-      {step === 'network' && selectedPaymentPlan && selectedDuration && (
+      {step === 'network' && (
         <Card className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-semibold text-[var(--text-primary)]">{t.billing_select_network}</h2>
             <Button variant="ghost" size="sm" onClick={resetFlow}>{t.cancel}</Button>
           </div>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {NETWORKS.map((n) => (
-              <button
-                key={n.id}
-                type="button"
-                disabled={initiate.isPending}
-                onClick={() => pickNetwork(n.id)}
-                className="flex flex-col items-start gap-1 rounded-[var(--radius-lg)] border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4 text-start transition-colors hover:border-[var(--accent)] disabled:opacity-50"
-              >
-                <span className="flex items-center gap-2 font-semibold text-[var(--text-primary)]">
-                  <Wallet className="h-4 w-4 text-[var(--accent)]" />
-                  {n.name}
-                </span>
-                <span className="text-xs text-[var(--text-muted)]">
-                  {n.id === 'TRC20' ? t.billing_trc20_desc : t.billing_bep20_desc}
-                </span>
-              </button>
-            ))}
-          </div>
-          {initiate.isPending && (
+
+          {paymentPlansLoading ? (
             <p className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
               <Loader2 className="h-3.5 w-3.5 animate-spin" /> {t.loading}
             </p>
-          )}
-          {initiate.isError && (
-            <p className="text-xs text-[var(--loss)]">
-              {initiate.error instanceof ApiError ? initiate.error.message : t.error_generic}
-            </p>
+          ) : paymentPlansIsError ? (
+            <div className="space-y-3">
+              <p className="text-xs text-[var(--loss)]">{t.billing_plans_load_error}</p>
+              <Button variant="secondary" size="sm" onClick={() => refetchPaymentPlans()}>{t.billing_retry}</Button>
+            </div>
+          ) : !selectedPaymentPlan || !selectedDuration ? (
+            <div className="space-y-3">
+              <p className="text-xs text-[var(--loss)]">{t.billing_plan_unavailable}</p>
+              <Button variant="secondary" size="sm" onClick={resetFlow}>{t.billing_back}</Button>
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {NETWORKS.map((n) => (
+                  <button
+                    key={n.id}
+                    type="button"
+                    disabled={initiate.isPending}
+                    onClick={() => pickNetwork(n.id)}
+                    className="flex flex-col items-start gap-1 rounded-[var(--radius-lg)] border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4 text-start transition-colors hover:border-[var(--accent)] disabled:opacity-50"
+                  >
+                    <span className="flex items-center gap-2 font-semibold text-[var(--text-primary)]">
+                      <Wallet className="h-4 w-4 text-[var(--accent)]" />
+                      {n.name}
+                    </span>
+                    <span className="text-xs text-[var(--text-muted)]">
+                      {n.id === 'TRC20' ? t.billing_trc20_desc : t.billing_bep20_desc}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              {initiate.isPending && (
+                <p className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" /> {t.loading}
+                </p>
+              )}
+              {initiate.isError && (
+                <p className="text-xs text-[var(--loss)]">
+                  {initiate.error instanceof ApiError ? initiate.error.message : t.error_generic}
+                </p>
+              )}
+            </>
           )}
         </Card>
       )}
