@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
+import { AlertCircle } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { LoginForm } from '@/components/auth/login-form';
 import { useLang } from '@/app/i18n/LangContext';
 import { LangToggle } from '@/app/i18n/LangToggle';
@@ -12,16 +13,31 @@ import { useGeoLang, type Lang } from '@/lib/useGeoLang';
 import { API_URL, AUTH_TOKEN_KEY, ROUTES } from '@/lib/constants';
 import { LoadingScreen } from '@/components/shared';
 import { useTheme } from '@/components/redesign/theme/RedesignThemeProvider';
+import type { Translations } from '@/app/i18n/translations';
 import type { User } from '@/types';
 
-export default function LoginClient({ initialLang, initialCountry }: { initialLang: Lang; initialCountry: string }) {
+function googleErrorMessage(t: Translations, code: string | null): string | null {
+  if (!code) return null;
+  const messages: Record<string, string> = {
+    google_failed: t.auth_error_google_failed,
+    google_state_invalid: t.auth_error_google_state_invalid,
+    google_email_unverified: t.auth_error_google_email_unverified,
+    google_invite_required: t.auth_error_google_invite_required,
+    google_account_inactive: t.auth_error_google_account_inactive,
+  };
+  return messages[code] ?? t.auth_error_google_failed;
+}
+
+function LoginCard({ initialLang, initialCountry }: { initialLang: Lang; initialCountry: string }) {
   const { t, lang, setLang } = useLang();
   const { theme } = useTheme();
   const { lang: geoLang, country, resolved } = useGeoLang(initialLang, initialCountry);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [checkingAuth, setCheckingAuth] = useState(true);
   const isFa = lang === 'fa';
   const showLangToggle = country === 'IR';
+  const googleError = googleErrorMessage(t, searchParams.get('auth_error'));
 
   // If a valid session already exists (e.g. after a browser restart with
   // "remember me"), skip the form and go straight to the app.
@@ -106,6 +122,14 @@ export default function LoginClient({ initialLang, initialCountry }: { initialLa
           </h1>
         </div>
 
+        {/* Google OAuth error, if redirected back with one */}
+        {googleError && (
+          <div className="mb-4 flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm bg-[var(--loss-soft)] border border-[var(--loss)]/30 text-[var(--loss)]">
+            <AlertCircle className="h-4 w-4 flex-shrink-0" />
+            <span>{googleError}</span>
+          </div>
+        )}
+
         {/* Card */}
         <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6 shadow-[var(--card-shadow)]">
           <LoginForm />
@@ -128,5 +152,13 @@ export default function LoginClient({ initialLang, initialCountry }: { initialLa
       </div>
     </motion.div>
     </>
+  );
+}
+
+export default function LoginClient(props: { initialLang: Lang; initialCountry: string }) {
+  return (
+    <Suspense fallback={<LoadingScreen />}>
+      <LoginCard {...props} />
+    </Suspense>
   );
 }

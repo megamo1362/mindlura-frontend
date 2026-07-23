@@ -82,6 +82,14 @@ export const translations = {
     auth_no_account: "Don't have an account?",
     auth_have_account: 'Already have an account?',
     auth_forgot_password: 'Forgot password?',
+    auth_or_divider: 'or',
+    auth_google_btn: 'Sign in with Google',
+    auth_error_google_failed: 'Google sign-in failed. Please try again.',
+    auth_error_google_state_invalid: 'This Google sign-in link expired. Please try again.',
+    auth_error_google_email_unverified: "Your Google account's email is not verified. Please verify it with Google first.",
+    auth_error_google_invite_required: 'No account found for this Google account. Register with an invite code first, then sign in with Google.',
+    auth_error_google_account_inactive: 'This account is inactive. Contact support for help.',
+    auth_error_google_only_account: 'This account uses Google Sign-In and has no password yet. Sign in with Google, or use Forgot Password to set one.',
 
     // ── Forgot / reset password ─────────────────────────────
     forgot_password_title: 'Forgot Password',
@@ -1085,6 +1093,14 @@ export const translations = {
     auth_no_account: 'حساب ندارید؟',
     auth_have_account: 'حساب دارید؟',
     auth_forgot_password: 'رمز عبور را فراموش کرده‌اید؟',
+    auth_or_divider: 'یا',
+    auth_google_btn: 'ورود با گوگل',
+    auth_error_google_failed: 'ورود با گوگل ناموفق بود. لطفاً دوباره امتحان کنید.',
+    auth_error_google_state_invalid: 'این لینک ورود با گوگل منقضی شده است. لطفاً دوباره امتحان کنید.',
+    auth_error_google_email_unverified: 'ایمیل حساب گوگل شما تأیید نشده است. لطفاً ابتدا آن را نزد گوگل تأیید کنید.',
+    auth_error_google_invite_required: 'حسابی برای این حساب گوگل یافت نشد. ابتدا با کد دعوت ثبت‌نام کنید، سپس با گوگل وارد شوید.',
+    auth_error_google_account_inactive: 'این حساب غیرفعال است. برای راهنمایی با پشتیبانی تماس بگیرید.',
+    auth_error_google_only_account: 'این حساب از ورود با گوگل استفاده می‌کند و هنوز رمز عبوری ندارد. با گوگل وارد شوید یا از «فراموشی رمز عبور» برای تنظیم رمز استفاده کنید.',
 
     // ── Forgot / reset password ─────────────────────────────
     forgot_password_title: 'فراموشی رمز عبور',
