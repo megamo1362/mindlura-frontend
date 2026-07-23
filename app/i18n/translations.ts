@@ -77,6 +77,38 @@ export const translations = {
     auth_register_tab: 'Register',
     auth_no_account: "Don't have an account?",
     auth_have_account: 'Already have an account?',
+    auth_forgot_password: 'Forgot password?',
+
+    // ── Forgot / reset password ─────────────────────────────
+    forgot_password_title: 'Forgot Password',
+    forgot_password_desc: "Enter your email and we'll send you a reset link.",
+    forgot_password_submit: 'Send Reset Link',
+    forgot_password_success: 'If this email is registered, a password reset link has been sent. Please check your inbox.',
+    forgot_password_error: 'Something went wrong. Please try again.',
+    forgot_password_back_to_login: 'Back to login',
+
+    reset_password_title: 'Reset Password',
+    reset_password_new_password: 'New Password',
+    reset_password_confirm_password: 'Confirm New Password',
+    reset_password_submit: 'Reset Password',
+    reset_password_no_token: 'Invalid reset link. Please request a new password reset.',
+    reset_password_invalid_token: 'This link has expired or is invalid. Please request a new password reset.',
+    reset_password_success: 'Your password has been reset successfully.',
+    reset_password_go_to_login: 'Go to login',
+
+    change_password_title: 'Change Password',
+    change_password_current: 'Current Password',
+    change_password_new: 'New Password',
+    change_password_confirm: 'Confirm New Password',
+    change_password_submit: 'Save New Password',
+    change_password_success: 'Password changed successfully.',
+    change_password_wrong_current: 'Current password is incorrect.',
+    change_password_error: 'Something went wrong. Please try again.',
+
+    password_strength_weak: 'Weak',
+    password_strength_fair: 'Fair',
+    password_strength_strong: 'Strong',
+    password_strength_very_strong: 'Very Strong',
 
     // ── Error pages ────────────────────────────────────────
     error_page_title: 'Loading Error',
@@ -967,6 +999,38 @@ export const translations = {
     auth_register_tab: 'ثبت‌نام',
     auth_no_account: 'حساب ندارید؟',
     auth_have_account: 'حساب دارید؟',
+    auth_forgot_password: 'رمز عبور را فراموش کرده‌اید؟',
+
+    // ── Forgot / reset password ─────────────────────────────
+    forgot_password_title: 'فراموشی رمز عبور',
+    forgot_password_desc: 'ایمیل خود را وارد کنید تا لینک بازیابی رمز عبور برایتان ارسال شود.',
+    forgot_password_submit: 'ارسال لینک بازیابی',
+    forgot_password_success: 'اگر این ایمیل در سیستم ثبت شده باشد، لینک بازیابی رمز ارسال شد. لطفاً صندوق ورودی خود را بررسی کنید.',
+    forgot_password_error: 'مشکلی پیش آمد. لطفاً دوباره امتحان کنید.',
+    forgot_password_back_to_login: 'بازگشت به صفحه ورود',
+
+    reset_password_title: 'بازیابی رمز عبور',
+    reset_password_new_password: 'رمز عبور جدید',
+    reset_password_confirm_password: 'تکرار رمز عبور جدید',
+    reset_password_submit: 'بازیابی رمز عبور',
+    reset_password_no_token: 'لینک بازیابی نامعتبر است. لطفاً مجدداً درخواست بازیابی رمز دهید.',
+    reset_password_invalid_token: 'این لینک منقضی شده یا معتبر نیست. لطفاً مجدداً درخواست بازیابی رمز دهید.',
+    reset_password_success: 'رمز عبور شما با موفقیت بازیابی شد.',
+    reset_password_go_to_login: 'ورود به حساب کاربری',
+
+    change_password_title: 'تغییر رمز عبور',
+    change_password_current: 'رمز عبور فعلی',
+    change_password_new: 'رمز عبور جدید',
+    change_password_confirm: 'تکرار رمز عبور جدید',
+    change_password_submit: 'ذخیره رمز جدید',
+    change_password_success: 'رمز عبور با موفقیت تغییر کرد.',
+    change_password_wrong_current: 'رمز عبور فعلی اشتباه است.',
+    change_password_error: 'مشکلی پیش آمد. لطفاً دوباره امتحان کنید.',
+
+    password_strength_weak: 'ضعیف',
+    password_strength_fair: 'متوسط',
+    password_strength_strong: 'قوی',
+    password_strength_very_strong: 'خیلی قوی',
 
     // ── Error pages ────────────────────────────────────────
     error_page_title: 'خطا در بارگذاری',

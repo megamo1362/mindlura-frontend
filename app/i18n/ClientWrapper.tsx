@@ -10,7 +10,7 @@ import { useTheme } from './ThemeContext';
 // marketing site's per-URL locale (/ vs /fa). Public pages set lang/dir via
 // the server-rendered <html> tag in app/layout.tsx based on the URL, and
 // must not have that overwritten by LangContext's default ('en').
-const PRIVATE_PREFIXES = ['/dashboard', '/admin', '/login'];
+const PRIVATE_PREFIXES = ['/dashboard', '/admin', '/login', '/forgot-password', '/reset-password'];
 
 export function ClientWrapper({ children }: { children: React.ReactNode }) {
   const { lang, isRTL } = useLang();

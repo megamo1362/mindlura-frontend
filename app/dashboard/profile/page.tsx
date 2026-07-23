@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { UserCircle, Mail, Phone, Send, CheckCircle2, XCircle, ExternalLink } from 'lucide-react';
+import { UserCircle, Mail, Phone, Send, CheckCircle2, XCircle, ExternalLink, KeyRound } from 'lucide-react';
 import { apiFetch, ApiError } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge, PlanBadge } from '@/components/ui/badge';
 import { OtpInput } from '@/components/ui/otp-input';
+import { PasswordStrengthIndicator } from '@/components/ui/password-strength-indicator';
 import { useLang } from '@/app/i18n/LangContext';
 import { useCountdown } from '@/hooks/useCountdown';
 import type { ProfileResponse } from '@/types';
@@ -66,6 +67,14 @@ export default function ProfilePage() {
   const [telegramFinding, setTelegramFinding] = useState(false);
   const [telegramVerifying, setTelegramVerifying] = useState(false);
   const [telegramError, setTelegramError] = useState('');
+
+  // Change password
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [changingPassword, setChangingPassword] = useState(false);
+  const [changePasswordError, setChangePasswordError] = useState('');
+  const [changePasswordSuccess, setChangePasswordSuccess] = useState(false);
 
   useEffect(() => {
     apiFetch<ProfileData>('/profile/me')
@@ -258,6 +267,42 @@ export default function ProfilePage() {
       setTelegramError('');
     } catch {
       // ignore
+    }
+  };
+
+  // ── Change password ──────────────────────────────────────
+  const handleChangePassword = async () => {
+    setChangePasswordError('');
+    setChangePasswordSuccess(false);
+
+    if (!newPassword) {
+      setChangePasswordError(t.auth_password_too_short);
+      return;
+    }
+    if (newPassword !== confirmNewPassword) {
+      setChangePasswordError(t.auth_password_mismatch);
+      return;
+    }
+
+    setChangingPassword(true);
+    try {
+      await apiFetch('/profile/change-password', {
+        method: 'POST',
+        body: { current_password: currentPassword, new_password: newPassword },
+      });
+      setChangePasswordSuccess(true);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmNewPassword('');
+      setTimeout(() => setChangePasswordSuccess(false), 3000);
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 400) {
+        setChangePasswordError(t.change_password_wrong_current);
+      } else {
+        setChangePasswordError(t.change_password_error);
+      }
+    } finally {
+      setChangingPassword(false);
     }
   };
 
@@ -631,6 +676,63 @@ export default function ProfilePage() {
       </section>
       </div>
       </div>
+
+      {/* ── Card 4: Change Password ───────────────────────── */}
+      <section className="rounded-[var(--radius-lg)] bg-[var(--color-glass)] p-5 border border-[var(--color-border)] space-y-4">
+        <div className="flex items-center gap-2">
+          <KeyRound className="w-4 h-4 text-[var(--color-cyan)]" />
+          <h2 className="text-sm font-semibold text-[var(--color-text-primary)] uppercase tracking-wider">
+            {t.change_password_title}
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 gap-3 lg:max-w-md">
+          <Input
+            label={t.change_password_current}
+            type="password"
+            value={currentPassword}
+            onChange={e => setCurrentPassword(e.target.value)}
+            autoComplete="current-password"
+          />
+
+          <div>
+            <Input
+              label={t.change_password_new}
+              type="password"
+              value={newPassword}
+              onChange={e => setNewPassword(e.target.value)}
+              autoComplete="new-password"
+            />
+            <PasswordStrengthIndicator password={newPassword} lang={lang} />
+          </div>
+
+          <div>
+            <Input
+              label={t.change_password_confirm}
+              type="password"
+              value={confirmNewPassword}
+              onChange={e => setConfirmNewPassword(e.target.value)}
+              autoComplete="new-password"
+            />
+            <PasswordStrengthIndicator password={confirmNewPassword} lang={lang} />
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 pt-1 flex-wrap">
+          <Button variant="primary" size="md" loading={changingPassword} onClick={handleChangePassword}>
+            {t.change_password_submit}
+          </Button>
+          {changePasswordSuccess && (
+            <span className="text-xs text-[var(--color-success)] flex items-center gap-1">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              {t.change_password_success}
+            </span>
+          )}
+          {changePasswordError && (
+            <span className="text-xs text-[var(--color-danger)]">{changePasswordError}</span>
+          )}
+        </div>
+      </section>
     </div>
   );
 }
