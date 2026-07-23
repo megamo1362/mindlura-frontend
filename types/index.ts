@@ -278,12 +278,134 @@ export interface Plan {
   price_usd_ir?: number | null;
   coach_price_usd?: number | null;
   coach_price_usd_ir?: number | null;
+  price_usdt_monthly?: number | null;
+  price_usdt_yearly?: number | null;
+  price_irr_monthly?: number | null;
+  price_irr_yearly?: number | null;
   duration_days: number;
   max_mt5_accounts: number;
   is_active: boolean;
   analysis_mode?: string;
   analysis_interval_hours?: number | null;
   ai_monthly_limit?: number | null;
+}
+
+// ── USDT Payments ────────────────────────────────────────────
+export type PaymentNetwork = 'TRC20' | 'BEP20';
+export type PaymentStatus = 'pending' | 'confirmed' | 'failed' | 'duplicate';
+
+export interface PaymentPlanDuration {
+  days: number;
+  label: string;
+  label_fa: string;
+  price_usdt: number;
+}
+
+export interface PaymentPlan {
+  id: number;
+  name: string;
+  slug: string;
+  durations: PaymentPlanDuration[];
+}
+
+export interface InitiatePaymentResponse {
+  transaction_id: number;
+  wallet_address: string;
+  network: PaymentNetwork;
+  amount_usdt: number;
+  plan_name: string;
+  duration_days: number;
+}
+
+export interface VerifyPaymentResponse {
+  success: boolean;
+  message: { en: string; fa: string };
+  plan_name: string | null;
+  expires_at: string;
+}
+
+export interface WalletAddressRow {
+  id: number;
+  network: PaymentNetwork;
+  address: string;
+  is_active: boolean;
+}
+
+export interface AdminPaymentTransaction {
+  id: number;
+  created_at: string;
+  user_email: string | null;
+  plan_name: string | null;
+  duration_days: number;
+  network: PaymentNetwork;
+  txid: string | null;
+  status: PaymentStatus;
+  expected_amount: number;
+  verified_amount: number | null;
+  failure_reason: string | null;
+  coach_id: number | null;
+  coach_email: string | null;
+  coach_share_percent: number | null;
+  coach_share_usdt: number | null;
+}
+
+export interface FinanceMetric {
+  all_time: number;
+  month: number;
+}
+
+export interface FinanceSummary {
+  total_revenue: FinanceMetric;
+  total_paid_to_coaches: FinanceMetric;
+  pending_coach_payouts: FinanceMetric;
+  net_revenue: FinanceMetric;
+}
+
+export interface FinancePaymentRow {
+  id: number;
+  created_at: string;
+  user_email: string | null;
+  plan_name: string | null;
+  duration_days: number;
+  amount_usdt: number;
+  network: PaymentNetwork;
+  coach_email: string | null;
+  coach_percent: number | null;
+  coach_usdt: number;
+  mindlura_usdt: number;
+  status: PaymentStatus;
+}
+
+export interface CoachPayoutSummaryRow {
+  coach_id: number;
+  full_name: string | null;
+  email: string;
+  active_clients: number;
+  total_earned: number;
+  already_paid: number;
+  pending: number;
+}
+
+export interface CoachPayoutBreakdownPayment {
+  id: number;
+  created_at: string;
+  user_email: string | null;
+  plan_name: string | null;
+  amount_usdt: number;
+  coach_percent: number | null;
+  coach_usdt: number;
+}
+
+export interface CoachPayoutRecord {
+  id: number;
+  amount_usdt: number;
+  note: string | null;
+  paid_at: string;
+}
+
+export interface CoachPayoutBreakdown {
+  payments: CoachPayoutBreakdownPayment[];
+  payouts: CoachPayoutRecord[];
 }
 
 // ── Public pricing (GET /plans/pricing) ─────────────────────

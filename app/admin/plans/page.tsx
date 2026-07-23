@@ -70,6 +70,10 @@ export default function AdminPlansPage() {
       if (editPlan.price_usd_ir != null) body.price_usd_ir = editPlan.price_usd_ir;
       if (editPlan.coach_price_usd != null) body.coach_price_usd = editPlan.coach_price_usd;
       if (editPlan.coach_price_usd_ir != null) body.coach_price_usd_ir = editPlan.coach_price_usd_ir;
+      if (editPlan.price_usdt_monthly != null) body.price_usdt_monthly = editPlan.price_usdt_monthly;
+      if (editPlan.price_usdt_yearly != null) body.price_usdt_yearly = editPlan.price_usdt_yearly;
+      if (editPlan.price_irr_monthly != null) body.price_irr_monthly = editPlan.price_irr_monthly;
+      if (editPlan.price_irr_yearly != null) body.price_irr_yearly = editPlan.price_irr_yearly;
       if (editPlan.ai_monthly_limit == null) {
         body.ai_monthly_limit_clear = true;
       } else {
@@ -191,6 +195,34 @@ export default function AdminPlansPage() {
                 onChange={e => {
                   const v = e.target.value;
                   setEditPlan({ ...editPlan, coach_price_usd_ir: v === '' ? null : parseFloat(v) || 0 });
+                }} />
+              <Input label={t.admin_plans_price_usdt_monthly_label} type="number" min={0} step={0.01}
+                placeholder={t.admin_plans_price_placeholder_default}
+                value={editPlan.price_usdt_monthly ?? ''}
+                onChange={e => {
+                  const v = e.target.value;
+                  setEditPlan({ ...editPlan, price_usdt_monthly: v === '' ? null : parseFloat(v) || 0 });
+                }} />
+              <Input label={t.admin_plans_price_usdt_yearly_label} type="number" min={0} step={0.01}
+                placeholder={t.admin_plans_price_placeholder_default}
+                value={editPlan.price_usdt_yearly ?? ''}
+                onChange={e => {
+                  const v = e.target.value;
+                  setEditPlan({ ...editPlan, price_usdt_yearly: v === '' ? null : parseFloat(v) || 0 });
+                }} />
+              <Input label={t.admin_plans_price_irr_monthly_label} type="number" min={0} step={1}
+                placeholder={t.admin_plans_price_placeholder_default}
+                value={editPlan.price_irr_monthly ?? ''}
+                onChange={e => {
+                  const v = e.target.value;
+                  setEditPlan({ ...editPlan, price_irr_monthly: v === '' ? null : parseInt(v) || 0 });
+                }} />
+              <Input label={t.admin_plans_price_irr_yearly_label} type="number" min={0} step={1}
+                placeholder={t.admin_plans_price_placeholder_default}
+                value={editPlan.price_irr_yearly ?? ''}
+                onChange={e => {
+                  const v = e.target.value;
+                  setEditPlan({ ...editPlan, price_irr_yearly: v === '' ? null : parseInt(v) || 0 });
                 }} />
               <Input label={t.admin_plans_duration_label} type="number" min={1} value={editPlan.duration_days}
                 onChange={e => setEditPlan({ ...editPlan, duration_days: parseInt(e.target.value) || 1 })} />
