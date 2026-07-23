@@ -86,6 +86,7 @@ export function AddAccountDialog({ open, onOpenChange }: AddAccountDialogProps) 
               placeholder="investor password"
               iconLeft={<Lock className="h-4 w-4" />}
               required
+              dir="ltr"
             />
           </div>
 
