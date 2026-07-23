@@ -637,6 +637,13 @@ export const translations = {
     admin_codes_status_full: 'Full',
     admin_codes_copy_link: 'Copy Link',
     admin_codes_link_copied: 'Copied!',
+    admin_codes_max_uses_label: 'Max Uses per Code',
+    admin_codes_max_uses_hint: 'How many people can register with each code',
+    admin_codes_coach_label: 'Assign to Coach (optional)',
+    admin_codes_no_coach: 'No Coach',
+    admin_codes_col_actions: 'Actions',
+    admin_codes_delete_confirm_title: 'Delete Invite Code?',
+    admin_codes_delete_confirm_body: 'This invite code will be permanently deleted. This action cannot be undone.',
 
     // ── Admin plans ────────────────────────────────────────
     admin_plans_title: 'Plans',
@@ -1632,6 +1639,13 @@ export const translations = {
     admin_codes_status_full: 'تکمیل',
     admin_codes_copy_link: 'کپی لینک',
     admin_codes_link_copied: 'کپی شد!',
+    admin_codes_max_uses_label: 'حداکثر استفاده از هر کد',
+    admin_codes_max_uses_hint: 'تعداد نفراتی که می‌توانند با هر کد ثبت‌نام کنند',
+    admin_codes_coach_label: 'اختصاص به کوچ (اختیاری)',
+    admin_codes_no_coach: 'بدون کوچ',
+    admin_codes_col_actions: 'عملیات',
+    admin_codes_delete_confirm_title: 'حذف کد دعوت؟',
+    admin_codes_delete_confirm_body: 'این کد دعوت برای همیشه حذف خواهد شد. این عملیات قابل بازگشت نیست.',
     admin_codes_create_btn: 'ایجاد کد',
 
     // ── Admin plans ────────────────────────────────────────
