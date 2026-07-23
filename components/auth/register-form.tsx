@@ -6,6 +6,7 @@ import { Mail, Lock, User, Key, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { GoogleSignInButton } from '@/components/auth/google-signin-button';
 import { useRegister } from '@/hooks/use-auth-api';
 import { ApiError } from '@/lib/api';
 import { useLang } from '@/app/i18n/LangContext';
@@ -169,6 +170,14 @@ export function RegisterForm({ inviteCode }: RegisterFormProps) {
       >
         {t.auth_create_account}
       </Button>
+
+      <div className="flex items-center gap-3">
+        <div className="h-px flex-1 bg-[var(--border-subtle)]" />
+        <span className="text-xs text-[var(--text-muted)]">{t.auth_or_divider}</span>
+        <div className="h-px flex-1 bg-[var(--border-subtle)]" />
+      </div>
+
+      <GoogleSignInButton inviteCode={fields.invite_code} />
     </motion.form>
   );
 }
