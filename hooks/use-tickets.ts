@@ -10,7 +10,7 @@ import type { Ticket, TicketListItem } from '@/types';
 export function useTickets() {
   return useQuery({
     queryKey: QUERY_KEYS.supportTickets,
-    queryFn: () => apiFetch<TicketListItem[]>('/tickets/'),
+    queryFn: () => apiFetch<TicketListItem[]>('/tickets'),
   });
 }
 
@@ -31,7 +31,7 @@ export function useCreateTicket() {
   const { t } = useLang();
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (data: CreateTicketInput) => apiFetch<Ticket>('/tickets/', { method: 'POST', body: data }),
+    mutationFn: (data: CreateTicketInput) => apiFetch<Ticket>('/tickets', { method: 'POST', body: data }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: QUERY_KEYS.supportTickets });
       toast.success(t.support_created_msg);
