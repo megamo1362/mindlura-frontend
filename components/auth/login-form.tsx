@@ -12,6 +12,8 @@ import { useLogin } from '@/hooks/use-auth-api';
 import { ApiError } from '@/lib/api';
 import { useLang } from '@/app/i18n/LangContext';
 
+const PERSIAN_ARABIC_CHARS = /[؀-ۿݐ-ݿﭐ-﷿ﹰ-﻿]/;
+
 export function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,6 +31,7 @@ export function LoginForm() {
       : error
         ? t.auth_login_error
         : null;
+  const hasPersianInPassword = PERSIAN_ARABIC_CHARS.test(password);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,7 +75,9 @@ export function LoginForm() {
           required
           autoComplete="current-password"
           inputSize="lg"
-          className="bg-[var(--bg-surface-2)] border-[var(--border-subtle)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] hover:border-[var(--text-muted)] focus:border-[var(--accent)] focus:shadow-none"
+          dir="ltr"
+          error={hasPersianInPassword ? t.auth_password_persian_keyboard_warning : undefined}
+          className="bg-[var(--bg-surface-2)] border-[var(--border-subtle)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] hover:border-[var(--text-muted)] focus:border-[var(--accent)] focus:shadow-none text-left"
         />
         <div className="text-right">
           <Link href="/forgot-password" className="text-xs text-[var(--accent)] hover:underline">

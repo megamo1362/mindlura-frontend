@@ -5,11 +5,8 @@ import { usePathname } from 'next/navigation';
 import { useLang } from './LangContext';
 import { useTheme } from './ThemeContext';
 
-// This lang/dir sync is only relevant to the dashboard/admin/login UI, which
-// has its own language toggle (LangContext) independent of the public
-// marketing site's per-URL locale (/ vs /fa). Public pages set lang/dir via
-// the server-rendered <html> tag in app/layout.tsx based on the URL, and
-// must not have that overwritten by LangContext's default ('en').
+// The dashboard/admin/login UI has its own language toggle (LangContext),
+// independent of the public marketing site's per-URL locale (/ vs /fa).
 const PRIVATE_PREFIXES = ['/dashboard', '/admin', '/login', '/forgot-password', '/reset-password'];
 
 export function ClientWrapper({ children }: { children: React.ReactNode }) {
@@ -23,6 +20,20 @@ export function ClientWrapper({ children }: { children: React.ReactNode }) {
     document.documentElement.setAttribute('lang', lang);
     document.documentElement.setAttribute('dir', isRTL ? 'rtl' : 'ltr');
   }, [lang, isRTL, isPrivateArea]);
+
+  // Public pages get their initial lang/dir from the server (root layout,
+  // based on pathname) so there's no flash on first load. But / and /fa share
+  // that same root layout, so a client-side transition between them (e.g. the
+  // EN/FA toggle link) never re-runs the server logic — <html> would keep
+  // showing the old lang/dir even though the page content did switch. Mirror
+  // that pathname-derived value here so it re-syncs on every route change.
+  const isFaPath = pathname === '/fa' || (pathname?.startsWith('/fa/') ?? false);
+
+  useEffect(() => {
+    if (isPrivateArea) return;
+    document.documentElement.setAttribute('lang', isFaPath ? 'fa' : 'en');
+    document.documentElement.setAttribute('dir', isFaPath ? 'rtl' : 'ltr');
+  }, [isFaPath, isPrivateArea]);
 
   useEffect(() => {
     const html = document.documentElement;
