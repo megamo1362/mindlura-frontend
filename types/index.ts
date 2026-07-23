@@ -467,6 +467,10 @@ export interface InviteCode {
   id: number;
   code: string;
   code_type: InviteCodeType;
+  label: string | null;
+  plan_name: string | null;
+  plan_slug: string | null;
+  plan_duration_days: number | null;
   is_used: boolean;
   max_uses: number | null;
   used_count: number;
@@ -474,6 +478,7 @@ export interface InviteCode {
   created_at: string | null;
   used_at: string | null;
   used_by_name?: string | null;
+  status: 'active' | 'expired' | 'full';
 }
 
 // ── FAQ ──────────────────────────────────────────────────
@@ -504,6 +509,7 @@ export interface AdminUser extends User {
   plan_name: string | null;
   plan_slug: string | null;
   plan_id: number | null;
+  plan_expires_at: string | null;
 }
 
 // ── EA Tokens admin ────────────────────────────────────────
@@ -692,6 +698,8 @@ export interface ProfileResponse {
   role: string;
   plan: string | null;
   plan_slug: string | null;
+  subscription_expires_at: string | null;
+  subscription_days_remaining: number | null;
   created_at: string;
   is_email_verified: boolean;
   is_phone_verified: boolean;
@@ -778,6 +786,47 @@ export interface NotifyClientsResponse {
   sent: number;
   failed: number;
   details: NotifyClientDetail[];
+}
+
+// ── Support tickets ──────────────────────────────────────────
+export type TicketStatus = 'open' | 'in_progress' | 'closed';
+export type TicketSenderRole = 'user' | 'admin';
+
+export interface TicketMessage {
+  id: number;
+  ticket_id: number;
+  sender_role: TicketSenderRole;
+  body: string;
+  attachment_url: string | null;
+  created_at: string;
+}
+
+export interface Ticket {
+  id: number;
+  subject: string;
+  status: TicketStatus;
+  created_at: string;
+  updated_at: string;
+  messages: TicketMessage[];
+}
+
+export interface TicketListItem {
+  id: number;
+  subject: string;
+  status: TicketStatus;
+  created_at: string;
+  updated_at: string;
+  message_count: number;
+}
+
+export interface AdminTicketListItem extends TicketListItem {
+  user_id: number;
+  user_email: string | null;
+}
+
+export interface AdminTicket extends Ticket {
+  user_id: number;
+  user_email: string | null;
 }
 
 // ── API ────────────────────────────────────────────────────

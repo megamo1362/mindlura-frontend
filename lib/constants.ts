@@ -18,12 +18,16 @@ export const ROUTES = {
   coachNotifications: '/dashboard/coach/notifications',
   coachAIReport: '/dashboard/coach/ai-report',
   coachPurchases: '/dashboard/coach/purchases',
+  support: '/dashboard/support',
+  supportTicket: (id: number | string) => `/dashboard/support/${id}`,
   admin: {
     root: '/admin',
     users: '/admin/users',
     coaches: '/admin/coaches',
     plans: '/admin/plans',
     inviteCodes: '/admin/invite-codes',
+    support: '/admin/support',
+    supportTicket: (id: number | string) => `/admin/support/${id}`,
   },
 } as const;
 
@@ -74,6 +78,8 @@ export const QUERY_KEYS = {
     ['coach-client-journal-analysis', clientId, accountId] as const,
   adminStats: ['admin-stats'] as const,
   plans: ['plans'] as const,
+  supportTickets: ['support-tickets'] as const,
+  supportTicket: (id: number | string) => ['support-ticket', id] as const,
 } as const;
 
 export const ANALYSIS_MODE_LABELS: Record<string, string> = {
