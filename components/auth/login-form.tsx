@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import { Mail, Lock, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/redesign/ui/Button';
 import { Input } from '@/components/ui/input';
@@ -63,6 +64,11 @@ export function LoginForm() {
           inputSize="lg"
           className="bg-[var(--bg-surface-2)] border-[var(--border-subtle)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] hover:border-[var(--text-muted)] focus:border-[var(--accent)] focus:shadow-none"
         />
+        <div className="text-right">
+          <Link href="/forgot-password" className="text-xs text-[var(--accent)] hover:underline">
+            {t.auth_forgot_password}
+          </Link>
+        </div>
       </div>
 
       <label className="flex items-center gap-2 cursor-pointer select-none">
