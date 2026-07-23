@@ -1,12 +1,23 @@
 import type { Metadata } from 'next';
+import { cookies } from 'next/headers';
+import { RedesignThemeProvider } from '@/components/redesign/theme/RedesignThemeProvider';
+import '@/app/theme.css';
 
 export const metadata: Metadata = {
-  title: 'به لیست انتظار بپیوندید — دسترسی زودهنگام مایندلورا',
-  description:
-    'مایندلورا پلتفرم روان‌شناسی معاملاتی فارکس است که به MT5 متصل می‌شود و آنالیتیکس رفتاری ارائه می‌دهد. برای دسترسی زودهنگام و رایگان به لیست انتظار بپیوندید.',
+  title: 'ثبت‌نام | مایندلورا',
+  description: 'ساخت حساب کاربری مایندلورا',
   openGraph: { locale: 'fa_IR' },
 };
 
-export default function FaRegisterLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+export default async function FaRegisterLayout({ children }: { children: React.ReactNode }) {
+  const cookieStore = await cookies();
+  const initialTheme = cookieStore.get('rd-theme')?.value === 'light' ? 'light' : 'dark';
+
+  return (
+    <RedesignThemeProvider initialTheme={initialTheme}>
+      <div className="relative flex min-h-screen items-center justify-center p-4">
+        {children}
+      </div>
+    </RedesignThemeProvider>
+  );
 }

@@ -1,12 +1,22 @@
 import type { Metadata } from 'next';
+import { cookies } from 'next/headers';
+import { RedesignThemeProvider } from '@/components/redesign/theme/RedesignThemeProvider';
+import '@/app/theme.css';
 
 export const metadata: Metadata = {
-  title: 'Join the Waitlist — Mindlura Early Access',
-  description:
-    'Mindlura is a forex trading psychology platform connecting to MT5 for behavioral analytics. Join the waitlist for free early access.',
-  openGraph: { locale: 'en_US' },
+  title: 'Register | Mindlura',
+  description: 'Create your Mindlura account',
 };
 
-export default function RegisterLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+export default async function RegisterLayout({ children }: { children: React.ReactNode }) {
+  const cookieStore = await cookies();
+  const initialTheme = cookieStore.get('rd-theme')?.value === 'light' ? 'light' : 'dark';
+
+  return (
+    <RedesignThemeProvider initialTheme={initialTheme}>
+      <div className="relative flex min-h-screen items-center justify-center p-4">
+        {children}
+      </div>
+    </RedesignThemeProvider>
+  );
 }

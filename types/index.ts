@@ -467,6 +467,10 @@ export interface InviteCode {
   id: number;
   code: string;
   code_type: InviteCodeType;
+  label: string | null;
+  plan_name: string | null;
+  plan_slug: string | null;
+  plan_duration_days: number | null;
   is_used: boolean;
   max_uses: number | null;
   used_count: number;
@@ -474,6 +478,7 @@ export interface InviteCode {
   created_at: string | null;
   used_at: string | null;
   used_by_name?: string | null;
+  status: 'active' | 'expired' | 'full';
 }
 
 // ── FAQ ──────────────────────────────────────────────────
@@ -504,6 +509,7 @@ export interface AdminUser extends User {
   plan_name: string | null;
   plan_slug: string | null;
   plan_id: number | null;
+  plan_expires_at: string | null;
 }
 
 // ── EA Tokens admin ────────────────────────────────────────
@@ -692,6 +698,8 @@ export interface ProfileResponse {
   role: string;
   plan: string | null;
   plan_slug: string | null;
+  subscription_expires_at: string | null;
+  subscription_days_remaining: number | null;
   created_at: string;
   is_email_verified: boolean;
   is_phone_verified: boolean;

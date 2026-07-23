@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { UserCircle, Mail, Phone, Send, CheckCircle2, XCircle, ExternalLink, KeyRound } from 'lucide-react';
+import { UserCircle, Mail, Phone, Send, CheckCircle2, XCircle, ExternalLink, KeyRound, AlertTriangle } from 'lucide-react';
 import { apiFetch, ApiError } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -665,6 +665,26 @@ export default function ProfilePage() {
               <span className="text-xs text-[var(--color-text-muted)]">—</span>
             )}
           </div>
+
+          {profile?.subscription_days_remaining != null && (
+            <div className="flex items-center justify-between py-2 border-b border-[var(--color-border)]">
+              <span className="text-xs text-[var(--color-text-muted)]">{t.profile_subscription_status}</span>
+              {profile.subscription_days_remaining > 3 ? (
+                <span className="text-xs font-semibold text-[var(--color-success)]">
+                  {t.profile_days_remaining(profile.subscription_days_remaining)}
+                </span>
+              ) : profile.subscription_days_remaining >= 1 ? (
+                <span className="flex items-center gap-1 text-xs font-semibold text-[var(--color-warning)]">
+                  <AlertTriangle className="w-3.5 h-3.5" />
+                  {t.profile_days_remaining(profile.subscription_days_remaining)}
+                </span>
+              ) : (
+                <span className="text-xs font-semibold text-[var(--color-danger)]">
+                  {t.profile_subscription_expired}
+                </span>
+              )}
+            </div>
+          )}
 
           <div className="flex items-center justify-between py-2">
             <span className="text-xs text-[var(--color-text-muted)]">{t.profile_member_since}</span>

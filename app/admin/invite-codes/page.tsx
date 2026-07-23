@@ -24,9 +24,10 @@ export default function AdminInviteCodesPage() {
   const { t, lang } = useLang();
 
   const [showCreate, setShowCreate] = useState(false);
-  const [form, setForm] = useState({ code_type: 'client', count: 1, plan_slug: '', expires_days: '' });
+  const [form, setForm] = useState({ code_type: 'client', count: 1, plan_slug: '', expires_days: '', label: '', plan_duration_days: '' });
   const [creating, setCreating] = useState(false);
   const [newCodes, setNewCodes] = useState<string[]>([]);
+  const [copiedLink, setCopiedLink] = useState('');
 
   const fetchCodes = (used = '') => {
     setLoading(true);
@@ -43,6 +44,8 @@ export default function AdminInviteCodesPage() {
       const body: Record<string, unknown> = { code_type: form.code_type, count: form.count };
       if (form.plan_slug) body.plan_slug = form.plan_slug;
       if (form.expires_days) body.expires_days = parseInt(form.expires_days);
+      if (form.label) body.label = form.label;
+      if (form.plan_duration_days) body.plan_duration_days = parseInt(form.plan_duration_days);
       const data = await apiFetch<{ codes: string[] }>('/admin/invite-codes', { method: 'POST', body });
       setNewCodes(data.codes ?? []);
       fetchCodes(filterUsed);
@@ -55,6 +58,12 @@ export default function AdminInviteCodesPage() {
     navigator.clipboard.writeText(code);
     setCopied(code);
     setTimeout(() => setCopied(''), 2000);
+  };
+
+  const copyLink = (code: string) => {
+    navigator.clipboard.writeText(`https://mindlura.com/register?invite=${code}`);
+    setCopiedLink(code);
+    setTimeout(() => setCopiedLink(''), 2000);
   };
 
   const copyAll = () => {
@@ -91,10 +100,13 @@ export default function AdminInviteCodesPage() {
             <thead>
               <tr className="bg-[var(--color-deep)] text-[var(--color-text-muted)]">
                 <th className="px-4 py-3 text-right">{t.admin_codes_col_code}</th>
+                <th className="px-4 py-3 text-right">{t.admin_codes_col_label}</th>
                 <th className="px-4 py-3 text-center">{t.admin_codes_col_type}</th>
+                <th className="px-4 py-3 text-center">{t.admin_codes_col_plan}</th>
+                <th className="px-4 py-3 text-center">{t.admin_codes_col_duration}</th>
+                <th className="px-4 py-3 text-center">{t.admin_codes_col_slots}</th>
                 <th className="px-4 py-3 text-center">{t.admin_codes_col_status}</th>
                 <th className="px-4 py-3 text-center">{t.admin_codes_col_expiry}</th>
-                <th className="px-4 py-3 text-center">{t.admin_codes_col_date}</th>
                 <th className="px-4 py-3 text-center">{t.admin_codes_col_copy}</th>
               </tr>
             </thead>
@@ -102,28 +114,43 @@ export default function AdminInviteCodesPage() {
               {codes.map(c => (
                 <tr key={c.id} className="border-t border-[var(--color-border)] hover:bg-white/[0.02] transition-colors">
                   <td className="px-4 py-3 font-mono font-bold text-[var(--color-cyan)]">{c.code}</td>
+                  <td className="px-4 py-3 text-[var(--color-text-secondary)] text-xs">{c.label || '—'}</td>
                   <td className="px-4 py-3 text-center">
                     <Badge variant={c.code_type === 'coach' ? 'purple' : 'blue'}>
                       {c.code_type === 'coach' ? t.admin_codes_type_coach : t.admin_codes_type_client}
                     </Badge>
                   </td>
+                  <td className="px-4 py-3 text-center text-[var(--color-text-muted)] text-xs">
+                    {c.plan_name || '—'}
+                  </td>
+                  <td className="px-4 py-3 text-center text-[var(--color-text-muted)] text-xs">
+                    {c.plan_duration_days ? t.admin_plans_duration_val(c.plan_duration_days) : '—'}
+                  </td>
+                  <td className="px-4 py-3 text-center text-[var(--color-text-muted)] text-xs">
+                    {c.used_count}{c.max_uses != null ? `/${c.max_uses}` : ''}
+                  </td>
                   <td className="px-4 py-3 text-center">
-                    <Badge variant={c.is_used ? 'gray' : 'green'} dot>
-                      {c.is_used ? t.admin_codes_status_used : t.admin_codes_status_open}
+                    <Badge
+                      variant={c.status === 'active' ? 'green' : c.status === 'expired' ? 'red' : 'gray'}
+                      dot
+                    >
+                      {c.status === 'active' ? t.admin_codes_status_active
+                        : c.status === 'expired' ? t.admin_codes_status_expired
+                        : t.admin_codes_status_full}
                     </Badge>
                   </td>
                   <td className="px-4 py-3 text-center text-[var(--color-text-muted)] text-xs">
                     {c.expires_at ? new Date(c.expires_at).toLocaleDateString(lang === 'fa' ? 'fa-IR' : 'en-US') : '—'}
                   </td>
-                  <td className="px-4 py-3 text-center text-[var(--color-text-muted)] text-xs">
-                    {c.created_at ? new Date(c.created_at).toLocaleDateString(lang === 'fa' ? 'fa-IR' : 'en-US') : '—'}
-                  </td>
                   <td className="px-4 py-3 text-center">
-                    {!c.is_used && (
-                      <Button variant="ghost" size="icon-sm" onClick={() => copyCode(c.code)}>
+                    <div className="flex items-center justify-center gap-1">
+                      <Button variant="ghost" size="icon-sm" title={t.admin_codes_col_code} onClick={() => copyCode(c.code)}>
                         {copied === c.code ? <Check className="w-3.5 h-3.5 text-[var(--color-success)]" /> : <Copy className="w-3.5 h-3.5" />}
                       </Button>
-                    )}
+                      <Button variant="ghost" size="sm" onClick={() => copyLink(c.code)}>
+                        {copiedLink === c.code ? t.admin_codes_link_copied : t.admin_codes_copy_link}
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -183,6 +210,10 @@ export default function AdminInviteCodesPage() {
               </div>
               <Input label={t.admin_codes_expires_label} type="number" placeholder={t.admin_codes_expires_placeholder}
                 value={form.expires_days} onChange={e => setForm({ ...form, expires_days: e.target.value })} />
+              <Input label={t.admin_codes_label_label} placeholder={t.admin_codes_label_placeholder}
+                value={form.label} onChange={e => setForm({ ...form, label: e.target.value })} />
+              <Input label={t.admin_codes_plan_duration_label} type="number" hint={t.admin_codes_plan_duration_hint}
+                value={form.plan_duration_days} onChange={e => setForm({ ...form, plan_duration_days: e.target.value })} />
               <DialogFooter>
                 <Button variant="secondary" onClick={() => setShowCreate(false)}>{t.cancel}</Button>
                 <Button onClick={createCodes} loading={creating}>{t.admin_codes_create_btn}</Button>
