@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import type { LucideIcon } from 'lucide-react';
-import { Users, LayoutDashboard, UserCheck, KeyRound, CreditCard, BotMessageSquare, Bot, HelpCircle, LifeBuoy } from 'lucide-react';
+import { Users, LayoutDashboard, UserCheck, KeyRound, CreditCard, BotMessageSquare, Bot, HelpCircle, LifeBuoy, Settings } from 'lucide-react';
 import { NavItem } from './nav-item';
 import { UserMenu } from './user-menu';
 import { cn } from '@/lib/utils';
@@ -28,6 +28,7 @@ const ADMIN_NAV: NavEntry[] = [
   { href: '/admin/support', labelKey: 'nav_admin_support', icon: LifeBuoy },
   { href: '/admin/ai-logs', labelKey: 'nav_admin_ai_logs', icon: BotMessageSquare },
   { href: '/admin/ea-tokens', labelKey: 'nav_admin_ea_tokens', icon: Bot },
+  { href: '/admin/settings', labelKey: 'nav_admin_settings', icon: Settings },
 ];
 
 interface SidebarProps {
