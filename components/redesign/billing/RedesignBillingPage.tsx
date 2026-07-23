@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { QRCodeSVG } from 'qrcode.react';
 import {
-  Check, Copy, CreditCard, Loader2, ShieldAlert, Wallet, ArrowLeft, ArrowRight, PartyPopper,
+  Check, Copy, Loader2, ShieldAlert, Wallet, ArrowLeft, ArrowRight, PartyPopper, Star,
 } from 'lucide-react';
 import { PageHeader } from '@/components/redesign/ui/PageHeader';
 import { Card } from '@/components/redesign/ui/Card';
@@ -14,8 +14,10 @@ import { usePaymentPlans, useInitiatePayment, useVerifyPayment } from '@/hooks/u
 import { apiFetch, ApiError } from '@/lib/api';
 import { QUERY_KEYS } from '@/lib/constants';
 import { useLang } from '@/app/i18n/LangContext';
+import type { Translations } from '@/app/i18n/translations';
 import { cn } from '@/lib/utils';
-import type { PaymentNetwork, InitiatePaymentResponse, ProfileResponse } from '@/types';
+import { BILLING_PERIODS, type BillingPeriod } from '@/lib/pricing';
+import type { PaymentNetwork, InitiatePaymentResponse, ProfileResponse, PricingPlan } from '@/types';
 
 type FlowStep = 'select' | 'network' | 'pay' | 'txid' | 'done';
 
@@ -24,7 +26,28 @@ const NETWORKS: { id: PaymentNetwork; name: string }[] = [
   { id: 'BEP20', name: 'BEP20 (BNB Chain)' },
 ];
 
-export function RedesignBillingPage() {
+const MAX_FEATURES_SHOWN = 6;
+
+/**
+ * The crypto payment backend only prices monthly and annual terms
+ * (see /payment/plans → price_usdt_monthly / price_usdt_yearly). A 3- or
+ * 6-month preview has no matching backend price, so the actual charge snaps
+ * to the numerically closest supported term (monthly for 1/3/6, annual for
+ * 12) while the grid still previews the full 1/3/6/12 pricing shown on the
+ * public pricing page.
+ */
+function periodToDurationDays(period: BillingPeriod): 30 | 365 {
+  return period === '12' ? 365 : 30;
+}
+
+const PERIOD_LABEL_KEYS: Record<BillingPeriod, (t: Translations) => string> = {
+  '1': (t) => t.billing_monthly,
+  '3': (t) => t.billing_period_3,
+  '6': (t) => t.billing_period_6,
+  '12': (t) => t.billing_yearly,
+};
+
+export function RedesignBillingPage({ plans, isIran }: { plans: PricingPlan[]; isIran: boolean }) {
   const { t, lang, isRTL } = useLang();
   const ArrowIcon = isRTL ? ArrowLeft : ArrowRight;
 
@@ -33,11 +56,11 @@ export function RedesignBillingPage() {
     queryFn: () => apiFetch<ProfileResponse>('/profile/me'),
   });
 
-  const { data: plans = [], isLoading: plansLoading } = usePaymentPlans();
+  const { data: paymentPlans = [] } = usePaymentPlans();
   const initiate = useInitiatePayment();
   const verify = useVerifyPayment();
 
-  const [cycle, setCycle] = useState<30 | 365>(30);
+  const [period, setPeriod] = useState<BillingPeriod>('1');
   const [selectedPlanId, setSelectedPlanId] = useState<number | null>(null);
   const [step, setStep] = useState<FlowStep>('select');
   const [paymentData, setPaymentData] = useState<InitiatePaymentResponse | null>(null);
@@ -46,8 +69,11 @@ export function RedesignBillingPage() {
   const [verifyError, setVerifyError] = useState('');
   const [expiresAt, setExpiresAt] = useState<string | null>(null);
 
-  const selectedPlan = plans.find((p) => p.id === selectedPlanId) ?? null;
-  const selectedDuration = selectedPlan?.durations.find((d) => d.days === cycle) ?? null;
+  const cycle = periodToDurationDays(period);
+  const displayPlans = plans.filter((p) => p.slug !== 'trial' && p.price_usd > 0);
+
+  const selectedPaymentPlan = paymentPlans.find((p) => p.id === selectedPlanId) ?? null;
+  const selectedDuration = selectedPaymentPlan?.durations.find((d) => d.days === cycle) ?? null;
 
   const daysRemaining = profile?.subscription_days_remaining ?? null;
   const daysColor =
@@ -67,10 +93,10 @@ export function RedesignBillingPage() {
   };
 
   const pickNetwork = async (net: PaymentNetwork) => {
-    if (!selectedPlan || !selectedDuration) return;
+    if (!selectedPaymentPlan || !selectedDuration) return;
     try {
       const res = await initiate.mutateAsync({
-        plan_id: selectedPlan.id,
+        plan_id: selectedPaymentPlan.id,
         duration_days: selectedDuration.days,
         network: net,
       });
@@ -136,72 +162,48 @@ export function RedesignBillingPage() {
       {/* Section 2 — Choose Plan */}
       {step === 'select' && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-base font-semibold text-[var(--text-primary)]">{t.billing_choose_plan}</h2>
-            <div className="inline-flex rounded-[var(--radius-sm)] border border-[var(--border-subtle)] p-0.5">
-              <button
-                type="button"
-                onClick={() => setCycle(30)}
-                className={cn(
-                  'rounded-[calc(var(--radius-sm)-2px)] px-3 py-1.5 text-xs font-semibold transition-colors',
-                  cycle === 30 ? 'bg-[var(--accent)] text-white' : 'text-[var(--text-secondary)]',
-                )}
-              >
-                {t.billing_monthly}
-              </button>
-              <button
-                type="button"
-                onClick={() => setCycle(365)}
-                className={cn(
-                  'rounded-[calc(var(--radius-sm)-2px)] px-3 py-1.5 text-xs font-semibold transition-colors',
-                  cycle === 365 ? 'bg-[var(--accent)] text-white' : 'text-[var(--text-secondary)]',
-                )}
-              >
-                {t.billing_yearly}
-              </button>
+            <div className="inline-flex flex-wrap rounded-[var(--radius-sm)] border border-[var(--border-subtle)] p-0.5">
+              {BILLING_PERIODS.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setPeriod(p)}
+                  className={cn(
+                    'rounded-[calc(var(--radius-sm)-2px)] px-3 py-1.5 text-xs font-semibold transition-colors',
+                    period === p ? 'bg-[var(--accent)] text-white' : 'text-[var(--text-secondary)]',
+                  )}
+                >
+                  {PERIOD_LABEL_KEYS[p](t)}
+                </button>
+              ))}
             </div>
           </div>
+          <p className="text-xs text-[var(--text-muted)]">{t.billing_savings_note}</p>
 
-          {plansLoading ? (
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {[...Array(2)].map((_, i) => <div key={i} className="skeleton h-32 rounded-[var(--radius-lg)]" />)}
-            </div>
+          {displayPlans.length === 0 ? (
+            <p className="py-8 text-center text-sm text-[var(--text-muted)]">{t.billing_plan_empty}</p>
           ) : (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {plans.map((plan) => {
-                const duration = plan.durations.find((d) => d.days === cycle);
-                if (!duration) return null;
-                return (
-                  <button
-                    key={plan.id}
-                    type="button"
-                    onClick={() => pickPlan(plan.id)}
-                    className={cn(
-                      'rounded-[var(--radius-lg)] border p-4 text-start transition-colors',
-                      'border-[var(--border-subtle)] bg-[var(--bg-surface)] hover:border-[var(--accent)]',
-                    )}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold text-[var(--text-primary)]">{plan.name}</span>
-                      <CreditCard className="h-4 w-4 text-[var(--text-muted)]" />
-                    </div>
-                    <p className="mt-2 rd-tabular text-2xl font-bold text-[var(--text-primary)]">
-                      {duration.price_usdt.toFixed(2)} <span className="text-sm font-medium text-[var(--text-muted)]">USDT</span>
-                    </p>
-                    <p className="mt-1 text-xs text-[var(--text-muted)]">{lang === 'fa' ? duration.label_fa : duration.label}</p>
-                  </button>
-                );
-              })}
-              {!plansLoading && plans.every((p) => !p.durations.find((d) => d.days === cycle)) && (
-                <p className="col-span-full text-sm text-[var(--text-muted)]">{t.no_data_available}</p>
-              )}
+              {displayPlans.map((plan) => (
+                <PricingPlanCard
+                  key={plan.id}
+                  plan={plan}
+                  period={period}
+                  isIran={isIran}
+                  lang={lang}
+                  t={t}
+                  onSelect={() => pickPlan(plan.id)}
+                />
+              ))}
             </div>
           )}
         </div>
       )}
 
       {/* Section 3 — Payment Flow */}
-      {step === 'network' && selectedPlan && selectedDuration && (
+      {step === 'network' && selectedPaymentPlan && selectedDuration && (
         <Card className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-semibold text-[var(--text-primary)]">{t.billing_select_network}</h2>
@@ -314,5 +316,90 @@ export function RedesignBillingPage() {
         </Card>
       )}
     </div>
+  );
+}
+
+function PricingPlanCard({
+  plan,
+  period,
+  isIran,
+  lang,
+  t,
+  onSelect,
+}: {
+  plan: PricingPlan;
+  period: BillingPeriod;
+  isIran: boolean;
+  lang: 'en' | 'fa';
+  t: Translations;
+  onSelect: () => void;
+}) {
+  const isPro = plan.slug === 'pro';
+  const months = period === '1' ? 1 : Number(period);
+  const discountPct = period === '1' ? 0 : (plan.discounts[period] ?? 0);
+  const displayMonthly = (isIran ? plan.price_usd_ir : plan.price_usd) * (1 - discountPct / 100);
+  const totalPrice = displayMonthly * months;
+
+  const shown = plan.features.slice(0, MAX_FEATURES_SHOWN);
+  const remaining = plan.features.length - shown.length;
+
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      className={cn(
+        'flex flex-col rounded-[var(--radius-lg)] border p-4 text-start transition-colors',
+        isPro
+          ? 'border-[var(--accent)] bg-[var(--accent-soft)]'
+          : 'border-[var(--border-subtle)] bg-[var(--bg-surface)] hover:border-[var(--accent)]',
+      )}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <span className="font-semibold text-[var(--text-primary)]">{plan.name}</span>
+        {isPro && (
+          <Badge variant="accent" icon={<Star className="h-3 w-3" />}>
+            {t.billing_most_popular}
+          </Badge>
+        )}
+      </div>
+
+      <div className="mt-2">
+        {isIran && (
+          <div className="text-xs text-[var(--text-muted)] line-through">
+            ${plan.price_usd.toFixed(2)}{t.billing_per_month}
+          </div>
+        )}
+        <p className="rd-tabular text-2xl font-bold text-[var(--text-primary)]">
+          ${displayMonthly.toFixed(2)}{' '}
+          <span className="text-sm font-medium text-[var(--text-muted)]">{t.billing_per_month}</span>
+        </p>
+        {period !== '1' && (
+          <p className="mt-0.5 text-xs text-[var(--text-muted)]">
+            {t.billing_plan_total(months, totalPrice.toFixed(2))}
+          </p>
+        )}
+      </div>
+
+      <ul className="mt-3 space-y-1.5">
+        {shown.map((f) => (
+          <li key={f.key} className="flex items-start gap-1.5 text-xs text-[var(--text-secondary)]">
+            <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--accent)]" />
+            <span>{lang === 'fa' ? f.label_fa : f.label_en}</span>
+          </li>
+        ))}
+        {remaining > 0 && (
+          <li className="text-xs italic text-[var(--text-muted)]">{t.billing_plan_and_more(remaining)}</li>
+        )}
+      </ul>
+
+      <span
+        className={cn(
+          'mt-3 inline-flex items-center justify-center rounded-[var(--radius-sm)] px-3 py-2 text-xs font-semibold',
+          isPro ? 'bg-[var(--accent)] text-white' : 'border border-[var(--border-subtle)] text-[var(--text-primary)]',
+        )}
+      >
+        {t.billing_select_plan}
+      </span>
+    </button>
   );
 }

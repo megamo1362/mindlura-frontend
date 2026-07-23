@@ -1,3 +1,5 @@
+import { toFaDigits } from '@/lib/pricing';
+
 export type Lang = 'en' | 'fa';
 
 export const translations = {
@@ -271,7 +273,17 @@ export const translations = {
     billing_upgrade: 'Upgrade your plan',
     billing_choose_plan: 'Choose a Plan',
     billing_monthly: 'Monthly',
-    billing_yearly: 'Yearly',
+    billing_period_3: '3 Months',
+    billing_period_6: '6 Months',
+    billing_yearly: 'Annual',
+    billing_savings_note: 'Save up to 30% with longer billing periods',
+    billing_per_month: '/mo',
+    billing_most_popular: 'Most Popular',
+    billing_plan_and_more: (n: number) => `and ${n} more`,
+    billing_plan_empty: 'Pricing is being updated — check back shortly.',
+    billing_plan_total: (months: number, total: string) =>
+      months === 12 ? `Billed $${total} per year` : `Billed $${total} every ${months} months`,
+    billing_select_plan: 'Select Plan',
     billing_select_network: 'Select Network',
     billing_trc20_desc: 'Tron network — low fees, fast confirmation',
     billing_bep20_desc: 'BNB Smart Chain — low fees, fast confirmation',
@@ -1422,6 +1434,18 @@ export const translations = {
     billing_upgrade: 'ارتقای پلن',
     billing_choose_plan: 'انتخاب پلن',
     billing_monthly: 'ماهانه',
+    billing_period_3: '۳ ماهه',
+    billing_period_6: '۶ ماهه',
+    billing_savings_note: 'با پرداخت طولانی‌مدت تا ۳۰٪ صرفه‌جویی کنید',
+    billing_per_month: '/ماه',
+    billing_most_popular: 'محبوب‌ترین',
+    billing_plan_and_more: (n: number) => `و ${n} مورد دیگر`,
+    billing_plan_empty: 'قیمت‌گذاری در حال به‌روزرسانی است — کمی بعد دوباره سر بزنید.',
+    billing_plan_total: (months: number, total: string) =>
+      months === 12
+        ? `${toFaDigits(total)} دلار سالانه پرداخت می‌شود`
+        : `${toFaDigits(total)} دلار هر ${toFaDigits(String(months))} ماه پرداخت می‌شود`,
+    billing_select_plan: 'انتخاب پلن',
     billing_yearly: 'سالانه',
     billing_select_network: 'انتخاب شبکه',
     billing_trc20_desc: 'شبکه ترون — کارمزد کم، تایید سریع',

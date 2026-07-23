@@ -4,13 +4,10 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Check } from 'lucide-react';
 import type { PricingPlan } from '@/types';
-import { BILLING_PERIODS, type BillingPeriod } from '@/lib/pricing';
+import { BILLING_PERIODS, toFaDigits, type BillingPeriod } from '@/lib/pricing';
 
 const accent = '#8B7CF6';
 const MAX_FEATURES_SHOWN = 10;
-
-const FA_DIGITS: Record<string, string> = { '0': '۰', '1': '۱', '2': '۲', '3': '۳', '4': '۴', '5': '۵', '6': '۶', '7': '۷', '8': '۸', '9': '۹' };
-const toFaDigits = (s: string) => s.replace(/[0-9]/g, (d) => FA_DIGITS[d]);
 
 const COPY = {
   en: {
