@@ -8,6 +8,8 @@ import { cn, getInitials } from '@/lib/utils';
 import { useLang } from '@/app/i18n/LangContext';
 import { useTheme } from '../theme/RedesignThemeProvider';
 import { AUTH_TOKEN_KEY, ROUTES } from '@/lib/constants';
+import { useProfileCompletion } from '@/hooks/use-profile-completion';
+import { toast } from '@/store/toast';
 import { DASHBOARD_NAV, filterNavByRole } from './nav-config';
 import type { User } from '@/types';
 
@@ -17,12 +19,15 @@ interface SidebarProps {
   className?: string;
 }
 
+const UNLOCKED_WHEN_INCOMPLETE = ['/dashboard/profile', '/dashboard/settings'];
+
 export function Sidebar({ user, onNavClick, className }: SidebarProps) {
-  const { t } = useLang();
+  const { t, isRTL } = useLang();
   const { theme } = useTheme();
   const pathname = usePathname();
   const items = filterNavByRole(DASHBOARD_NAV, user.role);
   const displayName = user.full_name || user.email;
+  const { isComplete, isLoading } = useProfileCompletion();
 
   const handleLogout = () => {
     localStorage.removeItem(AUTH_TOKEN_KEY);
@@ -34,7 +39,7 @@ export function Sidebar({ user, onNavClick, className }: SidebarProps) {
     <aside
       className={cn(
         'flex h-full w-[240px] flex-col bg-[var(--bg-surface)]',
-        'border-e border-[var(--border-subtle)]',
+        isRTL ? 'border-l border-[var(--border-subtle)]' : 'border-r border-[var(--border-subtle)]',
         className,
       )}
     >
@@ -55,6 +60,26 @@ export function Sidebar({ user, onNavClick, className }: SidebarProps) {
         {items.map((item) => {
           const active = item.exact ? pathname === item.href : pathname === item.href || pathname?.startsWith(item.href + '/');
           const Icon = item.icon;
+          const locked = !isLoading && !isComplete && !UNLOCKED_WHEN_INCOMPLETE.includes(item.href);
+
+          if (locked) {
+            return (
+              <button
+                key={item.href}
+                type="button"
+                onClick={() => toast.error(t.profile_incomplete_warning)}
+                aria-disabled="true"
+                className={cn(
+                  'group relative flex w-full cursor-not-allowed items-center gap-3 rounded-[var(--radius-sm)] px-3 py-2.5 text-start text-sm font-medium opacity-40',
+                  'text-[var(--text-secondary)]',
+                )}
+              >
+                <Icon className="h-4 w-4 flex-shrink-0" />
+                <span className="truncate">{t[item.labelKey] as string}</span>
+              </button>
+            );
+          }
+
           return (
             <Link
               key={item.href}
@@ -67,7 +92,14 @@ export function Sidebar({ user, onNavClick, className }: SidebarProps) {
                   : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-2)] hover:text-[var(--text-primary)]',
               )}
             >
-              {active && <span className="absolute inset-y-2 start-0 w-0.5 rounded-full bg-[var(--accent)]" />}
+              {active && (
+                <span
+                  className={cn(
+                    'absolute inset-y-2 w-0.5 rounded-full bg-[var(--accent)]',
+                    isRTL ? 'right-0' : 'left-0',
+                  )}
+                />
+              )}
               <Icon className="h-4 w-4 flex-shrink-0" />
               <span className="truncate">{t[item.labelKey] as string}</span>
             </Link>

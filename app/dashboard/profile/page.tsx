@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { UserCircle, Mail, Phone, Send, CheckCircle2, XCircle, ExternalLink, KeyRound } from 'lucide-react';
 import { apiFetch, ApiError } from '@/lib/api';
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge, PlanBadge } from '@/components/ui/badge';
@@ -10,8 +11,8 @@ import { OtpInput } from '@/components/ui/otp-input';
 import { PasswordStrengthIndicator } from '@/components/ui/password-strength-indicator';
 import { useLang } from '@/app/i18n/LangContext';
 import { useCountdown } from '@/hooks/useCountdown';
+import { isProfileComplete } from '@/hooks/use-profile-completion';
 import type { ProfileResponse } from '@/types';
-
 type ProfileData = ProfileResponse;
 
 
@@ -314,6 +315,8 @@ export default function ProfilePage() {
     );
   }
 
+  const profileComplete = isProfileComplete(profile);
+
   const roleLabels: Record<string, string> = {
     admin: t.role_admin,
     coach: t.role_coach,
@@ -335,41 +338,6 @@ export default function ProfilePage() {
             {t.profile_personal_info}
           </h2>
         </div>
-
-        {/* First & Last Name */}
-        <div className="grid grid-cols-2 gap-3">
-          <Input
-            label={t.profile_first_name}
-            value={firstName}
-            onChange={e => setFirstName(e.target.value)}
-          />
-          <Input
-            label={t.profile_last_name}
-            value={lastName}
-            onChange={e => setLastName(e.target.value)}
-          />
-        </div>
-
-        {/* Date of Birth */}
-        <div className="w-full space-y-1.5">
-          <label className="block text-xs font-medium text-[var(--color-text-muted)]">
-            {t.profile_dob}
-          </label>
-          <input
-            type="date"
-            value={dob}
-            onChange={e => setDob(e.target.value)}
-            className="w-full h-10 text-sm px-4 rounded-[var(--radius-md)] bg-[var(--color-glass)] border border-[var(--color-border)] text-[var(--color-text-primary)] hover:border-[var(--color-border-hover)] focus:border-[var(--color-border-active)] focus:shadow-[var(--shadow-focus)] outline-none transition-all duration-200"
-          />
-        </div>
-
-        {/* Nationality */}
-        <Input
-          label={t.profile_nationality}
-          value={nationality}
-          onChange={e => setNationality(e.target.value)}
-          placeholder={lang === 'fa' ? 'مثال: ایرانی' : 'e.g. Iranian'}
-        />
 
         {/* Email + verification */}
         <div className="space-y-2">
@@ -440,6 +408,66 @@ export default function ProfilePage() {
           )}
         </div>
 
+        {!profile?.is_email_verified ? (
+          <p className="text-xs text-[var(--color-text-muted)] rounded-xl border border-[var(--color-border)] bg-[var(--color-glass)] px-4 py-3">
+            {t.profile_verify_email_first}
+          </p>
+        ) : (
+          <>
+            {profileComplete && (
+              <p className="text-xs text-[var(--color-success)] rounded-xl border border-[var(--color-success-glow)] bg-[var(--color-success-dim-weak)] px-4 py-3">
+                {t.profile_locked_message}
+              </p>
+            )}
+
+            {/* First & Last Name */}
+            <div className="grid grid-cols-2 gap-3">
+              <Input
+                label={t.profile_first_name}
+                value={firstName}
+                onChange={profileComplete ? undefined : e => setFirstName(e.target.value)}
+                readOnly={profileComplete}
+                className={profileComplete ? 'opacity-60 cursor-not-allowed' : ''}
+              />
+              <Input
+                label={t.profile_last_name}
+                value={lastName}
+                onChange={profileComplete ? undefined : e => setLastName(e.target.value)}
+                readOnly={profileComplete}
+                className={profileComplete ? 'opacity-60 cursor-not-allowed' : ''}
+              />
+            </div>
+
+            {/* Date of Birth */}
+            <div className="w-full space-y-1.5">
+              <label className="block text-xs font-medium text-[var(--color-text-muted)]">
+                {t.profile_dob}
+              </label>
+              <input
+                type="date"
+                value={dob}
+                onChange={e => setDob(e.target.value)}
+                readOnly={profileComplete}
+                disabled={profileComplete}
+                className={cn(
+                  'w-full h-10 text-sm px-4 rounded-[var(--radius-md)] bg-[var(--color-glass)] border border-[var(--color-border)] text-[var(--color-text-primary)] hover:border-[var(--color-border-hover)] focus:border-[var(--color-border-active)] focus:shadow-[var(--shadow-focus)] outline-none transition-all duration-200',
+                  profileComplete && 'opacity-60 cursor-not-allowed',
+                )}
+              />
+            </div>
+
+            {/* Nationality */}
+            <Input
+              label={t.profile_nationality}
+              value={nationality}
+              onChange={profileComplete ? undefined : e => setNationality(e.target.value)}
+              readOnly={profileComplete}
+              className={profileComplete ? 'opacity-60 cursor-not-allowed' : ''}
+              placeholder={lang === 'fa' ? 'مثال: ایرانی' : 'e.g. Iranian'}
+            />
+          </>
+        )}
+
         {/* Phone + verification */}
         <div className="space-y-2">
           <Input
@@ -508,20 +536,22 @@ export default function ProfilePage() {
         </div>
 
         {/* Save button */}
-        <div className="flex items-center gap-3 pt-1 flex-wrap">
-          <Button variant="primary" size="md" loading={saving} onClick={handleSave}>
-            {t.profile_save}
-          </Button>
-          {savedMsg && (
-            <span className="text-xs text-[var(--color-success)] flex items-center gap-1">
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              {t.profile_saved}
-            </span>
-          )}
-          {saveError && (
-            <span className="text-xs text-[var(--color-danger)]">{saveError}</span>
-          )}
-        </div>
+        {!profileComplete && (
+          <div className="flex items-center gap-3 pt-1 flex-wrap">
+            <Button variant="primary" size="md" loading={saving} onClick={handleSave}>
+              {t.profile_save}
+            </Button>
+            {savedMsg && (
+              <span className="text-xs text-[var(--color-success)] flex items-center gap-1">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                {t.profile_saved}
+              </span>
+            )}
+            {saveError && (
+              <span className="text-xs text-[var(--color-danger)]">{saveError}</span>
+            )}
+          </div>
+        )}
       </section>
 
       <div className="space-y-6">

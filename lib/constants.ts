@@ -55,6 +55,7 @@ export const DISPLAY_MODE_LABELS: Record<string, string> = {
 
 export const QUERY_KEYS = {
   accounts: ['accounts'] as const,
+  profile: ['profile'] as const,
   analysis: (id: number | string) => ['analysis', id] as const,
   user: ['user'] as const,
   features: ['features'] as const,

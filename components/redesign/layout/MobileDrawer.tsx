@@ -31,7 +31,7 @@ export function MobileDrawer({ user }: MobileDrawerProps) {
             animate={{ x: 0 }}
             exit={{ x: offscreenX }}
             transition={{ type: 'tween', duration: 0.2, ease: [0, 0, 0.2, 1] }}
-            className="fixed inset-y-0 start-0 z-50 lg:hidden"
+            className={`fixed inset-y-0 z-50 lg:hidden ${isRTL ? 'right-0' : 'left-0'}`}
           >
             <Sidebar user={user} onNavClick={closeMobileSidebar} />
           </motion.div>
