@@ -7,6 +7,7 @@ import { getInitials, cn } from '@/lib/utils';
 import { useLang } from '@/app/i18n/LangContext';
 import { NotificationPanel } from '@/components/layouts/notification-panel';
 import { ThemeToggle } from '../theme/ThemeToggle';
+import { LanguageToggle } from '../theme/LanguageToggle';
 import type { User } from '@/types';
 
 interface TopbarProps {
@@ -41,6 +42,7 @@ export function Topbar({ user, title, className }: TopbarProps) {
 
       <div className="flex flex-shrink-0 items-center gap-1.5">
         <ThemeToggle />
+        <LanguageToggle />
         <NotificationPanel role={user.role} />
         <Link
           href="/dashboard/profile"
