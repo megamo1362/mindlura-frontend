@@ -780,6 +780,47 @@ export interface NotifyClientsResponse {
   details: NotifyClientDetail[];
 }
 
+// ── Support tickets ──────────────────────────────────────────
+export type TicketStatus = 'open' | 'in_progress' | 'closed';
+export type TicketSenderRole = 'user' | 'admin';
+
+export interface TicketMessage {
+  id: number;
+  ticket_id: number;
+  sender_role: TicketSenderRole;
+  body: string;
+  attachment_url: string | null;
+  created_at: string;
+}
+
+export interface Ticket {
+  id: number;
+  subject: string;
+  status: TicketStatus;
+  created_at: string;
+  updated_at: string;
+  messages: TicketMessage[];
+}
+
+export interface TicketListItem {
+  id: number;
+  subject: string;
+  status: TicketStatus;
+  created_at: string;
+  updated_at: string;
+  message_count: number;
+}
+
+export interface AdminTicketListItem extends TicketListItem {
+  user_id: number;
+  user_email: string | null;
+}
+
+export interface AdminTicket extends Ticket {
+  user_id: number;
+  user_email: string | null;
+}
+
 // ── API ────────────────────────────────────────────────────
 export interface ApiError {
   detail: string;
