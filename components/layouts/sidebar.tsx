@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import type { LucideIcon } from 'lucide-react';
-import { Users, LayoutDashboard, UserCheck, KeyRound, CreditCard, BotMessageSquare, Bot, HelpCircle, LifeBuoy, Settings } from 'lucide-react';
+import { Users, LayoutDashboard, UserCheck, KeyRound, CreditCard, BotMessageSquare, Bot, HelpCircle, LifeBuoy, Settings, Receipt, DollarSign } from 'lucide-react';
 import { NavItem } from './nav-item';
 import { UserMenu } from './user-menu';
 import { cn } from '@/lib/utils';
@@ -24,6 +24,8 @@ const ADMIN_NAV: NavEntry[] = [
   { href: '/admin/coaches', labelKey: 'nav_admin_coaches', icon: UserCheck },
   { href: '/admin/invite-codes', labelKey: 'nav_admin_invite_codes', icon: KeyRound },
   { href: '/admin/plans', labelKey: 'nav_admin_plans', icon: CreditCard },
+  { href: '/admin/transactions', labelKey: 'nav_admin_transactions', icon: Receipt },
+  { href: '/admin/finance', labelKey: 'nav_admin_finance', icon: DollarSign },
   { href: '/admin/faq', labelKey: 'nav_admin_faq', icon: HelpCircle },
   { href: '/admin/support', labelKey: 'nav_admin_support', icon: LifeBuoy },
   { href: '/admin/ai-logs', labelKey: 'nav_admin_ai_logs', icon: BotMessageSquare },

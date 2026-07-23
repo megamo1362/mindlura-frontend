@@ -1,15 +1,18 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Send, CheckCircle2, ExternalLink } from 'lucide-react';
+import { Send, CheckCircle2, ExternalLink, Wallet } from 'lucide-react';
 import { apiFetch, ApiError } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
 import { OtpInput } from '@/components/ui/otp-input';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from '@/components/ui/dialog';
 import { useLang } from '@/app/i18n/LangContext';
+import { useWalletAddresses, useUpdateWalletAddress } from '@/hooks/use-payment';
 
 type TelegramStep = 'idle' | 'linking' | 'otp_input';
 
@@ -269,6 +272,8 @@ export default function AdminSettingsPage() {
         )}
       </section>
 
+      <WalletAddressesSection />
+
       <Dialog open={disconnectOpen} onOpenChange={setDisconnectOpen}>
         <DialogContent size="sm">
           <DialogHeader><DialogTitle>{t.admin_settings_telegram_disconnect_confirm_title}</DialogTitle></DialogHeader>
@@ -282,5 +287,66 @@ export default function AdminSettingsPage() {
         </DialogContent>
       </Dialog>
     </div>
+  );
+}
+
+function WalletAddressesSection() {
+  const { t } = useLang();
+  const { data: wallets = [], isLoading } = useWalletAddresses();
+  const updateWallet = useUpdateWalletAddress();
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
+
+  const addressFor = (network: string, current: string) => drafts[network] ?? current;
+
+  const save = (network: string, current: string, isActive: boolean) => {
+    const address = drafts[network] ?? current;
+    updateWallet.mutate({ network, data: { address, is_active: isActive } });
+  };
+
+  return (
+    <section className="rounded-[var(--radius-lg)] bg-[var(--color-glass)] p-5 border border-[var(--color-border)] space-y-4 max-w-xl">
+      <div className="flex items-center gap-2">
+        <Wallet className="w-4 h-4 text-[var(--color-cyan)]" />
+        <h2 className="text-sm font-semibold text-[var(--color-text-primary)] uppercase tracking-wider">
+          {t.admin_wallet_title}
+        </h2>
+      </div>
+      <p className="text-xs text-[var(--color-text-muted)]">{t.admin_wallet_desc}</p>
+
+      {isLoading ? (
+        <div className="space-y-2">{[...Array(2)].map((_, i) => <div key={i} className="skeleton h-16 rounded-xl" />)}</div>
+      ) : (
+        <div className="space-y-4">
+          {wallets.map((w) => (
+            <div key={w.network} className="rounded-xl border border-[var(--color-border)] p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-bold text-[var(--color-text-primary)]">{w.network}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-[var(--color-text-muted)]">{t.admin_wallet_active_label}</span>
+                  <Switch
+                    checked={w.is_active}
+                    onCheckedChange={(v) => save(w.network, addressFor(w.network, w.address), v)}
+                  />
+                </div>
+              </div>
+              <Input
+                label={t.admin_wallet_address_label}
+                value={addressFor(w.network, w.address)}
+                onChange={(e) => setDrafts((prev) => ({ ...prev, [w.network]: e.target.value }))}
+                className="font-mono"
+              />
+              <Button
+                variant="secondary"
+                size="sm"
+                loading={updateWallet.isPending}
+                onClick={() => save(w.network, addressFor(w.network, w.address), w.is_active)}
+              >
+                {t.admin_wallet_save_btn}
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
   );
 }

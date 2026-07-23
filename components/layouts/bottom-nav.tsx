@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Users, LayoutDashboard, KeyRound, CreditCard, UserCheck, BotMessageSquare } from 'lucide-react';
+import { Users, LayoutDashboard, KeyRound, CreditCard, UserCheck, BotMessageSquare, DollarSign } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useLang } from '@/app/i18n/LangContext';
 import type { User } from '@/types';
@@ -22,6 +22,7 @@ const ADMIN_ITEMS: NavItem[] = [
   { href: '/admin/coaches', labelKey: 'nav_admin_coaches', icon: UserCheck },
   { href: '/admin/invite-codes', labelKey: 'nav_admin_codes', icon: KeyRound },
   { href: '/admin/plans', labelKey: 'nav_admin_plans', icon: CreditCard },
+  { href: '/admin/finance', labelKey: 'nav_admin_finance', icon: DollarSign },
   { href: '/admin/ai-logs', labelKey: 'nav_admin_ai_logs', icon: BotMessageSquare },
 ];
 

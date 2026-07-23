@@ -12,6 +12,7 @@ import {
   Sparkles,
   ShoppingBag,
   LifeBuoy,
+  CreditCard,
 } from 'lucide-react';
 import type { useLang } from '@/app/i18n/LangContext';
 import type { User } from '@/types';
@@ -35,6 +36,7 @@ export const DASHBOARD_NAV: RedesignNavEntry[] = [
   { href: '/dashboard/coach/notifications', labelKey: 'nav_coach_notifications', icon: Bell, roles: ['coach'] },
   { href: '/dashboard/coach/ai-report', labelKey: 'nav_coach_ai_report', icon: Sparkles, roles: ['coach'] },
   { href: '/dashboard/coach/purchases', labelKey: 'nav_coach_purchases', icon: ShoppingBag, roles: ['coach'] },
+  { href: '/dashboard/billing', labelKey: 'nav_billing', icon: CreditCard },
   { href: '/dashboard/settings', labelKey: 'nav_settings', icon: Settings, exact: true },
   { href: '/dashboard/support', labelKey: 'nav_support', icon: LifeBuoy },
   { href: '/dashboard/profile', labelKey: 'nav_profile', icon: UserCircle },
@@ -47,6 +49,7 @@ export const BOTTOM_NAV: RedesignNavEntry[] = [
   { href: '/dashboard/coach/clients', labelKey: 'nav_my_clients', icon: Users, exact: true, roles: ['coach'] },
   { href: '/dashboard/coach/analytics', labelKey: 'nav_coach_analytics', icon: BarChart2, roles: ['coach'] },
   { href: '/dashboard/coach/notifications', labelKey: 'nav_coach_notifications', icon: Bell, roles: ['coach'] },
+  { href: '/dashboard/billing', labelKey: 'nav_billing', icon: CreditCard },
   { href: '/dashboard/settings', labelKey: 'nav_settings', icon: Settings },
   { href: '/dashboard/profile', labelKey: 'nav_profile', icon: UserCircle },
 ];
