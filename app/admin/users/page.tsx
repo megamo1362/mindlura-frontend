@@ -53,6 +53,7 @@ export default function AdminUsersPage() {
   // edit
   const [editUser, setEditUser] = useState<AdminUser | null>(null);
   const [editPlanId, setEditPlanId] = useState<number | ''>('');
+  const [editExpiresAt, setEditExpiresAt] = useState('');
   const [saving, setSaving] = useState(false);
 
   // reset password
@@ -122,9 +123,13 @@ export default function AdminUsersPage() {
         method: 'PATCH',
         body: { role: editUser.role, is_active: editUser.is_active, full_name: editUser.full_name },
       });
-      if (editPlanId !== '' && editPlanId !== editUser.plan_id) {
+      const targetPlanId = editPlanId !== '' ? editPlanId : editUser.plan_id;
+      const planChanged = editPlanId !== '' && editPlanId !== editUser.plan_id;
+      if (targetPlanId && (planChanged || editExpiresAt)) {
+        const body: Record<string, unknown> = { plan_id: targetPlanId };
+        if (editExpiresAt) body.expires_at = new Date(editExpiresAt).toISOString();
         await apiFetch(`/admin/users/${editUser.id}/subscription`, {
-          method: 'POST', body: { plan_id: editPlanId },
+          method: 'POST', body,
         });
       }
       setEditUser(null);
@@ -269,7 +274,7 @@ export default function AdminUsersPage() {
                   </td>
                   <td className="px-4 py-3 text-center">
                     <div className="flex gap-1 justify-center">
-                      <Button variant="ghost" size="icon-sm" onClick={() => { setEditUser({ ...user }); setEditPlanId(user.plan_id ?? ''); }}>✏️</Button>
+                      <Button variant="ghost" size="icon-sm" onClick={() => { setEditUser({ ...user }); setEditPlanId(user.plan_id ?? ''); setEditExpiresAt(user.plan_expires_at ? user.plan_expires_at.slice(0, 10) : ''); }}>✏️</Button>
                       <Button variant="ghost" size="icon-sm" onClick={() => { setResetUser(user); setNewPassword(''); setResetError(''); }}>🔑</Button>
                       <Button variant="ghost" size="icon-sm" title={t.admin_ea_issue_btn} onClick={() => { setIssueEAUser(user); setIssueEAError(''); }}>🤖</Button>
                       {isSuperAdmin && user.role === 'admin' && (
@@ -359,6 +364,13 @@ export default function AdminUsersPage() {
                 </Select>
                 {editUser.plan_name && <p className="text-xs text-[var(--color-text-muted)]">{t.admin_users_current_plan(editUser.plan_name)}</p>}
               </div>
+              <Input
+                label={t.admin_users_expires_label}
+                type="date"
+                value={editExpiresAt}
+                onChange={e => setEditExpiresAt(e.target.value)}
+                hint={t.admin_users_expires_hint}
+              />
               <div className="flex items-center justify-between rounded-lg border border-[var(--color-border)] px-4 py-3">
                 <span className="text-sm text-[var(--color-text-secondary)]">{t.admin_users_account_status}</span>
                 <Switch checked={editUser.is_active} onCheckedChange={v => setEditUser({ ...editUser, is_active: v })} />

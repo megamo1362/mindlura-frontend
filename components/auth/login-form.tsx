@@ -7,6 +7,7 @@ import { Mail, Lock, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/redesign/ui/Button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { GoogleSignInButton } from '@/components/auth/google-signin-button';
 import { useLogin } from '@/hooks/use-auth-api';
 import { ApiError } from '@/lib/api';
 import { useLang } from '@/app/i18n/LangContext';
@@ -20,7 +21,16 @@ export function LoginForm() {
   const { mutate: login, isPending, error } = useLogin();
   const { t } = useLang();
 
-  const errorMessage = error instanceof ApiError ? error.message : error ? t.auth_login_error : null;
+  const loginErrorMessages: Record<string, string> = {
+    google_only_account: t.auth_error_google_only_account,
+  };
+
+  const errorMessage =
+    error instanceof ApiError
+      ? (loginErrorMessages[error.message] ?? error.message)
+      : error
+        ? t.auth_login_error
+        : null;
   const hasPersianInPassword = PERSIAN_ARABIC_CHARS.test(password);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -106,6 +116,14 @@ export function LoginForm() {
       >
         {t.auth_login_btn}
       </Button>
+
+      <div className="flex items-center gap-3">
+        <div className="h-px flex-1 bg-[var(--border-subtle)]" />
+        <span className="text-xs text-[var(--text-muted)]">{t.auth_or_divider}</span>
+        <div className="h-px flex-1 bg-[var(--border-subtle)]" />
+      </div>
+
+      <GoogleSignInButton />
     </motion.form>
   );
 }

@@ -6,23 +6,47 @@ import { Mail, Lock, User, Key, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { GoogleSignInButton } from '@/components/auth/google-signin-button';
 import { useRegister } from '@/hooks/use-auth-api';
 import { ApiError } from '@/lib/api';
 import { useLang } from '@/app/i18n/LangContext';
 
-export function RegisterForm() {
+const KNOWN_ERROR_CODES = [
+  'email_exists',
+  'invalid_invite_code',
+  'invite_code_expired',
+  'invite_code_full',
+] as const;
+
+interface RegisterFormProps {
+  inviteCode?: string;
+}
+
+export function RegisterForm({ inviteCode }: RegisterFormProps) {
   const [fields, setFields] = useState({
     email: '',
     password: '',
     confirmPassword: '',
     full_name: '',
-    invite_code: '',
+    invite_code: inviteCode ?? '',
   });
   const [validationError, setValidationError] = useState<string | null>(null);
   const { mutate: register, isPending, error } = useRegister();
   const { t } = useLang();
 
-  const apiError = error instanceof ApiError ? error.message : error ? t.auth_register_error : null;
+  const errorMessages: Record<(typeof KNOWN_ERROR_CODES)[number], string> = {
+    email_exists: t.auth_error_email_exists,
+    invalid_invite_code: t.auth_error_invite_invalid,
+    invite_code_expired: t.auth_error_invite_expired,
+    invite_code_full: t.auth_error_invite_full,
+  };
+
+  const apiError =
+    error instanceof ApiError
+      ? (errorMessages[error.message as (typeof KNOWN_ERROR_CODES)[number]] ?? error.message)
+      : error
+        ? t.auth_register_error
+        : null;
   const displayError = validationError ?? apiError;
 
   const set = (key: keyof typeof fields) => (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -120,6 +144,7 @@ export function RegisterForm() {
           placeholder={t.auth_invite_placeholder}
           iconLeft={<Key className="h-4 w-4" />}
           required
+          readOnly={!!inviteCode}
           dir="ltr"
         />
       </div>
@@ -145,6 +170,14 @@ export function RegisterForm() {
       >
         {t.auth_create_account}
       </Button>
+
+      <div className="flex items-center gap-3">
+        <div className="h-px flex-1 bg-[var(--border-subtle)]" />
+        <span className="text-xs text-[var(--text-muted)]">{t.auth_or_divider}</span>
+        <div className="h-px flex-1 bg-[var(--border-subtle)]" />
+      </div>
+
+      <GoogleSignInButton inviteCode={fields.invite_code} />
     </motion.form>
   );
 }

@@ -11,6 +11,7 @@ import {
   Bell,
   Sparkles,
   ShoppingBag,
+  LifeBuoy,
 } from 'lucide-react';
 import type { useLang } from '@/app/i18n/LangContext';
 import type { User } from '@/types';
@@ -35,6 +36,7 @@ export const DASHBOARD_NAV: RedesignNavEntry[] = [
   { href: '/dashboard/coach/ai-report', labelKey: 'nav_coach_ai_report', icon: Sparkles, roles: ['coach'] },
   { href: '/dashboard/coach/purchases', labelKey: 'nav_coach_purchases', icon: ShoppingBag, roles: ['coach'] },
   { href: '/dashboard/settings', labelKey: 'nav_settings', icon: Settings, exact: true },
+  { href: '/dashboard/support', labelKey: 'nav_support', icon: LifeBuoy },
   { href: '/dashboard/profile', labelKey: 'nav_profile', icon: UserCircle },
 ];
 
