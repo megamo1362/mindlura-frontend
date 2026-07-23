@@ -35,11 +35,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const isPassword = type === 'password';
     const resolvedType = isPassword ? (showPassword ? 'text' : 'password') : type;
 
-    const sizeClass = {
-      sm: 'h-8 text-xs px-3',
-      md: 'h-10 text-sm px-4',
-      lg: 'h-12 text-base px-4',
-    }[inputSize];
+ const sizeClass = {
+  sm: 'h-8 text-xs',
+  md: 'h-10 text-sm',
+  lg: 'h-12 text-base',
+}[inputSize];
 
     return (
       <div className="w-full space-y-1.5">
@@ -69,9 +69,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               error
                 ? 'border-[var(--color-danger)] focus:border-[var(--color-danger)] focus:shadow-[0_0_0_3px_var(--color-danger-dim)]'
                 : 'border-[var(--color-border)] hover:border-[var(--color-border-hover)] focus:border-[var(--color-border-active)] focus:shadow-[var(--shadow-focus)]',
-              iconLeft && 'pr-10',
-              (iconRight || isPassword) && 'pl-10',
-              sizeClass,
+             !iconLeft ? 'pr-4' : 'pr-11',
+!(iconRight || isPassword) ? 'pl-4' : 'pl-11',
+sizeClass,
               'disabled:opacity-50 disabled:cursor-not-allowed',
               className,
             )}
