@@ -171,6 +171,16 @@ export interface Analysis {
     scores: Record<string, number>;
     deductions?: Array<{
       signal: string;
+      rate: number;
+      points_applied: number;
+      points: number;
+      count: number;
+      label: { en: string; fa: string };
+    }>;
+    positive_signals?: Array<{
+      signal: string;
+      rate: number;
+      points_applied: number;
       points: number;
       count: number;
       label: { en: string; fa: string };
@@ -181,6 +191,8 @@ export interface Analysis {
       message: { en: string; fa: string };
     }>;
     weights?: Record<string, number>;
+    confidence?: number;
+    outcome_multiplier?: number;
   };
   session_analysis?: {
     sessions: Array<{
