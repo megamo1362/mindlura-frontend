@@ -1,7 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Shield, Activity, Eye, TrendingDown, Target, BarChart2 } from 'lucide-react';
 import { useLang } from '@/app/i18n/LangContext';
 
 // ── Types ────────────────────────────────────────────────────
@@ -11,8 +10,10 @@ interface PsychologyInsight {
   message: { en: string; fa: string };
 }
 
-interface PsychologyDeduction {
+interface PsychologySignal {
   signal: string;
+  rate: number;
+  points_applied: number;
   points: number;
   count: number;
   label: { en: string; fa: string };
@@ -22,9 +23,12 @@ interface PsychologyScoreData {
   overall: number;
   grade: { en: string; fa: string };
   scores: Record<string, number>;
-  deductions?: PsychologyDeduction[];
+  deductions?: PsychologySignal[];
+  positive_signals?: PsychologySignal[];
   insights: PsychologyInsight[];
   weights?: Record<string, number>;
+  confidence?: number;
+  outcome_multiplier?: number;
 }
 
 interface PsychologyScoreProps {
@@ -32,22 +36,19 @@ interface PsychologyScoreProps {
 }
 
 // ── Constants ────────────────────────────────────────────────
-const SUB_SCORE_LABELS: Record<string, { en: string; fa: string }> = {
-  revenge_control:     { en: 'Revenge Control',     fa: 'کنترل انتقام' },
-  emotional_stability: { en: 'Emotional Stability',  fa: 'ثبات احساسی' },
-  fear_control:        { en: 'Fear Control',          fa: 'کنترل ترس' },
-  risk_management:     { en: 'Risk Management',       fa: 'مدیریت ریسک' },
-  discipline:          { en: 'Discipline',             fa: 'نظم معاملاتی' },
-  consistency:         { en: 'Consistency',            fa: 'ثبات عملکرد' },
-};
-
-const SUB_SCORE_ICONS: Record<string, React.ElementType> = {
-  revenge_control:     Shield,
-  emotional_stability: Activity,
-  fear_control:        Eye,
-  risk_management:     TrendingDown,
-  discipline:          Target,
-  consistency:         BarChart2,
+// Short bar labels for the 9 Layer-1 signals (positive + negative).
+// The backend `label` field is a full sentence — this map gives the
+// compact name shown next to each progress bar.
+const SIGNAL_LABELS: Record<string, { en: string; fa: string }> = {
+  sl_discipline:       { en: 'SL Discipline',        fa: 'رعایت حد ضرر' },
+  rr_positive:         { en: 'Risk/Reward',           fa: 'نسبت ریسک/ریوارد' },
+  size_consistency:    { en: 'Size Consistency',      fa: 'ثبات حجم' },
+  plan_adherence:      { en: 'Plan Adherence',        fa: 'پایبندی به برنامه' },
+  revenge_trading:     { en: 'Revenge Trading',       fa: 'معامله انتقامی' },
+  overtrading:         { en: 'Overtrading',           fa: 'بیش‌معاملاتی' },
+  position_escalation: { en: 'Position Escalation',   fa: 'افزایش حجم بعد ضرر' },
+  off_session:         { en: 'Off-Session Trading',   fa: 'معامله خارج سشن' },
+  holding_losers:      { en: 'Holding Losers',        fa: 'نگه داشتن ضررده' },
 };
 
 const SEVERITY_STYLE = {
@@ -77,20 +78,16 @@ function scoreColor(score: number): string {
   return 'text-red-400';
 }
 
-function scoreBarColor(score: number): string {
-  if (score >= 85) return 'bg-emerald-500';
-  if (score >= 70) return 'bg-blue-500';
-  if (score >= 55) return 'bg-yellow-500';
-  if (score >= 40) return 'bg-orange-500';
-  return 'bg-red-500';
-}
-
 function scoreStroke(score: number): string {
   if (score >= 85) return '#22c55e';
   if (score >= 70) return '#3b82f6';
   if (score >= 55) return '#eab308';
   if (score >= 40) return '#f97316';
   return '#ef4444';
+}
+
+function formatPoints(value: number, tone: 'positive' | 'negative'): string {
+  return tone === 'positive' ? `+${value.toFixed(1)}` : `−${Math.abs(value).toFixed(1)}`;
 }
 
 // ── Circular Progress ─────────────────────────────────────────
@@ -135,36 +132,36 @@ function CircleScore({ overall, grade }: { overall: number; grade: string }) {
   );
 }
 
-// ── Sub-score Row ─────────────────────────────────────────────
-function SubScoreRow({ name, score, label, delay }: {
-  name: string;
-  score: number;
+// ── Signal Row (positive or negative) ───────────────────────────
+function SignalRow({ signal, label, rate, points, tone, delay }: {
+  signal: string;
   label: string;
+  rate: number;
+  points: number;
+  tone: 'positive' | 'negative';
   delay: number;
 }) {
-  const Icon = SUB_SCORE_ICONS[name] ?? BarChart2;
-  const color = scoreColor(score);
-  const bar = scoreBarColor(score);
+  const isPositive = tone === 'positive';
+  const textColor = isPositive ? 'text-emerald-400' : 'text-red-400';
+  const barColor = isPositive ? 'bg-emerald-500' : 'bg-red-500';
 
   return (
     <motion.div
+      key={signal}
       className="space-y-1.5"
       initial={{ opacity: 0, x: -6 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay, duration: 0.3 }}
     >
       <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1.5">
-          <Icon className={`w-3.5 h-3.5 ${color}`} />
-          <span className="text-xs text-[var(--color-text-secondary)]">{label}</span>
-        </div>
-        <span className={`text-xs font-bold tabular-nums ${color}`}>{score}</span>
+        <span className="text-xs text-[var(--color-text-secondary)]">{label}</span>
+        <span className={`text-xs font-bold tabular-nums ${textColor}`}>{formatPoints(points, tone)}</span>
       </div>
       <div className="h-1.5 rounded-full bg-[rgba(255,255,255,0.06)] overflow-hidden">
         <motion.div
-          className={`h-full rounded-full ${bar}`}
+          className={`h-full rounded-full ${barColor}`}
           initial={{ width: 0 }}
-          animate={{ width: `${score}%` }}
+          animate={{ width: `${Math.round(rate * 100)}%` }}
           transition={{ delay: delay + 0.1, duration: 0.7, ease: 'easeOut' }}
         />
       </div>
@@ -177,7 +174,9 @@ export function PsychologyScore({ data }: PsychologyScoreProps) {
   const { lang } = useLang();
   const l = (lang === 'fa' ? 'fa' : 'en') as 'en' | 'fa';
 
-  const scoreEntries = Object.entries(data.scores) as [keyof typeof data.scores, number][];
+  const positiveSignals = data.positive_signals ?? [];
+  const negativeSignals = data.deductions ?? [];
+  const hasConfidence = data.confidence != null && data.outcome_multiplier != null;
 
   return (
     <motion.div
@@ -194,50 +193,76 @@ export function PsychologyScore({ data }: PsychologyScoreProps) {
         </h3>
       </div>
 
-      {/* Score circle + sub-scores */}
-      <div className="flex flex-col sm:flex-row gap-6 items-start">
-        {/* Circle */}
-        <div className="flex-shrink-0 mx-auto sm:mx-0">
-          <CircleScore overall={data.overall} grade={data.grade[l]} />
-        </div>
-
-        {/* Sub-scores grid */}
-        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 w-full">
-          {scoreEntries.map(([key, score], i) => {
-            const labels = SUB_SCORE_LABELS[key];
-            const label = labels ? labels[l] : key;
-            return (
-              <SubScoreRow
-                key={key}
-                name={key}
-                score={score}
-                label={label}
-                delay={0.1 + i * 0.06}
-              />
-            );
-          })}
-        </div>
+      {/* Score circle */}
+      <div className="flex flex-col items-center gap-2">
+        <CircleScore overall={data.overall} grade={data.grade[l]} />
+        {hasConfidence && (
+          <div className="flex items-center gap-3 text-[11px] text-[var(--color-text-muted)]">
+            <span>
+              {l === 'fa'
+                ? `اطمینان: ${Math.round((data.confidence as number) * 100)}٪`
+                : `Confidence: ${Math.round((data.confidence as number) * 100)}%`}
+            </span>
+            <span className="w-1 h-1 rounded-full bg-[var(--color-text-muted)]/50" />
+            <span>
+              {l === 'fa'
+                ? `ضریب نتیجه: ×${(data.outcome_multiplier as number).toFixed(1)}`
+                : `Outcome: ×${(data.outcome_multiplier as number).toFixed(1)}`}
+            </span>
+          </div>
+        )}
       </div>
 
-      {/* Deductions */}
-      {data.deductions && data.deductions.length > 0 && (
-        <div className="space-y-2 pt-1">
+      {/* Positive signals */}
+      {positiveSignals.length > 0 && (
+        <div className="space-y-2.5 pt-1">
           <div className="h-px bg-[var(--color-border)]" />
-          <p className="text-[10px] font-semibold text-[var(--color-text-muted)] uppercase tracking-wider px-1">
-            {l === 'fa' ? 'کسری‌های امتیاز' : 'Score Deductions'}
+          <p className="text-[10px] font-semibold text-emerald-400/80 uppercase tracking-wider px-1">
+            {l === 'fa' ? 'سیگنال‌های مثبت' : 'Positive Signals'}
           </p>
-          <div className="flex flex-wrap gap-1.5">
-            {data.deductions.map((d, i) => (
-              <span
-                key={i}
-                title={d.label[l]}
-                className="inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border border-red-500/20 bg-red-500/6 text-red-300 font-medium"
-              >
-                {d.points}pts
-                <span className="text-red-400/60 font-normal">·</span>
-                {d.label[l].length > 40 ? d.label[l].slice(0, 40) + '…' : d.label[l]}
-              </span>
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+            {positiveSignals.map((s, i) => {
+              const labels = SIGNAL_LABELS[s.signal];
+              const label = labels ? labels[l] : s.label[l];
+              return (
+                <SignalRow
+                  key={s.signal}
+                  signal={s.signal}
+                  label={label}
+                  rate={s.rate}
+                  points={s.points_applied}
+                  tone="positive"
+                  delay={0.1 + i * 0.06}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Negative signals */}
+      {negativeSignals.length > 0 && (
+        <div className="space-y-2.5 pt-1">
+          <div className="h-px bg-[var(--color-border)]" />
+          <p className="text-[10px] font-semibold text-red-400/80 uppercase tracking-wider px-1">
+            {l === 'fa' ? 'سیگنال‌های منفی' : 'Negative Signals'}
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+            {negativeSignals.map((s, i) => {
+              const labels = SIGNAL_LABELS[s.signal];
+              const label = labels ? labels[l] : s.label[l];
+              return (
+                <SignalRow
+                  key={s.signal}
+                  signal={s.signal}
+                  label={label}
+                  rate={s.rate}
+                  points={s.points_applied}
+                  tone="negative"
+                  delay={0.1 + i * 0.06}
+                />
+              );
+            })}
           </div>
         </div>
       )}
