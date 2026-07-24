@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
 
   experimental: {
     optimizePackageImports: ['framer-motion', 'lucide-react', 'gsap', 'three'],
+    // Default rewrites() proxy timeout is 30s, which is too short for
+    // /trades/analyze/{id} and /analysis/check-and-run/{id}, which can take
+    // longer than that to return their large JSON payloads from FastAPI.
+    proxyTimeout: 120000,
   },
 
   async rewrites() {
