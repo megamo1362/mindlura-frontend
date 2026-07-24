@@ -11,12 +11,11 @@ import { useRegister } from '@/hooks/use-auth-api';
 import { ApiError } from '@/lib/api';
 import { useLang } from '@/app/i18n/LangContext';
 
-const KNOWN_ERROR_CODES = [
-  'email_exists',
-  'invalid_invite_code',
-  'invite_code_expired',
-  'invite_code_full',
-] as const;
+type KnownErrorCode =
+  | 'email_exists'
+  | 'invalid_invite_code'
+  | 'invite_code_expired'
+  | 'invite_code_full';
 
 interface RegisterFormProps {
   inviteCode?: string;
@@ -34,7 +33,7 @@ export function RegisterForm({ inviteCode }: RegisterFormProps) {
   const { mutate: register, isPending, error } = useRegister();
   const { t } = useLang();
 
-  const errorMessages: Record<(typeof KNOWN_ERROR_CODES)[number], string> = {
+  const errorMessages: Record<KnownErrorCode, string> = {
     email_exists: t.auth_error_email_exists,
     invalid_invite_code: t.auth_error_invite_invalid,
     invite_code_expired: t.auth_error_invite_expired,
@@ -43,7 +42,7 @@ export function RegisterForm({ inviteCode }: RegisterFormProps) {
 
   const apiError =
     error instanceof ApiError
-      ? (errorMessages[error.message as (typeof KNOWN_ERROR_CODES)[number]] ?? error.message)
+      ? (errorMessages[error.message as KnownErrorCode] ?? error.message)
       : error
         ? t.auth_register_error
         : null;
