@@ -304,6 +304,10 @@ export const translations = {
     billing_error_contract: 'This is not a valid USDT transfer on the selected network.',
     billing_try_again: 'Try Again',
     billing_contact_support: 'Contact Support',
+    billing_plan_unavailable: 'This plan is not available for USDT payment right now. Please choose a different plan or duration.',
+    billing_plans_load_error: 'Could not load payment options. Please check your connection and try again.',
+    billing_back: 'Back',
+    billing_retry: 'Retry',
 
     // ── Emotions ───────────────────────────────────────────
     emotion_fear: 'Fear',
@@ -1467,6 +1471,10 @@ export const translations = {
     billing_error_contract: 'این تراکنش انتقال معتبر USDT روی شبکه انتخاب‌شده نیست.',
     billing_try_again: 'تلاش مجدد',
     billing_contact_support: 'تماس با پشتیبانی',
+    billing_plan_unavailable: 'این پلن در حال حاضر برای پرداخت با تتر (USDT) در دسترس نیست. لطفاً پلن یا مدت زمان دیگری انتخاب کنید.',
+    billing_plans_load_error: 'بارگذاری گزینه‌های پرداخت ممکن نشد. اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.',
+    billing_back: 'بازگشت',
+    billing_retry: 'تلاش مجدد',
 
     // ── Emotions ───────────────────────────────────────────
     emotion_fear: 'ترس',
